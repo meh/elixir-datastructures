@@ -29,3 +29,13 @@ Protocols and their implementations
   * Data.Queue.Standard *(queue)*
 
 ### Dictionary
+
+You're awful, those names are long
+----------------------------------
+I know right? Just use `alias`.
+
+```elixir
+alias Data.Set.BalancedTree, as: SBT
+
+SBT.new |> Set.add(23) |> Set.add(42) # => #Set<[23,42]>
+```
