@@ -6,6 +6,16 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
+defmodule Data.Stack.List do
+  def new do
+    []
+  end
+
+  def new(enum) do
+    Enum.to_list(enum)
+  end
+end
+
 defimpl Stack, for: List do
   def push(list, value) do
     [value | list]
