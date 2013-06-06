@@ -6,6 +6,16 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
+defmodule Data.Queue.List do
+  def new do
+    []
+  end
+
+  def new(enum) do
+    Enum.to_list(enum)
+  end
+end
+
 defimpl Queue, for: List do
   def enq(list, value) do
     list ++ [value]
