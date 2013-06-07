@@ -42,7 +42,7 @@ defmodule Data.Queue.Standard do
   def deq!(wrap(queue: queue)) do
     case :queue.out(queue) do
       { :empty, _ } ->
-        raise Queue.Empty
+        raise Data.Empty
 
       { { :value, value }, queue } ->
         { value, wrap(queue: queue) }
@@ -62,7 +62,7 @@ defmodule Data.Queue.Standard do
   def reverse_deq!(wrap(queue: queue)) do
     case :queue.out_r(queue) do
       { :empty, _ } ->
-        raise Queue.Empty
+        raise Data.Empty
 
       { { :value, value }, queue } ->
         { value, wrap(queue: queue) }
@@ -82,7 +82,7 @@ defmodule Data.Queue.Standard do
   def peek!(wrap(queue: queue)) do
     case :queue.peek(queue) do
       :empty ->
-        raise Queue.Empty
+        raise Data.Empty
 
       { :value, value } ->
         value
@@ -102,7 +102,7 @@ defmodule Data.Queue.Standard do
   def reverse_peek!(wrap(queue: queue)) do
     case :queue.peek_r(queue) do
       :empty ->
-        raise Queue.Empty
+        raise Data.Empty
 
       { :value, value } ->
         value
@@ -138,38 +138,46 @@ defmodule Data.Queue.Standard do
   end
 end
 
-defimpl Queue, for: Data.Queue.Standard do
+defimpl Data.Queue, for: Data.Queue.Standard do
   defdelegate enq(self, value), to: Data.Queue.Standard
   defdelegate deq(self), to: Data.Queue.Standard
   defdelegate deq(self, default), to: Data.Queue.Standard
   defdelegate deq!(self), to: Data.Queue.Standard
+end
+
+defimpl Data.Counted, for: Data.Queue.Standard do
+  defdelegate count(self), to: Data.Queue.Standard, as: :size
+end
+
+defimpl Data.Peekable, for: Data.Queue.Standard do
   defdelegate peek(self), to: Data.Queue.Standard
   defdelegate peek(self, default), to: Data.Queue.Standard
   defdelegate peek!(self), to: Data.Queue.Standard
+end
+
+defimpl Data.Reversible, for: Data.Queue.Standard do
   defdelegate reverse(self), to: Data.Queue.Standard
+end
+
+defimpl Data.Emptyable, for: Data.Queue.Standard do
   defdelegate empty?(self), to: Data.Queue.Standard
-  defdelegate member?(self, value), to: Data.Queue.Standard
-  defdelegate size(self), to: Data.Queue.Standard
+  defdelegate clear(self), to: Data.Queue.Standard
+end
+
+defimpl Data.Foldable, for: Data.Queue.Standard do
   defdelegate foldl(self, acc, fun), to: Data.Queue.Standard
   defdelegate foldr(self, acc, fun), to: Data.Queue.Standard
+end
+
+defimpl Data.Listable, for: Data.Queue.Standard do
   defdelegate to_list(self), to: Data.Queue.Standard
 end
 
-defimpl Stack, for: Data.Queue.Standard do
+defimpl Data.Stack, for: Data.Queue.Standard do
   defdelegate push(self, value), to: Data.Queue.Standard, as: :reverse_enq
   defdelegate pop(self), to: Data.Queue.Standard, as: :reverse_deq
   defdelegate pop(self, default), to: Data.Queue.Standard, as: :reverse_deq
   defdelegate pop!(self), to: Data.Queue.Standard, as: :reverse_deq!
-  defdelegate peek(self), to: Data.Queue.Standard, as: :reverse_peek
-  defdelegate peek(self, default), to: Data.Queue.Standard, as: :reverse_peek
-  defdelegate peek!(self), to: Data.Queue.Standard, as: :reverse_peek!
-  defdelegate reverse(self), to: Data.Queue.Standard
-  defdelegate empty?(self), to: Data.Queue.Standard
-  defdelegate member?(self, value), to: Data.Queue.Standard
-  defdelegate size(self), to: Data.Queue.Standard
-  defdelegate foldl(self, acc, fun), to: Data.Queue.Standard, as: :foldr
-  defdelegate foldr(self, acc, fun), to: Data.Queue.Standard, as: :foldl
-  def to_list(self), do: Data.Queue.Standard.to_list(reverse(self))
 end
 
 defimpl Enumerable, for: Data.Queue.Standard do

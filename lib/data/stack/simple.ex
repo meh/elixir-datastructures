@@ -164,6 +164,10 @@ defmodule Data.Stack.Simple do
     false
   end
 
+  def clear(_) do
+    stack(list: [])
+  end
+
   @doc """
   Check if the the value is present in the stack.
   """
@@ -209,20 +213,34 @@ defmodule Data.Stack.Simple do
   end
 end
 
-defimpl Stack, for: Data.Stack.Simple do
+defimpl Data.Stack, for: Data.Stack.Simple do
   defdelegate push(self, value), to: Data.Stack.Simple
   defdelegate pop(self), to: Data.Stack.Simple
   defdelegate pop(self, default), to: Data.Stack.Simple
   defdelegate pop!(self), to: Data.Stack.Simple
+end
+
+defimpl Data.Peekable, for: Data.Stack.Simple do
   defdelegate peek(self), to: Data.Stack.Simple
   defdelegate peek(self, default), to: Data.Stack.Simple
   defdelegate peek!(self), to: Data.Stack.Simple
+end
+
+defimpl Data.Reversible, for: Data.Stack.Simple do
   defdelegate reverse(self), to: Data.Stack.Simple
+end
+
+defimpl Data.Emptyable, for: Data.Stack.Simple do
   defdelegate empty?(self), to: Data.Stack.Simple
-  defdelegate member?(self, value), to: Data.Stack.Simple
-  defdelegate size(self), to: Data.Stack.Simple
+  defdelegate clear(self), to: Data.Stack.Simple
+end
+
+defimpl Data.Foldable, for: Data.Stack.Simple do
   defdelegate foldl(self, acc, fun), to: Data.Stack.Simple
   defdelegate foldr(self, acc, fun), to: Data.Stack.Simple
+end
+
+defimpl Data.Listable, for: Data.Stack.Simple do
   defdelegate to_list(self), to: Data.Stack.Simple
 end
 

@@ -29,6 +29,10 @@ defmodule Data.Set.Standard do
     :sets.size(self) == 0
   end
 
+  def clear(_) do
+    wrap(set: :sets.new)
+  end
+
   def add(wrap(set: self), element) do
     wrap(set: :sets.add_element(element, self))
   end
@@ -88,18 +92,31 @@ defmodule Data.Set.Standard do
   end
 end
 
-defimpl Set, for: Data.Set.Standard do
-  defdelegate member?(self, value), to: Data.Set.Standard
-  defdelegate empty?(self), to: Data.Set.Standard
+defimpl Data.Set, for: Data.Set.Standard do
   defdelegate add(self, value), to: Data.Set.Standard
   defdelegate delete(self, value), to: Data.Set.Standard
   defdelegate union(self, other), to: Data.Set.Standard
   defdelegate intersection(self, other), to: Data.Set.Standard
   defdelegate subset?(self, other), to: Data.Set.Standard
   defdelegate disjoint?(self, other), to: Data.Set.Standard
-  defdelegate size(self), to: Data.Set.Standard
-  defdelegate reduce(self, acc, fun), to: Data.Set.Standard
+end
+
+defimpl Data.Counted, for: Data.Set.Standard do
+  defdelegate count(self), to: Data.Set.Standard
+end
+
+defimpl Data.Foldable, for: Data.Set.Standard do
+  defdelegate foldl(self, acc, fun), to: Data.Set.Standard, as: :reduce
+  defdelegate foldr(self, acc, fun), to: Data.Set.Standard, as: :reduce
+end
+
+defimpl Data.Listable, for: Data.Set.Standard do
   defdelegate to_list(self), to: Data.Set.Standard
+end
+
+defimpl Data.Emptyable, for: Data.Set.Standard do
+  defdelegate empty?(self), to: Data.Set.Standard
+  defdelegate clear(self), to: Data.Set.Standard
 end
 
 defimpl Enumerable, for: Data.Set.Standard do

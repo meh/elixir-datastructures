@@ -43,7 +43,7 @@ defmodule Data.Queue.Simple do
 
   ## Examples
 
-      iex> Data.Queue.Simple.new |> Queue.enq(42) |> Queue.enq(23) |> Queue.enq(1337)
+      iex> Data.Queue.Simple.new |> Data.Queue.enq(42) |> Data.Queue.enq(23) |> Data.Queue.enq(1337)
       #Queue<[42,23,1337]>
 
   """
@@ -66,9 +66,9 @@ defmodule Data.Queue.Simple do
 
   ## Examples
 
-      iex> Data.Queue.Simple.new |> Queue.enq(42) |> Queue.enq(23) |> Queue.deq
+      iex> Data.Queue.Simple.new |> Data.Queue.enq(42) |> Data.Queue.enq(23) |> Data.Queue.deq
       {42,#Queue<[23]>}
-      iex> Data.Queue.Simple.new |> Queue.deq(:empty)
+      iex> Data.Queue.Simple.new |> Data.Queue.deq(:empty)
       {:empty,#Queue<[]>}
 
   """
@@ -101,15 +101,15 @@ defmodule Data.Queue.Simple do
 
   ## Examples
 
-      iex> Data.Queue.Simple.new |> Queue.enq(42) |> Queue.deq!
+      iex> Data.Queue.Simple.new |> Data.Queue.enq(42) |> Data.Queue.deq!
       {42,#Queue<[]>}
-      iex> Data.Queue.Simple.new |> Queue.deq!
-      ** (Queue.Empty) the queue is empty
+      iex> Data.Queue.Simple.new |> Data.Queue.deq!
+      ** (Data.Empty) the queue is empty
 
   """
   @spec deq!(t) :: { v, t } | no_return
   def deq!(queue(enqueue: [], dequeue: [])) do
-    raise Queue.Empty
+    raise Data.Empty
   end
 
   def deq!(queue) do
@@ -121,9 +121,9 @@ defmodule Data.Queue.Simple do
 
   ## Examples
 
-      iex> Data.Queue.Simple.new |> Queue.enq(42) |> Queue.peek
+      iex> Data.Queue.Simple.new |> Data.Queue.enq(42) |> Data.Queue.peek
       42
-      iex> Data.Queue.Simple.new |> Queue.peek(:empty)
+      iex> Data.Queue.Simple.new |> Data.Queue.peek(:empty)
       :empty
 
   """
@@ -144,15 +144,15 @@ defmodule Data.Queue.Simple do
 
   ## Examples
 
-      iex> Data.Queue.Simple.new |> Queue.enq(42) |> Queue.enq(23) |> Queue.peek!
+      iex> Data.Queue.Simple.new |> Data.Queue.enq(42) |> Data.Queue.enq(23) |> Data.Queue.peek!
       42
-      iex> Data.Queue.Simple.new |> Queue.peek!
-      ** (Queue.Empty) the queue is empty
+      iex> Data.Queue.Simple.new |> Data.Queue.peek!
+      ** (Data.Empty) the queue is empty
 
   """
   @spec peek!(t) :: v | no_return
   def peek!(queue(enqueue: [], dequeue: [])) do
-    raise Queue.Empty
+    raise Data.Empty
   end
 
   def peek!(queue) do
@@ -164,7 +164,7 @@ defmodule Data.Queue.Simple do
 
   ## Examples
 
-      iex> Data.Queue.Simple.new(1 .. 4) |> Queue.reverse
+      iex> Data.Queue.Simple.new(1 .. 4) |> Data.Queue.reverse
       #Queue<[4,3,2,1]>
 
   """
@@ -183,6 +183,11 @@ defmodule Data.Queue.Simple do
 
   def empty?(queue()) do
     false
+  end
+
+  @spec clear(t) :: t
+  def clear(_) do
+    queue()
   end
 
   @doc """
@@ -230,20 +235,34 @@ defmodule Data.Queue.Simple do
   end
 end
 
-defimpl Queue, for: Data.Queue.Simple do
+defimpl Data.Queue, for: Data.Queue.Simple do
   defdelegate enq(self, value), to: Data.Queue.Simple
   defdelegate deq(self), to: Data.Queue.Simple
   defdelegate deq(self, default), to: Data.Queue.Simple
   defdelegate deq!(self), to: Data.Queue.Simple
+end
+
+defimpl Data.Peekable, for: Data.Queue.Simple do
   defdelegate peek(self), to: Data.Queue.Simple
   defdelegate peek(self, default), to: Data.Queue.Simple
   defdelegate peek!(self), to: Data.Queue.Simple
+end
+
+defimpl Data.Reversible, for: Data.Queue.Simple do
   defdelegate reverse(self), to: Data.Queue.Simple
+end
+
+defimpl Data.Emptyable, for: Data.Queue.Simple do
   defdelegate empty?(self), to: Data.Queue.Simple
-  defdelegate member?(self, value), to: Data.Queue.Simple
-  defdelegate size(self), to: Data.Queue.Simple
+  defdelegate clear(self), to: Data.Queue.Simple
+end
+
+defimpl Data.Foldable, for: Data.Queue.Simple do
   defdelegate foldl(self, acc, fun), to: Data.Queue.Simple
   defdelegate foldr(self, acc, fun), to: Data.Queue.Simple
+end
+
+defimpl Data.Listable, for: Data.Queue.Simple do
   defdelegate to_list(self), to: Data.Queue.Simple
 end
 

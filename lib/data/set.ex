@@ -6,7 +6,29 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defmodule Data.Set.List do
+defprotocol Data.Set do
+  @type v :: any
+
+  @spec add(t, v) :: t
+  def add(self, value)
+
+  @spec delete(t, v) :: t
+  def delete(selv, value)
+
+  @spec union(t, t) :: t
+  def union(self, other)
+
+  @spec intersection(t, t) :: t
+  def intersection(self, other)
+
+  @spec subset?(t, t) :: boolean
+  def subset?(self, other)
+
+  @spec disjoint?(t, t) :: boolean
+  def disjoint?(self, other)
+end
+
+defimpl Data.Set, for: List do
   def new do
     :ordsets.new
   end
@@ -14,17 +36,14 @@ defmodule Data.Set.List do
   def new(enum) do
     Enum.to_list(enum) |> :ordsets.from_list
   end
-end
 
-defimpl Set, for: List do
-  alias Data.Set.List, as: L
-
-  def member?(self, element) do
-    :ordsets.is_element(element, self)
+  def valid?(self) when is_list(self) do
+    :ordsets.is_set(self)
   end
 
-  def empty?([]), do: true
-  def empty?(_), do: false
+  def valid?(_) do
+    false
+  end
 
   def add(self, element) do
     :ordsets.add_element(element, self)
@@ -48,27 +67,5 @@ defimpl Set, for: List do
 
   def disjoint?(self, other) do
     :ordsets.is_disjoint(L.new(other), self)
-  end
-
-  def size(self) do
-    :ordsets.size(self)
-  end
-
-  def reduce(self, acc, fun) do
-    List.foldl(self, acc, fun)
-  end
-
-  def to_list(self) do
-    :ordsets.to_list(self)
-  end
-
-  ## Specific functions
-
-  def valid?(self) when is_list(self) do
-    :ordsets.is_set(self)
-  end
-
-  def valid?(_) do
-    false
   end
 end

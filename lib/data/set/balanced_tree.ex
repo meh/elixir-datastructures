@@ -32,6 +32,10 @@ defmodule Data.Set.BalancedTree do
     :gb_sets.is_empty(self)
   end
 
+  def clear(_) do
+    wrap(set: :gb_sets.new)
+  end
+
   def add(wrap(set: self), element) do
     wrap(set: :gb_sets.add_element(element, self))
   end
@@ -95,18 +99,31 @@ defmodule Data.Set.BalancedTree do
   end
 end
 
-defimpl Set, for: Data.Set.BalancedTree do
-  defdelegate member?(self, value), to: Data.Set.BalancedTree
-  defdelegate empty?(self), to: Data.Set.BalancedTree
+defimpl Data.Set, for: Data.Set.BalancedTree do
   defdelegate add(self, value), to: Data.Set.BalancedTree
   defdelegate delete(self, value), to: Data.Set.BalancedTree
   defdelegate union(self, other), to: Data.Set.BalancedTree
   defdelegate intersection(self, other), to: Data.Set.BalancedTree
   defdelegate subset?(self, other), to: Data.Set.BalancedTree
   defdelegate disjoint?(self, other), to: Data.Set.BalancedTree
-  defdelegate size(self), to: Data.Set.BalancedTree
-  defdelegate reduce(self, acc, fun), to: Data.Set.BalancedTree
+end
+
+defimpl Data.Counted, for: Data.Set.BalancedTree do
+  defdelegate count(self), to: Data.Set.BalancedTree
+end
+
+defimpl Data.Foldable, for: Data.Set.BalancedTree do
+  defdelegate foldl(self, acc, fun), to: Data.Set.BalancedTree, as: :reduce
+  defdelegate foldr(self, acc, fun), to: Data.Set.BalancedTree, as: :reduce
+end
+
+defimpl Data.Listable, for: Data.Set.BalancedTree do
   defdelegate to_list(self), to: Data.Set.BalancedTree
+end
+
+defimpl Data.Emptyable, for: Data.Set.BalancedTree do
+  defdelegate empty?(self), to: Data.Set.BalancedTree
+  defdelegate clear(self), to: Data.Set.BalancedTree
 end
 
 defimpl Enumerable, for: Data.Set.BalancedTree do
