@@ -69,19 +69,21 @@ defmodule Data do
     Data.Listable.to_list(self)
   end
 
-  defp implements?(self, protocol) when is_record(self) do
+  @spec implements?(record | list, module) :: boolean
+  def implements?(self, protocol) when is_record(self) do
     Code.ensure_loaded? Module.concat(protocol, elem(self, 0))
   end
 
-  defp implements?(self, protocol) when is_list(self) do
+  def implements?(self, protocol) when is_list(self) do
     Code.ensure_loaded? Module.concat(protocol, List)
   end
 
-  defp implements?(self, protocol, [{ name, arity }]) when is_record(self) do
+  @spec implements?(record | list, module, [{ atom, non_neg_integer }]) :: boolean
+  def implements?(self, protocol, [{ name, arity }]) when is_record(self) do
     function_exported? Module.concat(protocol, elem(self, 0)), name, arity
   end
 
-  defp implements?(self, protocol, [{ name, arity }]) when is_list(self) do
+  def implements?(self, protocol, [{ name, arity }]) when is_list(self) do
     function_exported? Module.concat(protocol, List), name, arity
   end
 end
