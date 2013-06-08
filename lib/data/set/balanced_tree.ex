@@ -20,7 +20,7 @@ defmodule Data.Set.BalancedTree do
     if :gb_sets.is_set(enum_or_set) do
       wrap(set: enum_or_set)
     else
-      wrap(set: :gb_sets.from_list(Enum.to_list(enum_or_set)))
+      wrap(set: Data.to_list(enum_or_set) |> :gb_sets.from_list)
     end
   end
 
@@ -49,7 +49,7 @@ defmodule Data.Set.BalancedTree do
   end
 
   def union(wrap(set: self), other) do
-    wrap(set: :gb_sets.union(self, Enum.to_list(other) |> :gb_sets.from_list))
+    wrap(set: :gb_sets.union(self, Data.to_list(other) |> :gb_sets.from_list))
   end
 
   def intersection(wrap(set: self), wrap(set: other)) do
@@ -57,7 +57,7 @@ defmodule Data.Set.BalancedTree do
   end
 
   def intersection(wrap(set: self), other) do
-    wrap(set: :gb_sets.intersection(self, Enum.to_list(other) |> :gb_sets.from_list))
+    wrap(set: :gb_sets.intersection(self, Data.to_list(other) |> :gb_sets.from_list))
   end
 
   def subset?(wrap(set: self), wrap(set: other)) do
@@ -65,7 +65,7 @@ defmodule Data.Set.BalancedTree do
   end
 
   def subset?(wrap(set: self), other) do
-    :gb_sets.is_subset(Enum.to_list(other) |> :gb_sets.from_list, self)
+    :gb_sets.is_subset(Data.to_list(other) |> :gb_sets.from_list, self)
   end
 
   def disjoint?(wrap(set: self), wrap(set: other)) do
@@ -73,7 +73,7 @@ defmodule Data.Set.BalancedTree do
   end
 
   def disjoint?(wrap(set: self), other) do
-    :gb_sets.is_disjoint(Enum.to_list(other) |> :gb_sets.from_list, self)
+    :gb_sets.is_disjoint(Data.to_list(other) |> :gb_sets.from_list, self)
   end
 
   def size(wrap(set: self)) do

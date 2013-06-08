@@ -17,7 +17,7 @@ defmodule Data.Queue.Standard do
     if :queue.is_queue(enum_or_queue) do
       wrap(queue: enum_or_queue)
     else
-      wrap(queue: Enum.to_list(enum_or_queue) |> :queue.from_list)
+      wrap(queue: Data.to_list(enum_or_queue) |> :queue.from_list)
     end
   end
 

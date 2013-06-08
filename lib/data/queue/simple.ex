@@ -35,7 +35,7 @@ defmodule Data.Queue.Simple do
   """
   @spec new(Enum.t) :: t
   def new(enum) do
-    queue(dequeue: Enum.to_list(enum))
+    queue(dequeue: Data.to_list(enum))
   end
 
   @doc """

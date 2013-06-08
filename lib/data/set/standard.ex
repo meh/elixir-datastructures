@@ -17,7 +17,7 @@ defmodule Data.Set.Standard do
     if :sets.is_set(enum_or_set) do
       wrap(set: enum_or_set)
     else
-      wrap(set: Enum.to_list(enum_or_set) |> :sets.from_list)
+      wrap(set: Data.to_list(enum_or_set) |> :sets.from_list)
     end
   end
 
@@ -46,7 +46,7 @@ defmodule Data.Set.Standard do
   end
 
   def union(wrap(set: self), other) do
-    wrap(set: :sets.union(self, Enum.to_list(other) |> :sets.from_list))
+    wrap(set: :sets.union(self, Data.to_list(other) |> :sets.from_list))
   end
 
   def intersection(wrap(set: self), wrap(set: other)) do
@@ -54,7 +54,7 @@ defmodule Data.Set.Standard do
   end
 
   def intersection(wrap(set: self), other) do
-    wrap(set: :sets.intersection(self, Enum.to_list(other) |> :sets.from_list))
+    wrap(set: :sets.intersection(self, Data.to_list(other) |> :sets.from_list))
   end
 
   def subset?(wrap(set: self), wrap(set: other)) do
@@ -62,7 +62,7 @@ defmodule Data.Set.Standard do
   end
 
   def subset?(wrap(set: self), other) do
-    :sets.is_subset(Enum.to_list(other) |> :sets.from_list, self)
+    :sets.is_subset(Data.to_list(other) |> :sets.from_list, self)
   end
 
   def disjoint?(wrap(set: self), wrap(set: other)) do
@@ -70,7 +70,7 @@ defmodule Data.Set.Standard do
   end
 
   def disjoint?(wrap(set: self), other) do
-    :sets.is_disjoint(Enum.to_list(other) |> :sets.from_list, self)
+    :sets.is_disjoint(Data.to_list(other) |> :sets.from_list, self)
   end
 
   def size(wrap(set: self)) do

@@ -34,7 +34,7 @@ defimpl Data.Set, for: List do
   end
 
   def new(enum) do
-    Enum.to_list(enum) |> :ordsets.from_list
+    Data.to_list(enum) |> :ordsets.from_list
   end
 
   def valid?(self) when is_list(self) do

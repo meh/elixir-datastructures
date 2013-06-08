@@ -26,7 +26,7 @@ defimpl Data.Queue, for: List do
   end
 
   def new(enum) do
-    Enum.to_list(enum)
+    Data.to_list(enum)
   end
 
   def enq(list, value) do

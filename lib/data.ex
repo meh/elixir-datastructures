@@ -64,9 +64,17 @@ defmodule Data do
     Data.Reversible.reverse(self)
   end
 
-  @spec to_list(Data.Listable.t) :: list
+  @spec to_list(list | Data.Listable.t | Enumerable.t) :: list
+  def to_list(self) when is_list(self) do
+    self
+  end
+
   def to_list(self) do
-    Data.Listable.to_list(self)
+    if implements?(self, Enumerable) do
+      Enum.to_list(self)
+    else
+      Data.Listable.to_list(self)
+    end
   end
 
   @spec implements?(record | list, module) :: boolean
