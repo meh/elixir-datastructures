@@ -64,6 +64,63 @@ defmodule Data.Seq do
     do_at(current + 1, S.next(sequence), index, default)
   end
 
+  @spec find(S.t, (any -> as_boolean(any)))      :: any
+  @spec find(S.t, any, (any -> as_boolean(any))) :: any
+  def find(sequence, if_none // nil, fun) do
+    do_find(Data.seq(sequence), if_none, fun)
+  end
+
+  defp do_find(nil, if_none, _) do
+    if_none
+  end
+
+  defp do_find(sequence, if_none, fun) do
+    value = S.first(sequence)
+
+    if fun.(value) do
+      value
+    else
+      do_find(S.next(sequence), if_none, fun)
+    end
+  end
+
+  @spec find_value(S.t, (any -> any))      :: any
+  @spec find_value(S.t, any, (any -> any)) :: any
+  def find_value(sequence, if_none // nil, fun) do
+    do_find_value(Data.seq(sequence), if_none, fun)
+  end
+
+  defp do_find_value(nil, if_none, _) do
+    if_none
+  end
+
+  defp do_find_value(sequence, if_none, fun) do
+    value = fun.(S.first(sequence))
+
+    if value do
+      value
+    else
+      do_find_value(sequence, if_none, fun)
+    end
+  end
+
+  @spec find_index(S.t, (any -> as_boolean(any))) :: any
+  def find_index(sequence, fun) do
+    do_find_index(index, Data.seq(sequence), fun)
+  end
+
+  def do_find_index(_, nil, _) do
+    nil
+  end
+
+  def do_find_index(index, sequence, fun) do
+    if fun.(S.first(sequence)) do
+      index
+    else
+      do_find_index(index + 1, S.next(sequence), fun)
+    end
+  end
+
   @spec contains?(S.t, any) :: boolean
   @spec contains?(S.t, any, (any -> any)) :: boolean
   def contains?(sequence, value, fun // fn(x) -> x end) do
