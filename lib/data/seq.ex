@@ -263,6 +263,11 @@ defmodule Data.Seq do
     to_list(sequence) |> sort(fun)
   end
 
+  @spec empty?(S.t) :: boolean
+  def empty?(sequence) do
+    Data.seq(sequence) == nil
+  end
+
   @spec count(S.t) :: non_neg_integer
   def count(sequence) do
     do_count(0, Data.seq(sequence))
