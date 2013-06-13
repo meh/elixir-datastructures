@@ -47,3 +47,25 @@ defimpl Data.Sequence, for: List do
     rest
   end
 end
+
+defimpl Data.Sequence, for: Range do
+  def first(Range[first: first, last: last]) when first <= last or first > last do
+    first
+  end
+
+  def first(Range[]) do
+    nil
+  end
+
+  def next(Range[first: first, last: last]) when first == last do
+    nil
+  end
+
+  def next(Range[first: first, last: last]) when first <= last do
+    Range[first: first + 1, last: last]
+  end
+
+  def next(Range[first: first, last: last]) when first > last do
+    Range[first: first - 1, last: last]
+  end
+end
