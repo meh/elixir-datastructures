@@ -12,6 +12,25 @@ defmodule Data do
     Data.Contains.contains?(self, what)
   end
 
+  @spec seq(Data.Listable.t | Data.Sequence.t) :: Data.Sequence.t
+  def seq(self) do
+    if implements?(self, Data.Sequence) do
+      self
+    else
+      to_list(self)
+    end
+  end
+
+  @spec first(Data.Sequence.t) :: any
+  def first(self) do
+    Data.Sequence.first(self)
+  end
+
+  @spec next(Data.Sequence.t) :: Data.Sequence.t
+  def next(self) do
+    Data.Sequence.next(self)
+  end
+
   @spec peek(Data.Peekable.t)      :: any
   @spec peek(Data.Peekable.t, any) :: any
   def peek(self, default // nil) do
