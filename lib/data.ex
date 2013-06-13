@@ -12,12 +12,21 @@ defmodule Data do
     Data.Contains.contains?(self, what)
   end
 
-  @spec seq(Data.Listable.t | Data.Sequence.t) :: Data.Sequence.t
+  @spec seq(Data.Sequence.t | Data.Sequenceable.t | Data.Listable.t) :: Data.Sequence.t
+  def seq(self) when is_list(self) do
+    self
+  end
+
   def seq(self) do
-    if implements?(self, Data.Sequence) do
-      self
-    else
-      to_list(self)
+    cond do
+      implements?(self, Data.Sequence) ->
+        self
+
+      implements?(self, Data.Sequenceable) ->
+        Data.Sequenceable.to_sequence(self)
+
+      true ->
+        to_list(self)
     end
   end
 
