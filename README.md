@@ -68,6 +68,51 @@ Protocols
   * `keys/1` - returns a list of the keys in the structure
   * `values/1` - returns a list of the values in the structure
 
+Helpers
+-------
+
+### Dict
+  * `get/2` - gets a value from the structure by its key, returning nil if there isn't one
+  * `get/3` - gets a value from the structure by its key, returning the default if there isn't one
+  * `get!/2` - gets a value from the structure by its key, raising if there isn't one
+  * `put/3` - puts a value in the structure with its key
+  * `delete/2` - delete a value from the structure by its key
+  * `keys/1` - returns a list of the keys in the structure
+  * `values/1` - returns a list of the values in the structure
+  * `put_new/3` - puts a value in the structure unless there's already one with that key
+  * `update/3` - updates the structure with an updater function, raises if there's no value with that key
+  * `update/4` - updates the structure with an updater function, the initial value is passed if there's no value with that key
+
+### Seq
+  * `all?/1` - checks all elements in the sequence are truthy
+  * `all?/2` - checks all elements are truthy with the given predicate
+  * `any?/1` - checks if any element in the sequence is truthy
+  * `any?/2` - checks if any element in the sequence is truthy with the given predicate
+  * `at/2` - gets the element at the given index, returns nil if the sequence is shorter
+  * `at/3` - gets the element at the given index, returns the default value if the sequence is shorter
+  * `drop/2` - drops the given number of elements from the sequence
+  * `drop_while/2` - drops elements from the sequence as long as the predicate returns a truthy value
+  * `take/2` - take the given number of elements from the sequence
+  * `take_while/2` - take elements from the sequence as long as the predicate returns a truthy value
+  * `each/2` - iterate over the sequence
+  * `select/2` - filters the elements from the sequence returning the ones the predicate returns a truthy value for
+  * `reject/2` - filters the elements from the sequence returning the ones the predicate returns a falsy value for
+  * `map/2` - returns the sequence mapped with the given function
+  * `reduce/3` - reduce the sequence
+  * `sort/1` - sort the sequence
+  * `sort/2` - sort the sequence with the given predicate
+  * `count/1` - count the elements in the sequence
+  * `count/2` - count the elements in the sequence that match the predicate
+  * `zip/2` - zip two sequences together
+  * `max/1` - return the max value in the sequence
+  * `max/2` - return the max value in the sequence using a mapper
+  * `min/1` - return the min value in the sequence
+  * `min/2` - return the min value in the sequence using a mapper
+  * `uniq/1` - returns the elements without repetitions
+  * `uniq/2` - returns the elements without repetitions using a mapper
+  * `reverse/1` - reverse the sequence
+  * `to_list/1` - convert the sequence to a list
+
 You're awful, those names are long
 ----------------------------------
 I know right? Just use `alias`.
