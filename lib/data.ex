@@ -81,12 +81,28 @@ defmodule Data do
     Data.Emptyable.clear(self)
   end
 
-  @spec count(Data.Counted.t | Enumerable.t) :: Data.Counted.t | Enumerable.t
+  @spec count(Data.Counted.t | Data.Sequence.t | Enumerable.t) :: Data.Counted.t | Enumerable.t
   def count(self) do
-    if implements?(self, Data.Counted) do
-      Data.Counted.count(self)
-    else
-      Enum.count(self)
+    cond do
+      implements?(self, Data.Counted) ->
+        Data.Counted.count(self)
+
+      implements?(self, Data.Sequence) ->
+        Data.Seq.count(self)
+
+      implements?(self, Enumerable) ->
+        Enum.count(self)
+    end
+  end
+
+  @spec count(Data.Sequence.t | Enumerable.t, (any -> boolean)) :: Data.Counted.t | Enumerable.t
+  def count(self, pred) do
+    cond do
+      implements?(self, Data.Sequence) ->
+        Data.Seq.count(self, pred)
+
+      implements?(self, Enumerable) ->
+        Enum.count(self, pred)
     end
   end
 
@@ -95,16 +111,24 @@ defmodule Data do
     Data.Reversible.reverse(self)
   end
 
-  @spec to_list(list | Data.Listable.t | Enumerable.t) :: list
+  @spec to_list(list | Data.Listable.t | Data.Sequence.t | Enumerable.t) :: list
   def to_list(self) when is_list(self) do
     self
   end
 
   def to_list(self) do
-    if implements?(self, Enumerable) do
-      Enum.to_list(self)
-    else
-      Data.Listable.to_list(self)
+    cond do
+      implements?(self, Data.Listable) ->
+        Data.Listable.to_list(self)
+
+      implements?(self, Data.Sequence) ->
+        Data.Seq.to_list(self)
+
+      implements?(self, Data.Sequenceable) ->
+        Data.Sequenceable.to_sequence(self) |> Data.Seq.to_list
+
+      implements?(self, Enumerable) ->
+        Enum.to_list(self)
     end
   end
 
