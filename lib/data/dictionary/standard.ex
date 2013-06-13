@@ -76,11 +76,11 @@ defmodule Data.Dictionary.Standard do
   end
 
   def values(wrap(dict: self)) do
-    :dict.fold(fn { _, value }, acc -> [value | acc] end, [], self)
+    :dict.fold(fn(_, value, acc) -> [value | acc] end, [], self)
   end
 
   def reduce(wrap(dict: self), acc, fun) do
-    :dict.fold(fun, acc, self)
+    :dict.fold(fn(key, value, acc) -> fun.({ key, value }, acc) end, acc, self)
   end
 
   def size(wrap(dict: self)) do
