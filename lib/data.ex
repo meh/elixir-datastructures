@@ -91,10 +91,10 @@ defmodule Data do
 
   @spec implements?(record | list, module, [{ atom, non_neg_integer }]) :: boolean
   def implements?(self, protocol, [{ name, arity }]) when is_record(self) do
-    function_exported? Module.concat(protocol, elem(self, 0)), name, arity
+    implements?(self, protocol) and function_exported? Module.concat(protocol, elem(self, 0)), name, arity
   end
 
   def implements?(self, protocol, [{ name, arity }]) when is_list(self) do
-    function_exported? Module.concat(protocol, List), name, arity
+    implements?(self, protocol) and function_exported? Module.concat(protocol, List), name, arity
   end
 end
