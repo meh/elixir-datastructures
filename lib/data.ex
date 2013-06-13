@@ -75,9 +75,30 @@ defmodule Data do
     Enum.member?(self, value)
   end
 
-  @spec empty?(Data.Empytable.t) :: Data.Emptyable.t
+  @spec empty?(Data.Empytable.t | Data.Sequence.t) :: Data.Emptyable.t
+  def empty?(nil) do
+    true
+  end
+
+  def empty?([]) do
+    true
+  end
+
+  def empty?(list) when is_list(list) do
+    false
+  end
+
   def empty?(self) do
-    Data.Emptyable.empty?(self)
+    cond do
+      implements?(self, Data.Emptyable) ->
+        Data.Emptyable.empty?(self)
+
+      implements?(self, Data.Sequenceable) ->
+        Data.Sequenceable.to_sequence(self) == nil
+
+      implements?(self, Data.Listable) ->
+        Data.Listable.to_list(self) == []
+    end
   end
 
   @spec clear(Data.Emptyable.t) :: Data.Emptyable.t
