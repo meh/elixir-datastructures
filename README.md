@@ -25,6 +25,9 @@ Protocols
   * `foldl/3` - folds the structure from the left
   * `foldr/3` - folds the structure from the right
 
+### Sequenceable
+  * `to_sequence/1` - converts the structure to a sequence
+
 ### Listable
   * `to_list/1` - converts the structure to a list
 
