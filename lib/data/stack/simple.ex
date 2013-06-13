@@ -240,6 +240,20 @@ defimpl Data.Foldable, for: Data.Stack.Simple do
   defdelegate foldr(self, acc, fun), to: Data.Stack.Simple
 end
 
+defimpl Data.Sequence, for: Data.Stack.Simple do
+  def first(self) do
+    Data.Stack.Simple.peek(self)
+  end
+
+  def next(self) do
+    if Data.Stack.Simple.size(self) > 1 do
+      { _, next } = Data.Stack.Simple.pop(self)
+
+      next
+    end
+  end
+end
+
 defimpl Data.Listable, for: Data.Stack.Simple do
   defdelegate to_list(self), to: Data.Stack.Simple
 end
