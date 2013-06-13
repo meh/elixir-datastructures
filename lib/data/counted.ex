@@ -10,3 +10,9 @@ defprotocol Data.Counted do
   @spec count(t) :: non_neg_integer
   def count(self)
 end
+
+defimpl Data.Counted, for: List do
+  def count(self) do
+    length(self)
+  end
+end
