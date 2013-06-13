@@ -145,6 +145,31 @@ defimpl Data.Contains, for: Data.Dictionary.Standard do
   defdelegate contains?(self, key), to: Data.Dictionary.Standard, as: :member?
 end
 
+defimpl Data.Sequence, for: Data.Dictionary.Standard do
+  def first(self) do
+    Data.Dictionary.Standard.reduce(self, nil, fn(x, _) -> throw { :first, x } end)
+
+    nil
+  catch
+    { :first, x } ->
+      x
+  end
+
+  def next(self) do
+    case Data.Dictionary.Standard.to_list(self) do
+      [] ->
+        nil
+
+      [_] ->
+        nil
+
+      [_ | tail] ->
+        tail
+    end
+  end
+end
+
+
 defimpl Access, for: Data.Dictionary.Standard do
   defdelegate access(self, key), to: Data.Dictionary.Standard, as: :get
 end
