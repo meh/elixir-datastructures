@@ -180,6 +180,10 @@ defimpl Data.Stack, for: Data.Queue.Standard do
   defdelegate pop!(self), to: Data.Queue.Standard, as: :reverse_deq!
 end
 
+defimpl Data.Contains, for: Data.Queue.Standard do
+  defdelegate contains?(self, key), to: Data.Queue.Standard, as: :member?
+end
+
 defimpl Enumerable, for: Data.Queue.Standard do
   defdelegate reduce(self, acc, fun), to: Data.Queue.Standard, as: :foldl
   defdelegate count(self), to: Data.Queue.Standard, as: :size

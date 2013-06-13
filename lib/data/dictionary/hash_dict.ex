@@ -51,3 +51,7 @@ defimpl Data.Listable, for: HashDict do
     HashDict.to_list(self)
   end
 end
+
+defimpl Data.Contains, for: HashDict do
+  defdelegate contains?(self, key), to: HashDict, as: :has_key?
+end

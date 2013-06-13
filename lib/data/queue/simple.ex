@@ -266,6 +266,10 @@ defimpl Data.Listable, for: Data.Queue.Simple do
   defdelegate to_list(self), to: Data.Queue.Simple
 end
 
+defimpl Data.Contains, for: Data.Queue.Simple do
+  defdelegate contains?(self, value), to: Data.Queue.Simple, as: :member?
+end
+
 defimpl Enumerable, for: Data.Queue.Simple do
   defdelegate reduce(self, acc, fun), to: Data.Queue.Simple, as: :foldl
   defdelegate count(self), to: Data.Queue.Simple, as: :size

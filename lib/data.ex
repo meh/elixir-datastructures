@@ -9,6 +9,11 @@
 defmodule Data do
   defexception Empty, message: "the data is empty"
 
+  @spec contains?(Data.Contains.t, any) :: any
+  def contains?(self, what) do
+    Data.Contains.contains?(self, what)
+  end
+
   @spec peek(Data.Peekable.t)      :: any
   @spec peek(Data.Peekable.t, any) :: any
   def peek(self, default // nil) do

@@ -119,6 +119,10 @@ defimpl Data.Emptyable, for: Data.Set.Standard do
   defdelegate clear(self), to: Data.Set.Standard
 end
 
+defimpl Data.Contains, for: Data.Set.Standard do
+  defdelegate contains?(self, key), to: Data.Set.Standard, as: :member?
+end
+
 defimpl Enumerable, for: Data.Set.Standard do
   defdelegate reduce(self, acc, fun), to: Data.Set.Standard
   defdelegate count(self), to: Data.Set.Standard, as: :size

@@ -126,6 +126,10 @@ defimpl Data.Emptyable, for: Data.Set.BalancedTree do
   defdelegate clear(self), to: Data.Set.BalancedTree
 end
 
+defimpl Data.Contains, for: Data.Set.BalancedTree do
+  defdelegate contains?(self, value), to: Data.Set.BalancedTree, as: :member?
+end
+
 defimpl Enumerable, for: Data.Set.BalancedTree do
   defdelegate reduce(self, acc, fun), to: Data.Set.BalancedTree
   defdelegate count(self), to: Data.Set.BalancedTree, as: :size

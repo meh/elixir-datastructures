@@ -94,6 +94,20 @@ defmodule Data.Dictionary.Standard do
   def to_list(wrap(dict: self)) do
     :dict.to_list(self)
   end
+
+  def member?(wrap(dict: self), { key, value }) do
+    case :dict.find(key, self) do
+      { :ok, ^value } ->
+        true
+
+      _ ->
+        false
+    end
+  end
+
+  def member?(wrap(dict: self), key) do
+    :dict.is_key(key, self)
+  end
 end
 
 defimpl Data.Dictionary, for: Data.Dictionary.Standard do
@@ -131,23 +145,14 @@ defimpl Data.Listable, for: Data.Dictionary.Standard do
   defdelegate to_list(self), to: Data.Dictionary.Standard
 end
 
+defimpl Data.Contains, for: Data.Dictionary.Standard do
+  defdelegate contains?(self, key), to: Data.Dictionary.Standard, as: :member?
+end
+
 defimpl Enumerable, for: Data.Dictionary.Standard do
   defdelegate reduce(self, acc, fun), to: Data.Dictionary.Standard
   defdelegate count(self), to: Data.Dictionary.Standard, as: :size
-
-  def member?({ _, self }, { key, value }) do
-    case :dict.find(key, self) do
-      { :ok, ^value } ->
-        true
-
-      _ ->
-        false
-    end
-  end
-
-  def member?({ _, self }, key) do
-    :dict.is_key(key, self)
-  end
+  defdelegate member?(self, key), to: Data.Dictionary.Standard
 end
 
 defimpl Binary.Inspect, for: Data.Dictionary.Standard do

@@ -106,6 +106,20 @@ defmodule Data.Dictionary.BalancedTree do
   def to_list(wrap(dict: self)) do
     :gb_trees.to_list(self)
   end
+
+  def member?(wrap(dict: self), { key, value }) do
+    case :gb_trees.lookup(key, self) do
+      { :value, ^value } ->
+        true
+
+      _ ->
+        false
+    end
+  end
+
+  def member?(wrap(dict: self), key) do
+    :gb_trees.is_defined(key, self)
+  end
 end
 
 defimpl Data.Dictionary, for: Data.Dictionary.BalancedTree do
@@ -121,7 +135,6 @@ defimpl Data.Dictionary, for: Data.Dictionary.BalancedTree do
   defdelegate keys(self), to: Data.Dictionary.BalancedTree
   defdelegate values(self), to: Data.Dictionary.BalancedTree
 end
-
 
 defimpl Data.Counted, for: Data.Dictionary.BalancedTree do
   defdelegate count(self), to: Data.Dictionary.BalancedTree, as: :size
@@ -144,23 +157,14 @@ defimpl Data.Listable, for: Data.Dictionary.BalancedTree do
   defdelegate to_list(self), to: Data.Dictionary.BalancedTree
 end
 
+defimpl Data.Contains, for: Data.Dictionary.BalancedTree do
+  defdelegate contains?(self, key), to: Data.Dictionary.BalancedTree, as: :member?
+end
+
 defimpl Enumerable, for: Data.Dictionary.BalancedTree do
   defdelegate reduce(self, acc, fun), to: Data.Dictionary.BalancedTree
   defdelegate count(self), to: Data.Dictionary.BalancedTree, as: :size
-
-  def member?({ _, self }, { key, value }) do
-    case :gb_trees.lookup(key, self) do
-      { :value, ^value } ->
-        true
-
-      _ ->
-        false
-    end
-  end
-
-  def member?({ _, self }, key) do
-    :gb_trees.is_defined(key, self)
-  end
+  defdelegate member?(self, key), to: Data.Dictionary.BalancedTree
 end
 
 defimpl Binary.Inspect, for: Data.Dictionary.BalancedTree do

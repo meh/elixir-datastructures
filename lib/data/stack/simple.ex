@@ -244,6 +244,10 @@ defimpl Data.Listable, for: Data.Stack.Simple do
   defdelegate to_list(self), to: Data.Stack.Simple
 end
 
+defimpl Data.Contains, for: Data.Stack.Simple do
+  defdelegate contains?(self, key), to: Data.Stack.Simple, as: :member?
+end
+
 defimpl Enumerable, for: Data.Stack.Simple do
   defdelegate reduce(self, acc, fun), to: Data.Stack.Simple, as: :foldl
   defdelegate count(self), to: Data.Stack.Simple, as: :size
