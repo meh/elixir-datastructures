@@ -55,6 +55,30 @@ defimpl Data.Listable, for: HashDict do
   end
 end
 
+defimpl Data.Sequence, for: HashDict do
+  def first(self) do
+    HashDict.reduce(self, nil, fn(x, _) -> throw { :first, x } end)
+
+    nil
+  catch
+    { :first, x } ->
+      x
+  end
+
+  def next(self) do
+    case HashDict.to_list(self) do
+      [] ->
+        nil
+
+      [_] ->
+        nil
+
+      [_ | tail] ->
+        tail
+    end
+  end
+end
+
 defimpl Data.Contains, for: HashDict do
   defdelegate contains?(self, key), to: HashDict, as: :has_key?
 end
