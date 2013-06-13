@@ -32,6 +32,9 @@ Protocols
 ### Reversible
   * `reverse/1` - reverses the structure
 
+### Contains
+  * `contains?/2` - checks if the structure contains the passed value
+
 ### Queue
   * `enq/2` - enqueues a value in the structure
   * `deq/1` - dequeues a value from the structure, returning nil if it's empty
@@ -53,14 +56,10 @@ Protocols
   * `disjoint?/2` - checks if the two structures are disjoint
 
 ### Dictionary
-  * `contains?/2` - checks if the structure contains the key
   * `get/2` - gets a value from the structure by its key, returning nil if there isn't one
   * `get/3` - gets a value from the structure by its key, returning the default if there isn't one
   * `get!/2` - gets a value from the structure by its key, raising if there isn't one
   * `put/3` - puts a value in the structure with its key
-  * `put_new/3` - puts a value in the structure with its key if there isn't one already
-  * `update/3` - updates a value in the structure with an updater by its key, raising if there isn't one
-  * `update/4` - updates a value in the structure with an updater by its key, using the default value if there isn't one
   * `delete/2` - delete a value from the structure by its key
   * `keys/1` - returns a list of the keys in the structure
   * `values/1` - returns a list of the values in the structure
