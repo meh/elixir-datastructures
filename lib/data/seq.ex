@@ -106,7 +106,7 @@ defmodule Data.Seq do
 
   @spec find_index(S.t, (any -> as_boolean(any))) :: any
   def find_index(sequence, fun) do
-    do_find_index(index, Data.seq(sequence), fun)
+    do_find_index(0, Data.seq(sequence), fun)
   end
 
   def do_find_index(_, nil, _) do
