@@ -157,6 +157,10 @@ defimpl Data.Contains, for: Data.Dictionary.BalancedTree do
   defdelegate contains?(self, key), to: Data.Dictionary.BalancedTree, as: :member?
 end
 
+defimpl Access, for: Data.Dictionary.BalancedTree do
+  defdelegate access(self, key), to: Data.Dictionary.BalancedTree, as: :get
+end
+
 defimpl Enumerable, for: Data.Dictionary.BalancedTree do
   defdelegate reduce(self, acc, fun), to: Data.Dictionary.BalancedTree
   defdelegate count(self), to: Data.Dictionary.BalancedTree, as: :size

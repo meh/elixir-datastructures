@@ -145,6 +145,10 @@ defimpl Data.Contains, for: Data.Dictionary.Standard do
   defdelegate contains?(self, key), to: Data.Dictionary.Standard, as: :member?
 end
 
+defimpl Access, for: Data.Dictionary.Standard do
+  defdelegate access(self, key), to: Data.Dictionary.Standard, as: :get
+end
+
 defimpl Enumerable, for: Data.Dictionary.Standard do
   defdelegate reduce(self, acc, fun), to: Data.Dictionary.Standard
   defdelegate count(self), to: Data.Dictionary.Standard, as: :size
