@@ -7,8 +7,6 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data do
-  defexception Empty, message: "the data is empty"
-
   @spec contains?(Data.Contains.t, any) :: any
   def contains?(self, what) do
     Data.Contains.contains?(self, what)
