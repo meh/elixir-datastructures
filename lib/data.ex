@@ -13,6 +13,10 @@ defmodule Data do
   end
 
   @spec seq(Data.Sequence.t | Data.Sequenceable.t | Data.Listable.t) :: Data.Sequence.t
+  def seq([]) do
+    nil
+  end
+
   def seq(self) when is_list(self) do
     self
   end
