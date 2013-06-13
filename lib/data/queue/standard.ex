@@ -155,6 +155,20 @@ defimpl Data.Peekable, for: Data.Queue.Standard do
   defdelegate peek!(self), to: Data.Queue.Standard
 end
 
+defimpl Data.Sequence, for: Data.Queue.Standard do
+  def first(self) do
+    Data.Queue.Standard.peek(self)
+  end
+
+  def next(self) do
+    if Data.Queue.Standard.size(self) > 1 do
+      { _, next } = Data.Queue.Standard.deq(self)
+
+      next
+    end
+  end
+end
+
 defimpl Data.Reversible, for: Data.Queue.Standard do
   defdelegate reverse(self), to: Data.Queue.Standard
 end
