@@ -39,7 +39,7 @@ defmodule Data.Dictionary.Standard do
         value
 
       :error ->
-        raise KeyError, key: key
+        raise Data.Missing, key: key
     end
   end
 
@@ -59,7 +59,7 @@ defmodule Data.Dictionary.Standard do
     if :dict.is_key(key, self) do
       wrap(dict: :dict.update(key, updater, self))
     else
-      raise KeyError, key: key
+      raise Data.Missing, key: key
     end
   end
 
@@ -111,14 +111,10 @@ defmodule Data.Dictionary.Standard do
 end
 
 defimpl Data.Dictionary, for: Data.Dictionary.Standard do
-  defdelegate contains?(self, key), to: Data.Dictionary.Standard, as: :has_key?
   defdelegate get(self, key), to: Data.Dictionary.Standard
   defdelegate get(self, key, default), to: Data.Dictionary.Standard
   defdelegate get!(self, key), to: Data.Dictionary.Standard
   defdelegate put(self, key, value), to: Data.Dictionary.Standard
-  defdelegate put_new(self, key, value), to: Data.Dictionary.Standard
-  defdelegate update(self, key, updater), to: Data.Dictionary.Standard
-  defdelegate update(self, key, initial, updater), to: Data.Dictionary.Standard
   defdelegate delete(self, key), to: Data.Dictionary.Standard
   defdelegate keys(self), to: Data.Dictionary.Standard
   defdelegate values(self), to: Data.Dictionary.Standard

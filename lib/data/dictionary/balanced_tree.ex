@@ -47,7 +47,7 @@ defmodule Data.Dictionary.BalancedTree do
         value
 
       :none ->
-        raise KeyError, key: key
+        raise Data.Missing, key: key
     end
   end
 
@@ -67,7 +67,7 @@ defmodule Data.Dictionary.BalancedTree do
     if has_key?(self, key) do
       put(self, key, updater.(get(self, key)))
     else
-      raise KeyError, key: key
+      raise Data.Missing, key: key
     end
   end
 
@@ -123,14 +123,10 @@ defmodule Data.Dictionary.BalancedTree do
 end
 
 defimpl Data.Dictionary, for: Data.Dictionary.BalancedTree do
-  defdelegate contains?(self, key), to: Data.Dictionary.BalancedTree, as: :has_key?
   defdelegate get(self, key), to: Data.Dictionary.BalancedTree
   defdelegate get(self, key, default), to: Data.Dictionary.BalancedTree
   defdelegate get!(self, key), to: Data.Dictionary.BalancedTree
   defdelegate put(self, key, value), to: Data.Dictionary.BalancedTree
-  defdelegate put_new(self, key, value), to: Data.Dictionary.BalancedTree
-  defdelegate update(self, key, updater), to: Data.Dictionary.BalancedTree
-  defdelegate update(self, key, initial, updater), to: Data.Dictionary.BalancedTree
   defdelegate delete(self, key), to: Data.Dictionary.BalancedTree
   defdelegate keys(self), to: Data.Dictionary.BalancedTree
   defdelegate values(self), to: Data.Dictionary.BalancedTree
