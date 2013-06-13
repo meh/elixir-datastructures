@@ -7,9 +7,13 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data do
-  @spec contains?(Data.Contains.t, any) :: any
+  @spec contains?(Data.Contains.t | Data.Sequence.t, any) :: any
   def contains?(self, what) do
-    Data.Contains.contains?(self, what)
+    if implements?(self, Data.Contains) do
+      Data.Contains.contains?(self, what)
+    else
+      Data.Seq.contains?(self, what)
+    end
   end
 
   @spec seq(Data.Sequence.t | Data.Sequenceable.t | Data.Listable.t) :: Data.Sequence.t

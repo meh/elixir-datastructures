@@ -64,6 +64,24 @@ defmodule Data.Seq do
     do_at(current + 1, S.next(sequence), index, default)
   end
 
+  @spec contains?(S.t, any) :: boolean
+  @spec contains?(S.t, any, (any -> any)) :: boolean
+  def contains?(sequence, value, fun // fn(x) -> x end) do
+    do_contains?(Data.seq(sequence), value, fun)
+  end
+
+  def do_contains?(nil, _, _) do
+    false
+  end
+
+  def do_contains?(sequence, value, fun) do
+    if fun.(S.first(sequence)) == value do
+      true
+    else
+      do_contains?(S.next(sequence), value, fun)
+    end
+  end
+
   @spec drop(S.t, non_neg_integer) :: S.t
   def drop(sequence, count) do
     do_drop(Data.seq(sequence), count)
