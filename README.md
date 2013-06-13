@@ -10,6 +10,10 @@ Elixir, and on top of that they lose all the protocol goodies.
 Protocols
 ---------
 
+### Sequence
+  * `first/1` - returns the first element in the sequence or nil
+  * `next/1` - returns a new sequence with the first element removed or nil
+
 ### Counted
   * `count` - returns the length of the structure
 
