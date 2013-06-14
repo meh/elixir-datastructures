@@ -126,9 +126,8 @@ defimpl Data.Emptyable, for: Data.Dictionary.BalancedTree do
   defdelegate clear(self), to: Data.Dictionary.BalancedTree, as: :empty
 end
 
-defimpl Data.Foldable, for: Data.Dictionary.BalancedTree do
-  defdelegate foldl(self, acc, fun), to: Data.Dictionary.BalancedTree, as: :reduce
-  defdelegate foldr(self, acc, fun), to: Data.Dictionary.BalancedTree, as: :reduce
+defimpl Data.Reducible, for: Data.Dictionary.BalancedTree do
+  defdelegate reduce(self, acc, fun), to: Data.Dictionary.BalancedTree
 end
 
 defimpl Data.Listable, for: Data.Dictionary.BalancedTree do

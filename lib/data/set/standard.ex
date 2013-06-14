@@ -105,9 +105,8 @@ defimpl Data.Counted, for: Data.Set.Standard do
   defdelegate count(self), to: Data.Set.Standard
 end
 
-defimpl Data.Foldable, for: Data.Set.Standard do
-  defdelegate foldl(self, acc, fun), to: Data.Set.Standard, as: :reduce
-  defdelegate foldr(self, acc, fun), to: Data.Set.Standard, as: :reduce
+defimpl Data.Reducible, for: Data.Set.Standard do
+  defdelegate reduce(self, acc, fun), to: Data.Set.Standard
 end
 
 defimpl Data.Listable, for: Data.Set.Standard do

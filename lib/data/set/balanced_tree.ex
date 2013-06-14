@@ -112,9 +112,8 @@ defimpl Data.Counted, for: Data.Set.BalancedTree do
   defdelegate count(self), to: Data.Set.BalancedTree
 end
 
-defimpl Data.Foldable, for: Data.Set.BalancedTree do
-  defdelegate foldl(self, acc, fun), to: Data.Set.BalancedTree, as: :reduce
-  defdelegate foldr(self, acc, fun), to: Data.Set.BalancedTree, as: :reduce
+defimpl Data.Reducible, for: Data.Set.BalancedTree do
+  defdelegate reduce(self, acc, fun), to: Data.Set.BalancedTree
 end
 
 defimpl Data.Listable, for: Data.Set.BalancedTree do

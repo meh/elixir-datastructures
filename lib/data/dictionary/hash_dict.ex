@@ -39,12 +39,8 @@ defimpl Data.Counted, for: HashDict do
   end
 end
 
-defimpl Data.Foldable, for: HashDict do
-  def foldl(self, acc, fun) do
-    HashDict.reduce(self, acc, fun)
-  end
-
-  def foldr(self, acc, fun) do
+defimpl Data.Reducible, for: HashDict do
+  def reduce(self, acc, fun) do
     HashDict.reduce(self, acc, fun)
   end
 end

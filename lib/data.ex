@@ -64,14 +64,9 @@ defmodule Data do
     Data.Peekable.peek!(self)
   end
 
-  @spec reduce(Data.Foldable.t, any, ((any, any) -> any)) :: any
+  @spec reduce(Data.Reducible.t, any, ((any, any) -> any)) :: any
   def reduce(self, acc, fun) do
-    Data.Foldable.foldl(self, acc, fun)
-  end
-
-  @spec foldl(Data.Foldable.t, any, ((any, any) -> any)) :: any
-  def foldl(self, acc, fun) do
-    Data.Foldable.foldl(self, acc, fun)
+    Data.Reducible.reduce(self, acc, fun)
   end
 
   @spec foldr(Data.Foldable.t, any, ((any, any) -> any)) :: any

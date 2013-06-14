@@ -235,9 +235,8 @@ defimpl Data.Emptyable, for: Data.Stack.Simple do
   defdelegate clear(self), to: Data.Stack.Simple
 end
 
-defimpl Data.Foldable, for: Data.Stack.Simple do
-  defdelegate foldl(self, acc, fun), to: Data.Stack.Simple
-  defdelegate foldr(self, acc, fun), to: Data.Stack.Simple
+defimpl Data.Reducible, for: Data.Stack.Simple do
+  defdelegate reduce(self, acc, fun), to: Data.Stack.Simple, as: :foldl
 end
 
 defimpl Data.Sequence, for: Data.Stack.Simple do

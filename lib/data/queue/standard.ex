@@ -178,9 +178,8 @@ defimpl Data.Emptyable, for: Data.Queue.Standard do
   defdelegate clear(self), to: Data.Queue.Standard
 end
 
-defimpl Data.Foldable, for: Data.Queue.Standard do
-  defdelegate foldl(self, acc, fun), to: Data.Queue.Standard
-  defdelegate foldr(self, acc, fun), to: Data.Queue.Standard
+defimpl Data.Reducible, for: Data.Queue.Standard do
+  defdelegate reduce(self, acc, fun), to: Data.Queue.Standard, as: :foldl
 end
 
 defimpl Data.Listable, for: Data.Queue.Standard do

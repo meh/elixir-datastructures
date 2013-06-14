@@ -118,9 +118,8 @@ defimpl Data.Emptyable, for: Data.Dictionary.Standard do
   defdelegate clear(self), to: Data.Dictionary.Standard, as: :empty
 end
 
-defimpl Data.Foldable, for: Data.Dictionary.Standard do
-  defdelegate foldl(self, acc, fun), to: Data.Dictionary.Standard, as: :reduce
-  defdelegate foldr(self, acc, fun), to: Data.Dictionary.Standard, as: :reduce
+defimpl Data.Reducible, for: Data.Dictionary.Standard do
+  defdelegate reduce(self, acc, fun), to: Data.Dictionary.Standard
 end
 
 defimpl Data.Listable, for: Data.Dictionary.Standard do
