@@ -109,11 +109,11 @@ defmodule Data.Seq do
     do_find_index(0, Data.seq(sequence), fun)
   end
 
-  def do_find_index(_, nil, _) do
+  defp do_find_index(_, nil, _) do
     nil
   end
 
-  def do_find_index(index, sequence, fun) do
+  defp do_find_index(index, sequence, fun) do
     if fun.(S.first(sequence)) do
       index
     else
@@ -127,11 +127,11 @@ defmodule Data.Seq do
     do_contains?(Data.seq(sequence), value, fun)
   end
 
-  def do_contains?(nil, _, _) do
+  defp do_contains?(nil, _, _) do
     false
   end
 
-  def do_contains?(sequence, value, fun) do
+  defp do_contains?(sequence, value, fun) do
     if fun.(S.first(sequence)) == value do
       true
     else
