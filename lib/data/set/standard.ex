@@ -123,6 +123,30 @@ defimpl Data.Contains, for: Data.Set.Standard do
   defdelegate contains?(self, key), to: Data.Set.Standard, as: :member?
 end
 
+defimpl Data.Sequence, for: Data.Set.Standard do
+  def first(self) do
+    Data.Set.Standard.reduce(self, nil, fn(x, _) -> throw { :first, x } end)
+
+    nil
+  catch
+    { :first, x } ->
+      x
+  end
+
+  def next(self) do
+    case Data.Set.Standard.to_list(self) do
+      [] ->
+        nil
+
+      [_] ->
+        nil
+
+      [_ | tail] ->
+        tail
+    end
+  end
+end
+
 defimpl Enumerable, for: Data.Set.Standard do
   defdelegate reduce(self, acc, fun), to: Data.Set.Standard
   defdelegate count(self), to: Data.Set.Standard, as: :size
