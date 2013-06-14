@@ -425,7 +425,7 @@ defmodule Data.Seq do
 
   @spec count(S.t, (any -> boolean)) :: non_neg_integer
   def count(sequence, predicate) do
-    do_count(0, sequence, predicate)
+    do_count(0, Data.sequence(sequence), predicate)
   end
 
   defp do_count(acc, nil, _) do
@@ -442,7 +442,7 @@ defmodule Data.Seq do
 
   @spec to_list(S.t) :: list
   def to_list(sequence) do
-    do_to_list([], sequence)
+    do_to_list([], Data.seq(sequence))
   end
 
   defp do_to_list(acc, nil) do
