@@ -154,12 +154,6 @@ defimpl Data.Sequence, for: Data.Set.BalancedTree do
   end
 end
 
-defimpl Enumerable, for: Data.Set.BalancedTree do
-  defdelegate reduce(self, acc, fun), to: Data.Set.BalancedTree
-  defdelegate count(self), to: Data.Set.BalancedTree, as: :size
-  defdelegate member?(self, value), to: Data.Set.BalancedTree
-end
-
 defimpl Binary.Inspect, for: Data.Set.BalancedTree do
   def inspect(set, opts) do
     "#Set<" <> Kernel.inspect(Data.Set.BalancedTree.to_list(set), opts) <> ">"

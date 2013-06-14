@@ -198,12 +198,6 @@ defimpl Data.Contains, for: Data.Queue.Standard do
   defdelegate contains?(self, key), to: Data.Queue.Standard, as: :member?
 end
 
-defimpl Enumerable, for: Data.Queue.Standard do
-  defdelegate reduce(self, acc, fun), to: Data.Queue.Standard, as: :foldl
-  defdelegate count(self), to: Data.Queue.Standard, as: :size
-  defdelegate member?(self, value), to: Data.Queue.Standard
-end
-
 defimpl Binary.Inspect, for: Data.Queue.Standard do
   def inspect(queue, opts) do
     "#Queue<" <> Kernel.inspect(Data.Queue.Standard.to_list(queue), opts) <> ">"

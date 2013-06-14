@@ -174,12 +174,6 @@ defimpl Access, for: Data.Dictionary.Standard do
   defdelegate access(self, key), to: Data.Dictionary.Standard, as: :get
 end
 
-defimpl Enumerable, for: Data.Dictionary.Standard do
-  defdelegate reduce(self, acc, fun), to: Data.Dictionary.Standard
-  defdelegate count(self), to: Data.Dictionary.Standard, as: :size
-  defdelegate member?(self, key), to: Data.Dictionary.Standard
-end
-
 defimpl Binary.Inspect, for: Data.Dictionary.Standard do
   def inspect(self, opts) do
     "#Dictionary<" <> Kernel.inspect(Data.Dictionary.Standard.to_list(self), opts) <> ">"

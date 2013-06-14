@@ -147,12 +147,6 @@ defimpl Data.Sequence, for: Data.Set.Standard do
   end
 end
 
-defimpl Enumerable, for: Data.Set.Standard do
-  defdelegate reduce(self, acc, fun), to: Data.Set.Standard
-  defdelegate count(self), to: Data.Set.Standard, as: :size
-  defdelegate member?(self, value), to: Data.Set.Standard
-end
-
 defimpl Binary.Inspect, for: Data.Set.Standard do
   def inspect(set, opts) do
     "#Set<" <> Kernel.inspect(Data.Set.Standard.to_list(set), opts) <> ">"
