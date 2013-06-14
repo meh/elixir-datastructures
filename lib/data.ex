@@ -9,10 +9,15 @@
 defmodule Data do
   @spec contains?(Data.Contains.t | Data.Sequence.t, any) :: any
   def contains?(self, what) do
-    if implements?(self, Data.Contains) do
-      Data.Contains.contains?(self, what)
-    else
-      Data.Seq.contains?(self, what)
+    cond do
+      implements?(self, Data.Contains) ->
+        Data.Contains.contains?(self, what)
+
+      implements?(self, Enumerable) ->
+        Enum.member?(self, what)
+
+      true ->
+        Data.Seq.contains?(self, what)
     end
   end
 
@@ -72,11 +77,6 @@ defmodule Data do
   @spec foldr(Data.Foldable.t, any, ((any, any) -> any)) :: any
   def foldr(self, acc, fun) do
     Data.Foldable.foldr(self, acc, fun)
-  end
-
-  @spec member?(Enumerable.t, any) :: Enumerable.t
-  def member?(self, value) do
-    Enum.member?(self, value)
   end
 
   @spec empty?(Data.Empytable.t | Data.Sequence.t) :: Data.Emptyable.t
