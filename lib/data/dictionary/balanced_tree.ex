@@ -7,8 +7,6 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Dictionary.BalancedTree do
-  @behaviour Dict
-
   defrecordp :wrap, dict: nil
 
   def new do
@@ -60,22 +58,6 @@ defmodule Data.Dictionary.BalancedTree do
       wrap(dict: self)
     else
       wrap(dict: :gb_trees.insert(key, value, self))
-    end
-  end
-
-  def update(self, key, updater) do
-    if has_key?(self, key) do
-      put(self, key, updater.(get(self, key)))
-    else
-      raise Data.Missing, key: key
-    end
-  end
-
-  def update(self, key, initial, updater) do
-    if has_key?(self, key) do
-      put(self, key, updater.(get(self, key)))
-    else
-      put(self, key, updater.(initial))
     end
   end
 

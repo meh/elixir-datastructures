@@ -7,8 +7,6 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Dictionary.Standard do
-  @behaviour Dict
-
   defrecordp :wrap, dict: nil
 
   def new do
@@ -53,18 +51,6 @@ defmodule Data.Dictionary.Standard do
     else
       wrap(dict: :dict.store(key, value, self))
     end
-  end
-
-  def update(wrap(dict: self), key, updater) do
-    if :dict.is_key(key, self) do
-      wrap(dict: :dict.update(key, updater, self))
-    else
-      raise Data.Missing, key: key
-    end
-  end
-
-  def update(wrap(dict: self), key, initial, updater) do
-    wrap(dict: :dict.update(key, updater, initial, self))
   end
 
   def delete(wrap(dict: self), key) do
