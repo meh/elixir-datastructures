@@ -157,6 +157,31 @@ defimpl Data.Contains, for: Data.Dictionary.BalancedTree do
   defdelegate contains?(self, key), to: Data.Dictionary.BalancedTree, as: :member?
 end
 
+defimpl Data.Sequence, for: Data.Dictionary.BalancedTree do
+  def first(self) do
+    case Data.Dictionary.BalancedTree.to_list(self) do
+      [] ->
+        nil
+
+      [value | _] ->
+        value
+    end
+  end
+
+  def next(self) do
+    case Data.Dictionary.BalancedTree.to_list(self) do
+      [] ->
+        nil
+
+      [_] ->
+        nil
+
+      [_ | tail] ->
+        tail
+    end
+  end
+end
+
 defimpl Access, for: Data.Dictionary.BalancedTree do
   defdelegate access(self, key), to: Data.Dictionary.BalancedTree, as: :get
 end
