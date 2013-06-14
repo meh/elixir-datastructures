@@ -130,6 +130,30 @@ defimpl Data.Contains, for: Data.Set.BalancedTree do
   defdelegate contains?(self, value), to: Data.Set.BalancedTree, as: :member?
 end
 
+defimpl Data.Sequence, for: Data.Set.BalancedTree do
+  def first(self) do
+    Data.Set.BalancedTree.reduce(self, nil, fn(x, _) -> throw { :first, x } end)
+
+    nil
+  catch
+    { :first, x } ->
+      x
+  end
+
+  def next(self) do
+    case Data.Set.BalancedTree.to_list(self) do
+      [] ->
+        nil
+
+      [_] ->
+        nil
+
+      [_ | tail] ->
+        tail
+    end
+  end
+end
+
 defimpl Enumerable, for: Data.Set.BalancedTree do
   defdelegate reduce(self, acc, fun), to: Data.Set.BalancedTree
   defdelegate count(self), to: Data.Set.BalancedTree, as: :size
