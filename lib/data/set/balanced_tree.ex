@@ -60,6 +60,14 @@ defmodule Data.Set.BalancedTree do
     wrap(set: :gb_sets.intersection(self, Data.to_list(other) |> :gb_sets.from_list))
   end
 
+  def difference(wrap(set: self), wrap(set: other)) do
+    wrap(set: :gb_sets.subtract(self, other))
+  end
+
+  def difference(wrap(set: self), other) do
+    wrap(set: :gb_sets.subtract(self, Data.to_list(other) |> :gb_sets.from_list))
+  end
+
   def subset?(wrap(set: self), wrap(set: other)) do
     :gb_sets.is_subset(other, self)
   end
@@ -104,6 +112,7 @@ defimpl Data.Set, for: Data.Set.BalancedTree do
   defdelegate delete(self, value), to: Data.Set.BalancedTree
   defdelegate union(self, other), to: Data.Set.BalancedTree
   defdelegate intersection(self, other), to: Data.Set.BalancedTree
+  defdelegate difference(self, other), to: Data.Set.BalancedTree
   defdelegate subset?(self, other), to: Data.Set.BalancedTree
   defdelegate disjoint?(self, other), to: Data.Set.BalancedTree
 end

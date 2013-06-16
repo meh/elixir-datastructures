@@ -21,6 +21,9 @@ defprotocol Data.Set do
   @spec intersection(t, t) :: t
   def intersection(self, other)
 
+  @spec difference(t, t) :: t
+  def difference(self, other)
+
   @spec subset?(t, t) :: boolean
   def subset?(self, other)
 
@@ -59,6 +62,10 @@ defimpl Data.Set, for: List do
 
   def intersection(self, other) do
     :ordsets.intersection(self, L.new(other))
+  end
+
+  def difference(self, other) do
+    :ordsets.difference(self, L.new(other))
   end
 
   def subset?(self, other) do
