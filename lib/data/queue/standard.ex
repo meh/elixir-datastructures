@@ -117,6 +117,10 @@ defmodule Data.Queue.Standard do
     :queue.is_empty(queue)
   end
 
+  def clear(_) do
+    new
+  end
+
   def member?(wrap(queue: queue), value) do
     :queue.member(value, queue)
   end
