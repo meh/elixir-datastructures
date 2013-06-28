@@ -21,9 +21,8 @@ Protocols
   * `empty?/1` - checks if the structure is empty
   * `clear/1` - returns an empty structure
 
-### Foldable
-  * `foldl/3` - folds the structure from the left
-  * `foldr/3` - folds the structure from the right
+### Reducible
+  * `reduce/3` - reduces the structures
 
 ### Sequenceable
   * `to_sequence/1` - converts the structure to a sequence
