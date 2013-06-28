@@ -83,12 +83,12 @@ defmodule Data.Stack.Simple do
       iex> Data.Stack.Simple.new |> Stack.push(42) |> Stack.pop
       {42,#Stack<[]>}
       iex> Data.Stack.Simple.new |> Stack.pop!
-      ** (Stack.Empty) the queue is empty
+      ** (Data.Empty) the queue is empty
 
   """
   @spec pop!(t) :: { v, t } | no_return
   def pop!(stack(list: [])) do
-    raise Stack.Empty
+    raise Data.Empty
   end
 
   def pop!(stack() = self) do
@@ -126,12 +126,12 @@ defmodule Data.Stack.Simple do
       iex> Data.Stack.Simple.new |> Stack.push(42) |> Stack.push(23) |> Stack.peek!
       23
       iex> Data.Stack.Simple.new |> Stack.peek!
-      ** (Stack.Empty) the stack is empty
+      ** (Data.Empty) the stack is empty
 
   """
   @spec peek!(t) :: v | no_return
   def peek!(stack(list: [])) do
-    raise Stack.Empty
+    raise Data.Empty
   end
 
   def peek!(stack) do
