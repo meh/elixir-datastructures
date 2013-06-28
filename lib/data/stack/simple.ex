@@ -261,6 +261,10 @@ defimpl Data.Contains, for: Data.Stack.Simple do
   defdelegate contains?(self, key), to: Data.Stack.Simple, as: :member?
 end
 
+defimpl Enumerable, for: Data.Stack.Simple do
+  use Data.Enumerable
+end
+
 defimpl Binary.Inspect, for: Data.Stack.Simple do
   def inspect(stack, opts) do
     "#Stack<" <> Kernel.inspect(Data.Stack.Simple.to_list(stack), opts) <> ">"

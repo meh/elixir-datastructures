@@ -6,11 +6,12 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Reducible do
-  @spec reduce(t, any, (any, any -> any)) :: any
-  def reduce(self, acc, fun)
-end
-
-defimpl Data.Reducible, for: List do
-  defdelegate reduce(list, acc, fun), to: List, as: :foldl
+defmodule Data.Enumerable do
+  defmacro __using__(_opts) do
+    quote do
+      defdelegate reduce(self, acc, fun), to: Data.Reducible
+      defdelegate member?(self, value), to: Data, as: :contains?
+      defdelegate count(self), to: Data, as: :count
+    end
+  end
 end

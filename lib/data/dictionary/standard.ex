@@ -154,6 +154,9 @@ defimpl Data.Sequence, for: Data.Dictionary.Standard do
   end
 end
 
+defimpl Enumerable, for: Data.Dictionary.Standard do
+  use Data.Enumerable
+end
 
 defimpl Access, for: Data.Dictionary.Standard do
   defdelegate access(self, key), to: Data.Dictionary.Standard, as: :get

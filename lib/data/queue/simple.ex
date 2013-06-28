@@ -283,6 +283,10 @@ defimpl Data.Contains, for: Data.Queue.Simple do
   defdelegate contains?(self, value), to: Data.Queue.Simple, as: :member?
 end
 
+defimpl Enumerable, for: Data.Queue.Simple do
+  use Data.Enumerable
+end
+
 defimpl Binary.Inspect, for: Data.Queue.Simple do
   def inspect(queue, opts) do
     "#Queue<" <> Kernel.inspect(Data.Queue.Simple.to_list(queue), opts) <> ">"

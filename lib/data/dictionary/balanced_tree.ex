@@ -167,6 +167,10 @@ defimpl Access, for: Data.Dictionary.BalancedTree do
   defdelegate access(self, key), to: Data.Dictionary.BalancedTree, as: :get
 end
 
+defimpl Enumerable, for: Data.Dictionary.BalancedTree do
+  use Data.Enumerable
+end
+
 defimpl Binary.Inspect, for: Data.Dictionary.BalancedTree do
   def inspect(self, opts) do
     "#Dictionary<" <> Kernel.inspect(Data.Dictionary.BalancedTree.to_list(self), opts) <> ">"

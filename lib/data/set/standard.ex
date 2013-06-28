@@ -155,6 +155,10 @@ defimpl Data.Sequence, for: Data.Set.Standard do
   end
 end
 
+defimpl Enumerable, for: Data.Set.Standard do
+  use Data.Enumerable
+end
+
 defimpl Binary.Inspect, for: Data.Set.Standard do
   def inspect(set, opts) do
     "#Set<" <> Kernel.inspect(Data.Set.Standard.to_list(set), opts) <> ">"
