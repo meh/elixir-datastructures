@@ -97,7 +97,7 @@ defmodule Data.Queue.Simple do
   end
 
   @doc """
-  Dequeue a value from the queue, raising if its empty.
+  Dequeue a value from the queue, raising if it's empty.
 
   ## Examples
 
