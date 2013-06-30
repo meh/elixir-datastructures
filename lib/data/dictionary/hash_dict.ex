@@ -28,51 +28,19 @@ defimpl Data.Emptyable, for: HashDict do
     HashDict.size(self) == 0
   end
 
-  def clear(self) do
-    HashDict.empty(self)
-  end
+  defdelegate clear(self), to: HashDict, as: :empty
 end
 
 defimpl Data.Counted, for: HashDict do
-  def count(self) do
-    HashDict.size(self)
-  end
+  defdelegate count(self), to: HashDict, as: :size
 end
 
 defimpl Data.Reducible, for: HashDict do
-  def reduce(self, acc, fun) do
-    HashDict.reduce(self, acc, fun)
-  end
+  defdelegate reduce(self, acc, fun), to: HashDict
 end
 
 defimpl Data.Listable, for: HashDict do
-  def to_list(self) do
-    HashDict.to_list(self)
-  end
-end
-
-defimpl Data.Sequence, for: HashDict do
-  def first(self) do
-    HashDict.reduce(self, nil, fn(x, _) -> throw { :first, x } end)
-
-    nil
-  catch
-    { :first, x } ->
-      x
-  end
-
-  def next(self) do
-    case HashDict.to_list(self) do
-      [] ->
-        nil
-
-      [_] ->
-        nil
-
-      [_ | tail] ->
-        tail
-    end
-  end
+  defdelegate to_list(self), to: HashDict
 end
 
 defimpl Data.Contains, for: HashDict do
