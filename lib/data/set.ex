@@ -33,7 +33,7 @@ end
 
 defimpl Data.Set, for: List do
   def new do
-    :ordsets.new
+    []
   end
 
   def new(enum) do
