@@ -76,7 +76,7 @@ defmodule Data.Stack.Simple do
   end
 
   @doc """
-  Pop a value from the stack, raising if its empty.
+  Pop a value from the stack, raising if it's empty.
 
   ## Examples
 
@@ -169,7 +169,7 @@ defmodule Data.Stack.Simple do
   end
 
   @doc """
-  Check if the the value is present in the stack.
+  Check if the value is present in the stack.
   """
   @spec member?(t, v) :: boolean
   def member?(stack(list: []), _) do
