@@ -166,8 +166,10 @@ defimpl Enumerable, for: Data.Set.BalancedTree do
   use Data.Enumerable
 end
 
-defimpl Binary.Inspect, for: Data.Set.BalancedTree do
+defimpl Inspect, for: Data.Set.BalancedTree do
+  import Inspect.Algebra
+
   def inspect(set, opts) do
-    "#Set<" <> Kernel.inspect(Data.Set.BalancedTree.to_list(set), opts) <> ">"
+    concat ["#Set<", Kernel.inspect(Data.Set.BalancedTree.to_list(set), opts), ">"]
   end
 end

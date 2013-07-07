@@ -171,8 +171,10 @@ defimpl Enumerable, for: Data.Dictionary.BalancedTree do
   use Data.Enumerable
 end
 
-defimpl Binary.Inspect, for: Data.Dictionary.BalancedTree do
+defimpl Inspect, for: Data.Dictionary.BalancedTree do
+  import Inspect.Algebra
+
   def inspect(self, opts) do
-    "#Dictionary<" <> Kernel.inspect(Data.Dictionary.BalancedTree.to_list(self), opts) <> ">"
+    concat ["#Dictionary<", Kernel.inspect(Data.Dictionary.BalancedTree.to_list(self), opts), ">"]
   end
 end

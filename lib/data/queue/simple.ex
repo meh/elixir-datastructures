@@ -287,8 +287,10 @@ defimpl Enumerable, for: Data.Queue.Simple do
   use Data.Enumerable
 end
 
-defimpl Binary.Inspect, for: Data.Queue.Simple do
+defimpl Inspect, for: Data.Queue.Simple do
+  import Inspect.Algebra
+
   def inspect(queue, opts) do
-    "#Queue<" <> Kernel.inspect(Data.Queue.Simple.to_list(queue), opts) <> ">"
+    concat ["#Queue<", Kernel.inspect(Data.Queue.Simple.to_list(queue), opts), ">"]
   end
 end

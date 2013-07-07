@@ -159,8 +159,10 @@ defimpl Enumerable, for: Data.Set.Standard do
   use Data.Enumerable
 end
 
-defimpl Binary.Inspect, for: Data.Set.Standard do
+defimpl Inspect, for: Data.Set.Standard do
+  import Inspect.Algebra
+
   def inspect(set, opts) do
-    "#Set<" <> Kernel.inspect(Data.Set.Standard.to_list(set), opts) <> ">"
+    concat ["#Set<", Kernel.inspect(Data.Set.Standard.to_list(set), opts), ">"]
   end
 end

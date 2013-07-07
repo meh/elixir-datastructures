@@ -265,8 +265,10 @@ defimpl Enumerable, for: Data.Stack.Simple do
   use Data.Enumerable
 end
 
-defimpl Binary.Inspect, for: Data.Stack.Simple do
+defimpl Inspect, for: Data.Stack.Simple do
+  import Inspect.Algebra
+
   def inspect(stack, opts) do
-    "#Stack<" <> Kernel.inspect(Data.Stack.Simple.to_list(stack), opts) <> ">"
+    concat ["#Stack<", Kernel.inspect(Data.Stack.Simple.to_list(stack), opts), ">"]
   end
 end

@@ -162,8 +162,10 @@ defimpl Access, for: Data.Dictionary.Standard do
   defdelegate access(self, key), to: Data.Dictionary.Standard, as: :get
 end
 
-defimpl Binary.Inspect, for: Data.Dictionary.Standard do
+defimpl Inspect, for: Data.Dictionary.Standard do
+  import Inspect.Algebra
+
   def inspect(self, opts) do
-    "#Dictionary<" <> Kernel.inspect(Data.Dictionary.Standard.to_list(self), opts) <> ">"
+    concat ["#Dictionary<", Kernel.inspect(Data.Dictionary.Standard.to_list(self), opts), ">"]
   end
 end
