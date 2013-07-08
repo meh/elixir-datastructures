@@ -10,7 +10,7 @@ defmodule Data.Set.BalancedTree do
   @opaque t :: record
   @type   v :: any
 
-  defrecordp :wrap, set: nil
+  defrecordp :wrap, __MODULE__, set: nil
 
   def new do
     wrap(set: :gb_sets.new)

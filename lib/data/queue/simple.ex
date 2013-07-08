@@ -14,7 +14,7 @@ defmodule Data.Queue.Simple do
   @opaque t :: record
   @type   v :: any
 
-  defrecordp :queue, enqueue: [], dequeue: []
+  defrecordp :queue, __MODULE__, enqueue: [], dequeue: []
 
   @doc """
   Creates an empty queue.

@@ -7,7 +7,7 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Dictionary.BalancedTree do
-  defrecordp :wrap, dict: nil
+  defrecordp :wrap, __MODULE__, dict: nil
 
   def new do
     wrap(dict: :gb_trees.empty)

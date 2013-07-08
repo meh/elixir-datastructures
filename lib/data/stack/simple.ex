@@ -14,7 +14,7 @@ defmodule Data.Stack.Simple do
   @opaque t :: record
   @type   v :: any
 
-  defrecordp :stack, list: []
+  defrecordp :stack, __MODULE__, list: []
 
   @doc """
   Creates an empty stack.
