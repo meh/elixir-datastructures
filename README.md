@@ -86,6 +86,7 @@ Helpers
   * `update/4` - updates the structure with an updater function, the initial value is passed if there's no value with that key
 
 ### Seq
+  * `with_index/1` - returns a sequence wrapping the sequence and returning indexes
   * `all?/1` - checks all elements in the sequence are truthy
   * `all?/2` - checks all elements are truthy with the given predicate
   * `any?/1` - checks if any element in the sequence is truthy
