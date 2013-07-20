@@ -13,6 +13,45 @@ defmodule Data.Seq do
   defdelegate first(sequence), to: S
   defdelegate next(sequence), to: S
 
+  defmodule WithIndex do
+    defrecordp :wrap, __MODULE__, index: 0, seq: nil
+
+    alias Data.Sequence, as: S
+
+    def new(seq) do
+      case Data.seq(seq) do
+        nil ->
+          nil
+
+        new ->
+          wrap(index: 0, seq: new)
+      end
+    end
+
+    def first(wrap(index: index, seq: seq)) do
+      { S.first(seq), index }
+    end
+
+    def next(wrap(index: index, seq: seq)) do
+      case S.next(seq) do
+        nil ->
+          nil
+
+        next ->
+          wrap(index: index + 1, seq: next)
+      end
+    end
+
+    defimpl Data.Sequence, for: __MODULE__ do
+      defdelegate first(self), to: WithIndex
+      defdelegate next(self),  to: WithIndex
+    end
+  end
+
+  def with_index(sequence) do
+    WithIndex.new(sequence)
+  end
+
   @spec all?(S.t, (any -> boolean)) :: boolean
   def all?(sequence, fun // fn(x) -> x end) do
     do_all?(Data.seq(sequence), fun)
