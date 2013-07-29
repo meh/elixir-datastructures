@@ -57,22 +57,22 @@ defimpl Data.Set, for: List do
   end
 
   def union(self, other) do
-    :ordsets.union(self, L.new(other))
+    :ordsets.union(self, new(other))
   end
 
   def intersection(self, other) do
-    :ordsets.intersection(self, L.new(other))
+    :ordsets.intersection(self, new(other))
   end
 
   def difference(self, other) do
-    :ordsets.difference(self, L.new(other))
+    :ordsets.difference(self, new(other))
   end
 
   def subset?(self, other) do
-    :ordsets.is_subset(L.new(other), self)
+    :ordsets.is_subset(new(other), self)
   end
 
   def disjoint?(self, other) do
-    :ordsets.is_disjoint(L.new(other), self)
+    :ordsets.is_disjoint(new(other), self)
   end
 end
