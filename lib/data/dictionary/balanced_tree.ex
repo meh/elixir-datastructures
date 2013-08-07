@@ -102,6 +102,43 @@ defmodule Data.Dictionary.BalancedTree do
   def member?(wrap(dict: self), key) do
     :gb_trees.is_defined(key, self)
   end
+
+  defmodule Sequence do
+    defrecordp :seq, __MODULE__, iter: nil
+
+    def new(dict) do
+      seq(iter: :gb_trees.iterator(dict))
+    end
+
+    def first(seq(iter: iter)) do
+      case :gb_trees.next(iter) do
+        :none ->
+          nil
+
+        { key, value, _next } ->
+          { key, value }
+      end
+    end
+
+    def next(seq(iter: iter)) do
+      case :gb_trees.next(iter) do
+        :none ->
+          nil
+
+        { _key, _value, next } ->
+          seq(iter: next)
+      end
+    end
+
+    defimpl Data.Sequence, for: Sequence do
+      defdelegate first(self), to: Sequence
+      defdelegate next(self), to: Sequence
+    end
+  end
+
+  def to_sequence(wrap(dict: self)) do
+    Sequence.new(self)
+  end
 end
 
 defimpl Data.Dictionary, for: Data.Dictionary.BalancedTree do
@@ -138,29 +175,8 @@ defimpl Data.Contains, for: Data.Dictionary.BalancedTree do
   defdelegate contains?(self, key), to: Data.Dictionary.BalancedTree, as: :member?
 end
 
-defimpl Data.Sequence, for: Data.Dictionary.BalancedTree do
-  def first(self) do
-    case Data.Dictionary.BalancedTree.to_list(self) do
-      [] ->
-        nil
-
-      [value | _] ->
-        value
-    end
-  end
-
-  def next(self) do
-    case Data.Dictionary.BalancedTree.to_list(self) do
-      [] ->
-        nil
-
-      [_] ->
-        nil
-
-      [_ | tail] ->
-        tail
-    end
-  end
+defimpl Data.Sequenceable, for: Data.Dictionary.BalancedTree do
+  defdelegate to_sequence(self), to: Data.Dictionary.BalancedTree
 end
 
 defimpl Access, for: Data.Dictionary.BalancedTree do
