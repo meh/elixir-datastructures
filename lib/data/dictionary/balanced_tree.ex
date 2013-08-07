@@ -73,10 +73,6 @@ defmodule Data.Dictionary.BalancedTree do
     :gb_trees.values(self)
   end
 
-  def reduce(self, acc, fun) do
-    List.foldl(to_list(self), acc, fun)
-  end
-
   def size(wrap(dict: self)) do
     :gb_trees.size(self)
   end
@@ -164,7 +160,9 @@ defimpl Data.Emptyable, for: Data.Dictionary.BalancedTree do
 end
 
 defimpl Data.Reducible, for: Data.Dictionary.BalancedTree do
-  defdelegate reduce(self, acc, fun), to: Data.Dictionary.BalancedTree
+  def reduce(self, acc, fun) do
+    Data.Seq.reduce(self, acc, fun)
+  end
 end
 
 defimpl Data.Listable, for: Data.Dictionary.BalancedTree do
