@@ -18,6 +18,10 @@ defmodule Data.Dict do
   defdelegate keys(self), to: D
   defdelegate values(self), to: D
 
+  def has_key?(self, key) do
+    C.contains?(self, key)
+  end
+
   def put_new(self, key, value) do
     if C.contains?(self, key) do
       self
