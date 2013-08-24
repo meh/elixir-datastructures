@@ -9,7 +9,7 @@
 defmodule Data.Dict do
   alias Data.Dictionary, as: D
   alias Data.Contains, as: C
-  alias Data.Sequence, as: S
+  alias Data.Seq, as: S
 
   defdelegate get(self, key), to: D
   defdelegate get(self, key, default), to: D
