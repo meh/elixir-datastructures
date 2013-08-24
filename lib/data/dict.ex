@@ -9,6 +9,7 @@
 defmodule Data.Dict do
   alias Data.Dictionary, as: D
   alias Data.Contains, as: C
+  alias Data.Sequence, as: S
 
   defdelegate get(self, key), to: D
   defdelegate get(self, key, default), to: D
@@ -36,5 +37,11 @@ defmodule Data.Dict do
 
   def update(self, key, initial, updater) do
     D.put(self, key, updater.(D.get(self, key, initial)))
+  end
+
+  def merge(self, other) do
+    S.reduce other, self, fn { name, value }, acc ->
+      put self, name, value
+    end
   end
 end
