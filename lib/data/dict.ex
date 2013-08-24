@@ -44,4 +44,14 @@ defmodule Data.Dict do
       put self, name, value
     end
   end
+
+  def merge(self, other, merger) do
+    S.reduce other, self, fn { name, value }, acc ->
+      if C.contains?(self, name) do
+        put self, name, merger.(name, get(self, name), value)
+      else
+        put self, name, value
+      end
+    end
+  end
 end
