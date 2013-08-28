@@ -36,6 +36,9 @@ defmodule Data do
 
   def seq(self) do
     cond do
+      empty?(self) ->
+        nil
+
       implements?(self, Data.Sequence) ->
         self
 
