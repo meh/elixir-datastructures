@@ -26,6 +26,10 @@ defmodule Data do
     nil
   end
 
+  def seq(nil) do
+    nil
+  end
+
   def seq(self) when is_list(self) do
     self
   end
@@ -138,6 +142,10 @@ defmodule Data do
   @spec to_list(list | Data.Listable.t | Data.Sequence.t | Enumerable.t) :: list
   def to_list(self) when is_list(self) do
     self
+  end
+
+  def to_list(nil) do
+    []
   end
 
   def to_list(self) do
