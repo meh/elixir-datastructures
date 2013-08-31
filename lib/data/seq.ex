@@ -491,4 +491,17 @@ defmodule Data.Seq do
   defp do_to_list(acc, seq) do
     [S.first(seq) | acc] |> do_to_list(S.next(seq))
   end
+
+  @spec last(S.t) :: term
+  def last(sequence) do
+    do_last(first(sequence), Data.seq(sequence))
+  end
+
+  defp do_last(last, nil) do
+    last
+  end
+
+  defp do_last(_, seq) do
+    first(seq) |> do_last(next(seq))
+  end
 end
