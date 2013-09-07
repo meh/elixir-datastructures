@@ -34,6 +34,10 @@ defmodule Data do
     self
   end
 
+  def seq(self) when is_binary(self) do
+    self
+  end
+
   def seq(self) do
     cond do
       empty?(self) ->
@@ -176,6 +180,10 @@ defmodule Data do
     Code.ensure_loaded? Module.concat(protocol, List)
   end
 
+  def implements?(self, protocol) when is_binary(self) do
+    Code.ensure_loaded? Module.concat(protocol, BitString)
+  end
+
   @spec implements?(record | list, module, [{ atom, non_neg_integer }]) :: boolean
   def implements?(self, protocol, [{ name, arity }]) when is_record(self) do
     implements?(self, protocol) and function_exported? Module.concat(protocol, elem(self, 0)), name, arity
@@ -183,5 +191,9 @@ defmodule Data do
 
   def implements?(self, protocol, [{ name, arity }]) when is_list(self) do
     implements?(self, protocol) and function_exported? Module.concat(protocol, List), name, arity
+  end
+
+  def implements?(self, protocol, [{ name, arity }]) when is_binary(self) do
+    implements?(self, protocol) and function_exported? Module.concat(protocol, BitString), name, arity
   end
 end
