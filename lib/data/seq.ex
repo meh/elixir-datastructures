@@ -139,7 +139,7 @@ defmodule Data.Seq do
     if value do
       value
     else
-      do_find_value(sequence, if_none, fun)
+      do_find_value(S.next(sequence), if_none, fun)
     end
   end
 
