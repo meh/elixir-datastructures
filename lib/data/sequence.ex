@@ -69,3 +69,28 @@ defimpl Data.Sequence, for: Range do
     Range[first: first - 1, last: last]
   end
 end
+
+defimpl Data.Sequence, for: BitString do
+  def first(string) do
+    case String.next_grapheme(string) do
+      :no_grapheme ->
+        nil
+
+      { first, _ } ->
+        first
+    end
+  end
+
+  def next(string) do
+    case String.next_grapheme(string) do
+      :no_grapheme ->
+        nil
+
+      { _, "" } ->
+        nil
+
+      { _, next } ->
+        next
+    end
+  end
+end
