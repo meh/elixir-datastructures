@@ -108,6 +108,9 @@ defmodule Data do
 
       implements?(self, Data.Listable) ->
         Data.Listable.to_list(self) == []
+
+      true ->
+        false
     end
   end
 
@@ -125,6 +128,9 @@ defmodule Data do
       implements?(self, Data.Sequence) ->
         Data.Seq.count(self)
 
+      implements?(self, Data.Sequenceable) ->
+        Data.Seq.count(self)
+
       implements?(self, Enumerable) ->
         Enum.count(self)
     end
@@ -134,6 +140,9 @@ defmodule Data do
   def count(self, pred) do
     cond do
       implements?(self, Data.Sequence) ->
+        Data.Seq.count(self, pred)
+
+      implements?(self, Data.Sequenceable) ->
         Data.Seq.count(self, pred)
 
       implements?(self, Enumerable) ->
@@ -164,7 +173,7 @@ defmodule Data do
         Data.Seq.to_list(self)
 
       implements?(self, Data.Sequenceable) ->
-        Data.Sequenceable.to_sequence(self) |> Data.Seq.to_list
+        Data.Seq.to_list(self)
 
       implements?(self, Enumerable) ->
         Enum.to_list(self)
