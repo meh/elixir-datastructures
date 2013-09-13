@@ -13,7 +13,7 @@ defprotocol Data.Set do
   def add(self, value)
 
   @spec delete(t, v) :: t
-  def delete(selv, value)
+  def delete(self, value)
 
   @spec union(t, t) :: t
   def union(self, other)
