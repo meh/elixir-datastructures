@@ -314,6 +314,11 @@ defmodule Data.Seq do
     [fun.(S.first(sequence)) | acc] |> do_map(S.next(sequence), fun)
   end
 
+  @spec reverse(S.t) :: S.t
+  def reverse(sequence) when sequence |> is_list do
+    :lists.reverse(sequence)
+  end
+
   def reverse(sequence) do
     do_reverse([], Data.seq(sequence))
   end
@@ -327,6 +332,10 @@ defmodule Data.Seq do
   end
 
   @spec reduce(S.t, any, (any, any -> any)) :: any
+  def reduce(sequence, acc, fun) when sequence |> is_list do
+    :lists.foldl(sequence, acc, fun)
+  end
+
   def reduce(sequence, acc, fun) do
     do_reduce(acc, Data.seq(sequence), fun)
   end
@@ -340,7 +349,7 @@ defmodule Data.Seq do
   end
 
   @spec sort(S.t) :: S.t
-  def sort(sequence) when is_list(sequence) do
+  def sort(sequence) when sequence |> is_list do
     :lists.sort(sequence)
   end
 
@@ -351,7 +360,7 @@ defmodule Data.Seq do
   @spec sort(S.t, (any, any -> boolean)) :: S.t
   def sort(sequence, fun)
 
-  def sort(sequence, fun) when is_list(sequence) do
+  def sort(sequence, fun) when sequence |> is_list do
     :lists.sort(fun, sequence)
   end
 
@@ -365,6 +374,10 @@ defmodule Data.Seq do
   end
 
   @spec count(S.t) :: non_neg_integer
+  def count(sequence) when sequence |> is_list do
+    sequence |> length
+  end
+
   def count(sequence) do
     do_count(0, Data.seq(sequence))
   end
@@ -493,6 +506,10 @@ defmodule Data.Seq do
   end
 
   @spec last(S.t) :: term
+  def last(sequence) when sequence |> is_list do
+    :lists.last(sequence)
+  end
+
   def last(sequence) do
     do_last(first(sequence), Data.seq(sequence))
   end
