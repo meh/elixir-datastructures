@@ -333,7 +333,7 @@ defmodule Data.Seq do
 
   @spec reduce(S.t, any, (any, any -> any)) :: any
   def reduce(sequence, acc, fun) when sequence |> is_list do
-    :lists.foldl(sequence, acc, fun)
+    :lists.foldl(fun, acc, sequence)
   end
 
   def reduce(sequence, acc, fun) do
