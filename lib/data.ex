@@ -10,10 +10,10 @@ defmodule Data do
   @spec contains?(Data.Contains.t | Data.Sequence.t, any) :: any
   def contains?(self, what) do
     cond do
-      implements?(self, Data.Contains) ->
-        Data.Contains.contains?(self, what)
+      mod = Data.Contains.impl_for(self) ->
+        mod.contains?(self, what)
 
-      implements?(self, Enumerable) ->
+      Enumerable.impl_for(self) ->
         Enum.member?(self, what)
 
       true ->
@@ -43,11 +43,11 @@ defmodule Data do
       empty?(self) ->
         nil
 
-      implements?(self, Data.Sequence) ->
+      Data.Sequence.impl_for(self) ->
         self
 
-      implements?(self, Data.Sequenceable) ->
-        Data.Sequenceable.to_sequence(self)
+      mod = Data.Sequenceable.impl_for(self) ->
+        mod.to_sequence(self)
 
       true ->
         to_list(self)
@@ -100,14 +100,14 @@ defmodule Data do
 
   def empty?(self) do
     cond do
-      implements?(self, Data.Emptyable) ->
-        Data.Emptyable.empty?(self)
+      mod = Data.Emptyable.impl_for(self) ->
+        mod.empty?(self)
 
-      implements?(self, Data.Sequenceable) ->
-        Data.Sequenceable.to_sequence(self) == nil
+      mod = Data.Sequenceable.impl_for(self) ->
+        mod.to_sequence(self) == nil
 
-      implements?(self, Data.Listable) ->
-        Data.Listable.to_list(self) == []
+      mod = Data.Listable.impl_for(self) ->
+        mod.to_list(self) == []
 
       true ->
         false
@@ -122,16 +122,16 @@ defmodule Data do
   @spec count(Data.Counted.t | Data.Sequence.t | Enumerable.t) :: Data.Counted.t | Enumerable.t
   def count(self) do
     cond do
-      implements?(self, Data.Counted) ->
-        Data.Counted.count(self)
+      mod = Data.Counted.impl_for(self) ->
+        mod.count(self)
 
-      implements?(self, Data.Sequence) ->
+      Data.Sequence.impl_for(self) ->
         Data.Seq.count(self)
 
-      implements?(self, Data.Sequenceable) ->
+      Data.Sequenceable.impl_for(self) ->
         Data.Seq.count(self)
 
-      implements?(self, Enumerable) ->
+      Enumerable.impl_for(self) ->
         Enum.count(self)
     end
   end
@@ -139,13 +139,13 @@ defmodule Data do
   @spec count(Data.Sequence.t | Enumerable.t, (any -> boolean)) :: Data.Counted.t | Enumerable.t
   def count(self, pred) do
     cond do
-      implements?(self, Data.Sequence) ->
+      Data.Sequence.impl_for(self) ->
         Data.Seq.count(self, pred)
 
-      implements?(self, Data.Sequenceable) ->
+      Data.Sequenceable.impl_for(self) ->
         Data.Seq.count(self, pred)
 
-      implements?(self, Enumerable) ->
+      Enumerable.impl_for(self) ->
         Enum.count(self, pred)
     end
   end
@@ -166,43 +166,17 @@ defmodule Data do
 
   def to_list(self) do
     cond do
-      implements?(self, Data.Listable) ->
-        Data.Listable.to_list(self)
+      mod = Data.Listable.impl_for(self) ->
+        mod.to_list(self)
 
-      implements?(self, Data.Sequence) ->
+      mod = Data.Sequence.impl_for(self) ->
+        mod.to_list(self)
+
+      Data.Sequenceable.impl_for(self) ->
         Data.Seq.to_list(self)
 
-      implements?(self, Data.Sequenceable) ->
-        Data.Seq.to_list(self)
-
-      implements?(self, Enumerable) ->
+      Enumerable.impl_for(self) ->
         Enum.to_list(self)
     end
-  end
-
-  @spec implements?(record | list, module) :: boolean
-  def implements?(self, protocol) when is_record(self) do
-    Code.ensure_loaded? Module.concat(protocol, elem(self, 0))
-  end
-
-  def implements?(self, protocol) when is_list(self) do
-    Code.ensure_loaded? Module.concat(protocol, List)
-  end
-
-  def implements?(self, protocol) when is_binary(self) do
-    Code.ensure_loaded? Module.concat(protocol, BitString)
-  end
-
-  @spec implements?(record | list, module, [{ atom, non_neg_integer }]) :: boolean
-  def implements?(self, protocol, [{ name, arity }]) when is_record(self) do
-    implements?(self, protocol) and function_exported? Module.concat(protocol, elem(self, 0)), name, arity
-  end
-
-  def implements?(self, protocol, [{ name, arity }]) when is_list(self) do
-    implements?(self, protocol) and function_exported? Module.concat(protocol, List), name, arity
-  end
-
-  def implements?(self, protocol, [{ name, arity }]) when is_binary(self) do
-    implements?(self, protocol) and function_exported? Module.concat(protocol, BitString), name, arity
   end
 end
