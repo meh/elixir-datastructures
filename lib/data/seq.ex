@@ -7,6 +7,8 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Seq do
+  @type t :: Data.Sequence.t | Data.Sequenceable.t | Data.Listable.t
+
   alias Data.Sequence, as: S
   alias Data.Emptyable, as: E
 
@@ -52,7 +54,7 @@ defmodule Data.Seq do
     WithIndex.new(sequence)
   end
 
-  @spec all?(S.t, (any -> boolean)) :: boolean
+  @spec all?(t, (any -> boolean)) :: boolean
   def all?(sequence, fun // fn(x) -> x end) do
     do_all?(Data.seq(sequence), fun)
   end
@@ -69,7 +71,7 @@ defmodule Data.Seq do
     end
   end
 
-  @spec any?(S.t, (any -> as_boolean(any))) :: boolean
+  @spec any?(t, (any -> as_boolean(any))) :: boolean
   def any?(sequence, fun // fn(x) -> x end) do
     do_any?(Data.seq(sequence), fun)
   end
@@ -86,7 +88,7 @@ defmodule Data.Seq do
     end
   end
 
-  @spec at(S.t, non_neg_integer, any) :: any
+  @spec at(t, non_neg_integer, any) :: any
   def at(sequence, index, default // nil) do
     do_at(0, Data.seq(sequence), index, default)
   end
@@ -103,8 +105,8 @@ defmodule Data.Seq do
     do_at(current + 1, S.next(sequence), index, default)
   end
 
-  @spec find(S.t, (any -> as_boolean(any)))      :: any
-  @spec find(S.t, any, (any -> as_boolean(any))) :: any
+  @spec find(t, (any -> as_boolean(any)))      :: any
+  @spec find(t, any, (any -> as_boolean(any))) :: any
   def find(sequence, if_none // nil, fun) do
     do_find(Data.seq(sequence), if_none, fun)
   end
@@ -123,8 +125,8 @@ defmodule Data.Seq do
     end
   end
 
-  @spec find_value(S.t, (any -> any))      :: any
-  @spec find_value(S.t, any, (any -> any)) :: any
+  @spec find_value(t, (any -> any))      :: any
+  @spec find_value(t, any, (any -> any)) :: any
   def find_value(sequence, if_none // nil, fun) do
     do_find_value(Data.seq(sequence), if_none, fun)
   end
@@ -143,7 +145,7 @@ defmodule Data.Seq do
     end
   end
 
-  @spec find_index(S.t, (any -> as_boolean(any))) :: any
+  @spec find_index(t, (any -> as_boolean(any))) :: any
   def find_index(sequence, fun) do
     do_find_index(0, Data.seq(sequence), fun)
   end
@@ -160,8 +162,8 @@ defmodule Data.Seq do
     end
   end
 
-  @spec contains?(S.t, any) :: boolean
-  @spec contains?(S.t, any, (any -> any)) :: boolean
+  @spec contains?(t, any) :: boolean
+  @spec contains?(t, any, (any -> any)) :: boolean
   def contains?(sequence, value, fun // fn(x) -> x end) do
     do_contains?(Data.seq(sequence), value, fun)
   end
@@ -178,7 +180,7 @@ defmodule Data.Seq do
     end
   end
 
-  @spec drop(S.t, non_neg_integer) :: S.t
+  @spec drop(t, non_neg_integer) :: t
   def drop(sequence, count) do
     do_drop(Data.seq(sequence), count)
   end
@@ -195,7 +197,7 @@ defmodule Data.Seq do
     do_drop(S.next(sequence), count - 1)
   end
 
-  @spec drop_while(S.t, (any -> as_boolean(term))) :: S.t
+  @spec drop_while(t, (any -> as_boolean(term))) :: t
   def drop_while(sequence, fun) do
     do_drop_while(Data.seq(sequence), fun)
   end
@@ -212,7 +214,7 @@ defmodule Data.Seq do
     end
   end
 
-  @spec take(S.t, non_neg_integer) :: S.t
+  @spec take(t, non_neg_integer) :: t
   def take(sequence, count) do
     Data.seq(do_take([], Data.seq(sequence), count))
   end
@@ -229,7 +231,7 @@ defmodule Data.Seq do
     [S.first(sequence) | acc] |> do_take(S.next(sequence), count - 1)
   end
 
-  @spec take_while(S.t, (any -> as_boolean(any))) :: S.t
+  @spec take_while(t, (any -> as_boolean(any))) :: t
   def take_while(sequence, fun) do
     Data.seq(do_take_while([], Data.seq(sequence), fun))
   end
@@ -248,7 +250,7 @@ defmodule Data.Seq do
     end
   end
 
-  @spec each(S.t, (any -> none)) :: none
+  @spec each(t, (any -> none)) :: none
   def each(sequence, fun) do
     do_each(Data.seq(sequence), fun)
   end
@@ -263,7 +265,7 @@ defmodule Data.Seq do
     do_each(S.next(sequence), fun)
   end
 
-  @spec select(S.t, (any -> as_boolean(term))) :: S.t
+  @spec select(t, (any -> as_boolean(term))) :: t
   def select(sequence, fun) do
     do_select([], Data.seq(sequence), fun)
   end
@@ -282,7 +284,7 @@ defmodule Data.Seq do
     end
   end
 
-  @spec reject(S.t, (any -> as_boolean(term))) :: S.t
+  @spec reject(t, (any -> as_boolean(term))) :: t
   def reject(sequence, fun) do
     do_reject([], Data.seq(sequence), fun)
   end
@@ -301,7 +303,7 @@ defmodule Data.Seq do
     end
   end
 
-  @spec map(S.t, (any -> any)) :: S.t
+  @spec map(t, (any -> any)) :: t
   def map(sequence, fun) do
     do_map([], Data.seq(sequence), fun)
   end
@@ -314,7 +316,7 @@ defmodule Data.Seq do
     [fun.(S.first(sequence)) | acc] |> do_map(S.next(sequence), fun)
   end
 
-  @spec reverse(S.t) :: S.t
+  @spec reverse(t) :: t
   def reverse(sequence) when sequence |> is_list do
     :lists.reverse(sequence)
   end
@@ -331,7 +333,7 @@ defmodule Data.Seq do
     [S.first(sequence) | acc] |> do_reverse(S.next(sequence))
   end
 
-  @spec reduce(S.t, any, (any, any -> any)) :: any
+  @spec reduce(t, any, (any, any -> any)) :: any
   def reduce(sequence, acc, fun) when sequence |> is_list do
     :lists.foldl(fun, acc, sequence)
   end
@@ -348,7 +350,7 @@ defmodule Data.Seq do
     fun.(S.first(sequence), acc) |> do_reduce(S.next(sequence), fun)
   end
 
-  @spec sort(S.t) :: S.t
+  @spec sort(t) :: t
   def sort(sequence) when sequence |> is_list do
     :lists.sort(sequence)
   end
@@ -357,7 +359,7 @@ defmodule Data.Seq do
     to_list(sequence) |> sort
   end
 
-  @spec sort(S.t, (any, any -> boolean)) :: S.t
+  @spec sort(t, (any, any -> boolean)) :: t
   def sort(sequence, fun)
 
   def sort(sequence, fun) when sequence |> is_list do
@@ -368,12 +370,12 @@ defmodule Data.Seq do
     to_list(sequence) |> sort(fun)
   end
 
-  @spec empty?(S.t) :: boolean
+  @spec empty?(t) :: boolean
   def empty?(sequence) do
     Data.seq(sequence) == nil
   end
 
-  @spec count(S.t) :: non_neg_integer
+  @spec count(t) :: non_neg_integer
   def count(sequence) when sequence |> is_list do
     sequence |> length
   end
@@ -390,7 +392,7 @@ defmodule Data.Seq do
     do_count(acc + 1, Data.Sequence.next(seq))
   end
 
-  @spec zip(S.t, S.t) :: S.t
+  @spec zip(t, t) :: t
   def zip(sequence1, sequence2) do
     do_zip([], Data.seq(sequence1), Data.seq(sequence2))
   end
@@ -407,7 +409,7 @@ defmodule Data.Seq do
     [{ S.first(sequence1), S.first(sequence2) } | acc] |> do_zip(S.next(sequence1), S.next(sequence2))
   end
 
-  @spec max(S.t) :: any
+  @spec max(t) :: any
   def max(sequence) when is_list(sequence) do
     :lists.max(sequence)
   end
@@ -422,7 +424,7 @@ defmodule Data.Seq do
     end
   end
 
-  @spec max(S.t, (any -> any)) :: any
+  @spec max(t, (any -> any)) :: any
   def max(sequence, fun) do
     { max, _ } = reduce Data.seq(sequence), fun.(S.first(sequence)), fn current, { _, max } = old ->
       value = fun.(current)
@@ -433,7 +435,7 @@ defmodule Data.Seq do
     max
   end
 
-  @spec min(S.t) :: any
+  @spec min(t) :: any
   def min(sequence) when is_list(sequence) do
     :lists.min(sequence)
   end
@@ -448,7 +450,7 @@ defmodule Data.Seq do
     end
   end
 
-  @spec min(S.t, (any -> any)) :: any
+  @spec min(t, (any -> any)) :: any
   def min(sequence, fun) do
     { min, _ } = reduce Data.seq(sequence), fun.(S.first(sequence)), fn current, { _, min } = old ->
       value = fun.(current)
@@ -459,8 +461,8 @@ defmodule Data.Seq do
     min
   end
 
-  @spec uniq(S.t)               :: S.t
-  @spec uniq(S.t, (any -> any)) :: S.t
+  @spec uniq(t)               :: t
+  @spec uniq(t, (any -> any)) :: t
   def uniq(sequence, fun // fn x -> x end) do
     { list, _ } = reduce Data.seq(sequence), { [], [] }, fn(current, { acc, fun_acc }) ->
       value = fun.(current)
@@ -475,7 +477,7 @@ defmodule Data.Seq do
     :lists.reverse list
   end
 
-  @spec count(S.t, (any -> boolean)) :: non_neg_integer
+  @spec count(t, (any -> boolean)) :: non_neg_integer
   def count(sequence, predicate) do
     do_count(0, Data.sequence(sequence), predicate)
   end
@@ -492,7 +494,7 @@ defmodule Data.Seq do
     end
   end
 
-  @spec to_list(S.t) :: list
+  @spec to_list(t) :: list
   def to_list(sequence) do
     do_to_list([], Data.seq(sequence))
   end
@@ -505,7 +507,7 @@ defmodule Data.Seq do
     [S.first(seq) | acc] |> do_to_list(S.next(seq))
   end
 
-  @spec last(S.t) :: term
+  @spec last(t) :: term
   def last(sequence) when sequence |> is_list do
     :lists.last(sequence)
   end
@@ -522,7 +524,7 @@ defmodule Data.Seq do
     first(seq) |> do_last(next(seq))
   end
 
-  @spec join(S.t, String.t) :: String.t
+  @spec join(t, String.t) :: String.t
   def join(seq, string) do
     [first | rest] = map seq, &[string, to_string(&1)]
 
