@@ -7,6 +7,8 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Dict do
+  @type t :: Data.Dictionary.t
+
   alias Data.Dictionary, as: D
   alias Data.Contains, as: C
   alias Data.Seq, as: S
