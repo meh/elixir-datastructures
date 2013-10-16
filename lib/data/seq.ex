@@ -521,4 +521,11 @@ defmodule Data.Seq do
   defp do_last(_, seq) do
     first(seq) |> do_last(next(seq))
   end
+
+  @spec join(S.t, String.t) :: String.t
+  def join(seq, string) do
+    [first | rest] = map seq, &[string, to_string(&1)]
+
+    [tl(first), rest] |> iolist_to_binary
+  end
 end
