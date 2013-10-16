@@ -530,4 +530,23 @@ defmodule Data.Seq do
 
     [tl(first), rest] |> iolist_to_binary
   end
+
+  @spec group_by(t, (term -> term))              :: Data.Dict.t
+  @spec group_by(t, Data.Dict.t, (term -> term)) :: Data.Dict.t
+  def group_by(seq, into // [], fun) do
+    do_group_by(into, Data.seq(seq), fun)
+  end
+
+  defp do_group_by(into, nil, _) do
+    into
+  end
+
+  defp do_group_by(into, seq, fun) do
+    alias Data.Dict
+
+    value = first(seq)
+
+    Dict.update(into, fun.(value), [], &(&1 ++ [value]))
+      |> do_group_by(next(seq), fun)
+  end
 end
