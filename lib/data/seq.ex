@@ -12,8 +12,13 @@ defmodule Data.Seq do
   alias Data.Sequence, as: S
   alias Data.Emptyable, as: E
 
-  defdelegate first(sequence), to: S
-  defdelegate next(sequence), to: S
+  def first(sequence) do
+    Data.seq(sequence) |> S.first
+  end
+
+  def next(sequence) do
+    Data.seq(sequence) |> S.next
+  end
 
   defmodule WithIndex do
     defrecordp :wrap, __MODULE__, index: 0, seq: nil
@@ -548,5 +553,21 @@ defmodule Data.Seq do
 
     Dict.update(into, fun.(value), [], &(&1 ++ [value]))
       |> do_group_by(next(seq), fun)
+  end
+
+  @spec split(t, integer) :: { [term], [term] }
+  def split(seq, count) when count >= 0 do
+    { _, list1, list2 } = reduce Data.seq(seq), { count, [], [] }, fn(entry, { counter, acc1, acc2 }) ->
+      if counter > 0 do
+        { counter - 1, [entry | acc1], acc2 }
+      else
+        { counter, acc1, [entry | acc2] }
+      end
+    end
+
+    { reverse(list1), reverse(list2) }
+  end
+
+  def split(seq, count) when count < 0 do
   end
 end
