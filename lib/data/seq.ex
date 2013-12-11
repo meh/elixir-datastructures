@@ -338,6 +338,11 @@ defmodule Data.Seq do
     [S.first(sequence) | acc] |> do_reverse(S.next(sequence))
   end
 
+  @spec reduce(t, (any, any -> any)) :: any
+  def reduce(sequence, fun) do
+    reduce(next(sequence), first(sequence), fun)
+  end
+
   @spec reduce(t, any, (any, any -> any)) :: any
   def reduce(sequence, acc, fun) when sequence |> is_list do
     :lists.foldl(fun, acc, sequence)
