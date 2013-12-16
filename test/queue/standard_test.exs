@@ -37,14 +37,14 @@ defmodule Test.Queue.Standard do
   end
 
   test :first do
-    assert Standard.new |> Data.first == nil
-    assert Standard.new |> Queue.enq(42) |> Data.first == 42
+    assert Standard.new |> Data.Seq.first == nil
+    assert Standard.new |> Queue.enq(42) |> Data.Seq.first == 42
   end
 
   test :next do
-    assert Standard.new |> Data.next == nil
-    assert Standard.new |> Queue.enq(42) |> Data.next == nil
-    assert Standard.new |> Queue.enq(42) |> Queue.enq(23) |> Data.next |> Data.to_list == [23]
+    assert Standard.new |> Data.Seq.next == nil
+    assert Standard.new |> Queue.enq(42) |> Data.Seq.next == nil
+    assert Standard.new |> Queue.enq(42) |> Queue.enq(23) |> Data.Seq.next |> Data.to_list == [23]
   end
 
   test :reverse do

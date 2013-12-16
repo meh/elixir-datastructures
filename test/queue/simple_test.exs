@@ -37,14 +37,14 @@ defmodule Test.Queue.Simple do
   end
 
   test :first do
-    assert Simple.new |> Data.first == nil
-    assert Simple.new |> Queue.enq(42) |> Data.first == 42
+    assert Simple.new |> Data.Seq.first == nil
+    assert Simple.new |> Queue.enq(42) |> Data.Seq.first == 42
   end
 
   test :next do
-    assert Simple.new |> Data.next == nil
-    assert Simple.new |> Queue.enq(42) |> Data.next == nil
-    assert Simple.new |> Queue.enq(42) |> Queue.enq(23) |> Data.next |> Data.to_list == [23]
+    assert Simple.new |> Data.Seq.next == nil
+    assert Simple.new |> Queue.enq(42) |> Data.Seq.next == nil
+    assert Simple.new |> Queue.enq(42) |> Queue.enq(23) |> Data.Seq.next |> Data.to_list == [23]
   end
 
   test :reverse do

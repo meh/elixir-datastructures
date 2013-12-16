@@ -9,9 +9,24 @@
 defmodule Data.Enumerable do
   defmacro __using__(_opts) do
     quote do
-      defdelegate reduce(self, acc, fun), to: Data.Reducible
       defdelegate member?(self, value), to: Data, as: :contains?
       defdelegate count(self), to: Data, as: :count
+
+      def reduce(_, { :halt, acc }, _fun) do
+        { :halted, acc }
+      end
+
+      def reduce(seq, { :suspend, acc }, fun) do
+        { :suspended, acc, &reduce(seq, &1, fun) }
+      end
+
+      def reduce(nil, { :cont, acc }, _fun) do
+        { :done, acc }
+      end
+
+      def reduce(seq, { :cont, acc }, fun) do
+        reduce(Data.Seq.next(seq), fun.(Data.Seq.first(seq), acc), fun)
+      end
     end
   end
 end
