@@ -49,24 +49,24 @@ defimpl Data.Sequence, for: List do
 end
 
 defimpl Data.Sequence, for: Range do
-  def first(Range[first: first, last: last]) when first <= last or first > last do
+  def first(first .. last) when first <= last or first > last do
     first
   end
 
-  def first(Range[]) do
+  def first(_ .. _) do
     nil
   end
 
-  def next(Range[first: first, last: last]) when first == last do
+  def next(first .. last) when first == last do
     nil
   end
 
-  def next(Range[first: first, last: last]) when first <= last do
-    Range[first: first + 1, last: last]
+  def next(first .. last) when first <= last do
+    first + 1 .. last
   end
 
-  def next(Range[first: first, last: last]) when first > last do
-    Range[first: first - 1, last: last]
+  def next(first .. last) when first > last do
+    first - 1 .. last
   end
 end
 
