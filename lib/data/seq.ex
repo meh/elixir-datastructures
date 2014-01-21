@@ -10,7 +10,6 @@ defmodule Data.Seq do
   @type t :: Data.Sequence.t | Data.Sequenceable.t | Data.Listable.t
 
   alias Data.Sequence, as: S
-  alias Data.Emptyable, as: E
 
   def first(sequence) do
     Data.seq(sequence) |> S.first
