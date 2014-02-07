@@ -14,7 +14,7 @@ defprotocol Data.Queue do
 
   @spec deq(t)    :: { v, t }
   @spec deq(t, v) :: { v, t }
-  def deq(self, default // nil)
+  def deq(self, default \\ nil)
 
   @spec deq!(t) :: { v, t } | no_return
   def deq!(self)
@@ -33,7 +33,7 @@ defimpl Data.Queue, for: List do
     list ++ [value]
   end
 
-  def deq(self, default // nil)
+  def deq(self, default \\ nil)
 
   def deq([], default) do
     { default, [] }

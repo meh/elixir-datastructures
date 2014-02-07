@@ -9,7 +9,7 @@
 defprotocol Data.Peekable do
   @spec peek(t)      :: any
   @spec peek(t, any) :: any
-  def peek(self, default // nil)
+  def peek(self, default \\ nil)
 
   @spec peek!(t) :: any | no_return
   def peek!(self)

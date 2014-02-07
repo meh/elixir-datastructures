@@ -14,7 +14,7 @@ defprotocol Data.Stack do
 
   @spec pop(t)    :: { v, t }
   @spec pop(t, v) :: { v, t }
-  def pop(self, default // nil)
+  def pop(self, default \\ nil)
 
   @spec pop!(t) :: { v, t } | no_return
   def pop!(self)
@@ -33,7 +33,7 @@ defimpl Data.Stack, for: List do
     [value | list]
   end
 
-  def pop(self, default // nil)
+  def pop(self, default \\ nil)
 
   def pop([], default) do
     { default, [] }

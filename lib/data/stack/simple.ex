@@ -65,7 +65,7 @@ defmodule Data.Stack.Simple do
   """
   @spec pop(t)    :: { v, t }
   @spec pop(t, v) :: { v, t }
-  def pop(stack, default // nil)
+  def pop(stack, default \\ nil)
 
   def pop(stack(list: []), default) do
     { default, stack() }
@@ -108,7 +108,7 @@ defmodule Data.Stack.Simple do
   """
   @spec peek(t)    :: v
   @spec peek(t, v) :: v
-  def peek(stack, default // nil)
+  def peek(stack, default \\ nil)
 
   def peek(stack(list: []), default) do
     default

@@ -21,7 +21,7 @@ defmodule Data.Dictionary.Standard do
     :dict.is_key(key, self)
   end
 
-  def get(wrap(dict: self), key, default // nil) do
+  def get(wrap(dict: self), key, default \\ nil) do
     case :dict.find(key, self) do
       { :ok, value } ->
         value

@@ -29,7 +29,7 @@ defmodule Data.Queue.Standard do
     wrap(queue: :queue.in_r(value, queue))
   end
 
-  def deq(wrap(queue: queue), default // nil) do
+  def deq(wrap(queue: queue), default \\ nil) do
     case :queue.out(queue) do
       { :empty, queue } ->
         { default, wrap(queue: queue) }
@@ -49,7 +49,7 @@ defmodule Data.Queue.Standard do
     end
   end
 
-  def reverse_deq(wrap(queue: queue), default // nil) do
+  def reverse_deq(wrap(queue: queue), default \\ nil) do
     case :queue.out_r(queue) do
       { :empty, queue } ->
         { default, wrap(queue: queue) }
@@ -69,7 +69,7 @@ defmodule Data.Queue.Standard do
     end
   end
 
-  def peek(wrap(queue: queue), default // nil) do
+  def peek(wrap(queue: queue), default \\ nil) do
     case :queue.peek(queue) do
       :empty ->
         default
@@ -89,7 +89,7 @@ defmodule Data.Queue.Standard do
     end
   end
 
-  def reverse_peek(wrap(queue: queue), default // nil) do
+  def reverse_peek(wrap(queue: queue), default \\ nil) do
     case :queue.peek_r(queue) do
       :empty ->
         default

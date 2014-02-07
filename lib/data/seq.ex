@@ -59,7 +59,7 @@ defmodule Data.Seq do
   end
 
   @spec all?(t, (any -> boolean)) :: boolean
-  def all?(sequence, fun // fn(x) -> x end) do
+  def all?(sequence, fun \\ fn(x) -> x end) do
     do_all?(Data.seq(sequence), fun)
   end
 
@@ -76,7 +76,7 @@ defmodule Data.Seq do
   end
 
   @spec any?(t, (any -> as_boolean(any))) :: boolean
-  def any?(sequence, fun // fn(x) -> x end) do
+  def any?(sequence, fun \\ fn(x) -> x end) do
     do_any?(Data.seq(sequence), fun)
   end
 
@@ -93,7 +93,7 @@ defmodule Data.Seq do
   end
 
   @spec at(t, non_neg_integer, any) :: any
-  def at(sequence, index, default // nil) do
+  def at(sequence, index, default \\ nil) do
     do_at(0, Data.seq(sequence), index, default)
   end
 
@@ -111,7 +111,7 @@ defmodule Data.Seq do
 
   @spec find(t, (any -> as_boolean(any)))      :: any
   @spec find(t, any, (any -> as_boolean(any))) :: any
-  def find(sequence, if_none // nil, fun) do
+  def find(sequence, if_none \\ nil, fun) do
     do_find(Data.seq(sequence), if_none, fun)
   end
 
@@ -131,7 +131,7 @@ defmodule Data.Seq do
 
   @spec find_value(t, (any -> any))      :: any
   @spec find_value(t, any, (any -> any)) :: any
-  def find_value(sequence, if_none // nil, fun) do
+  def find_value(sequence, if_none \\ nil, fun) do
     do_find_value(Data.seq(sequence), if_none, fun)
   end
 
@@ -168,7 +168,7 @@ defmodule Data.Seq do
 
   @spec contains?(t, any) :: boolean
   @spec contains?(t, any, (any -> any)) :: boolean
-  def contains?(sequence, value, fun // fn(x) -> x end) do
+  def contains?(sequence, value, fun \\ fn(x) -> x end) do
     do_contains?(Data.seq(sequence), value, fun)
   end
 
@@ -472,7 +472,7 @@ defmodule Data.Seq do
 
   @spec uniq(t)               :: t
   @spec uniq(t, (any -> any)) :: t
-  def uniq(sequence, fun // fn x -> x end) do
+  def uniq(sequence, fun \\ fn x -> x end) do
     { list, _ } = reduce Data.seq(sequence), { [], [] }, fn(current, { acc, fun_acc }) ->
       value = fun.(current)
 
@@ -542,7 +542,7 @@ defmodule Data.Seq do
 
   @spec group_by(t, (term -> term))              :: Data.Dict.t
   @spec group_by(t, Data.Dict.t, (term -> term)) :: Data.Dict.t
-  def group_by(seq, into // [], fun) do
+  def group_by(seq, into \\ [], fun) do
     do_group_by(into, Data.seq(seq), fun)
   end
 

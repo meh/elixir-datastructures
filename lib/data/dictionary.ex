@@ -12,7 +12,7 @@ defprotocol Data.Dictionary do
 
   @spec get(t, k)    :: v
   @spec get(t, k, v) :: v
-  def get(self, key, default // nil)
+  def get(self, key, default \\ nil)
 
   @spec get!(t, k) :: v | no_return
   def get!(self, key)
@@ -31,7 +31,7 @@ defprotocol Data.Dictionary do
 end
 
 defimpl Data.Dictionary, for: List do
-  def get(self, key, default // nil) do
+  def get(self, key, default \\ nil) do
     case :lists.keyfind(key, 1, self) do
       { ^key, value } ->
         value

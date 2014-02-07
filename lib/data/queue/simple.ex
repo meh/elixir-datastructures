@@ -74,7 +74,7 @@ defmodule Data.Queue.Simple do
   """
   @spec deq(t)    :: { v, t }
   @spec deq(t, v) :: { v, t }
-  def deq(queue, default // nil)
+  def deq(queue, default \\ nil)
 
   def deq(queue(enqueue: [], dequeue: []), default) do
     { default, queue() }
@@ -129,7 +129,7 @@ defmodule Data.Queue.Simple do
   """
   @spec peek(t)    :: v
   @spec peek(t, v) :: v
-  def peek(queue, default // nil)
+  def peek(queue, default \\ nil)
 
   def peek(queue(enqueue: [], dequeue: []), default) do
     default

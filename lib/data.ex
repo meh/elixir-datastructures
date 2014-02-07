@@ -56,7 +56,7 @@ defmodule Data do
 
   @spec peek(Data.Peekable.t)      :: any
   @spec peek(Data.Peekable.t, any) :: any
-  def peek(self, default // nil) do
+  def peek(self, default \\ nil) do
     Data.Peekable.peek(self, default)
   end
 

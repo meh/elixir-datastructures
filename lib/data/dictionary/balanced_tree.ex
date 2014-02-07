@@ -29,7 +29,7 @@ defmodule Data.Dictionary.BalancedTree do
     :gb_trees.is_defined(key, self)
   end
 
-  def get(wrap(dict: self), key, default // nil) do
+  def get(wrap(dict: self), key, default \\ nil) do
     case :gb_trees.lookup(key, self) do
       { :value, value } ->
         value
