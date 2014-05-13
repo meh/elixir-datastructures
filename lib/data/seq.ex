@@ -537,7 +537,7 @@ defmodule Data.Seq do
   def join(seq, string) do
     [first | rest] = map seq, &[string, to_string(&1)]
 
-    [tl(first), rest] |> iolist_to_binary
+    [tl(first), rest] |> iodata_to_binary
   end
 
   @spec group_by(t, (term -> term))              :: Data.Dict.t

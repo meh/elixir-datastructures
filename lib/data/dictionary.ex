@@ -60,10 +60,10 @@ defimpl Data.Dictionary, for: List do
   end
 
   def keys(self) do
-    lc { key, _ } inlist self, do: key
+    for { key, _ } <- self, do: key
   end
 
   def values(self) do
-    lc { _, value } inlist self, do: value
+    for { _, value } <- self, do: value
   end
 end
