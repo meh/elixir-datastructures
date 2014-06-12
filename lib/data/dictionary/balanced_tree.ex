@@ -1,3 +1,4 @@
+require Record
 #            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 #                    Version 2, December 2004
 #
@@ -7,7 +8,7 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Dictionary.BalancedTree do
-  defrecordp :wrap, __MODULE__, dict: nil
+  Record.defrecordp :wrap, __MODULE__, dict: nil
 
   def new do
     wrap(dict: :gb_trees.empty)
@@ -100,7 +101,7 @@ defmodule Data.Dictionary.BalancedTree do
   end
 
   defmodule Sequence do
-    defrecordp :seq, __MODULE__, iter: nil
+    Record.defrecordp :seq, __MODULE__, iter: nil
 
     def new(dict) do
       seq(iter: :gb_trees.iterator(dict))

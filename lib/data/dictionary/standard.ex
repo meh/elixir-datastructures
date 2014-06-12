@@ -1,3 +1,4 @@
+require Record
 #            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 #                    Version 2, December 2004
 #
@@ -7,7 +8,7 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Dictionary.Standard do
-  defrecordp :wrap, __MODULE__, dict: nil
+  Record.defrecordp :wrap, __MODULE__, dict: nil
 
   def new do
     wrap(dict: :dict.new)
