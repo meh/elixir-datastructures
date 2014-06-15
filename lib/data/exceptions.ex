@@ -10,11 +10,11 @@ defexception Data.Empty, message: "the data is empty"
 defexception Data.OutOfBounds, message: "out of bounds"
 
 defexception Data.Missing, key: nil, what: nil do
-  def message(Data.Missing[key: key]) when key != nil do
+  def message( key ) when key != nil do
     "key missing: #{inspect key}"
   end
 
-  def message(Data.Missing[what: what]) when what != nil do
+  def message( what ) when what != nil do
     "#{inspect what} is missing"
   end
 end

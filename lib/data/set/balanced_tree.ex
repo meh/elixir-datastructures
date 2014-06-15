@@ -7,10 +7,11 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Set.BalancedTree do
+  require Record
   @opaque t :: record
   @type   v :: any
 
-  defrecordp :wrap, __MODULE__, set: nil
+  Record.defrecordp :wrap, __MODULE__, set: nil
 
   def new do
     wrap(set: :gb_sets.new)

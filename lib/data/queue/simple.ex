@@ -10,11 +10,11 @@ defmodule Data.Queue.Simple do
   @moduledoc """
   A simple and performant queue.
   """
-
+  require Record
   @opaque t :: record
   @type   v :: any
 
-  defrecordp :queue, __MODULE__, enqueue: [], dequeue: []
+  Record.defrecordp :queue, __MODULE__, enqueue: [], dequeue: []
 
   @doc """
   Creates an empty queue.

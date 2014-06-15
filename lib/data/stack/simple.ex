@@ -7,14 +7,15 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Stack.Simple do
+  require Record
+
   @moduledoc """
   A simple stack.
   """
-
   @opaque t :: record
   @type   v :: any
 
-  defrecordp :stack, __MODULE__, list: []
+  Record.defrecordp :stack, __MODULE__, list: []
 
   @doc """
   Creates an empty stack.
