@@ -7,6 +7,7 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Seq do
+  require Record
   @type t :: Data.Sequence.t | Data.Sequenceable.t | Data.Listable.t
 
   alias Data.Sequence, as: S
@@ -20,7 +21,8 @@ defmodule Data.Seq do
   end
 
   defmodule WithIndex do
-    defrecordp :wrap, __MODULE__, index: 0, seq: nil
+
+    Record.defrecordp :wrap, __MODULE__, index: 0, seq: nil
 
     alias Data.Sequence, as: S
 
@@ -537,7 +539,7 @@ defmodule Data.Seq do
   def join(seq, string) do
     [first | rest] = map seq, &[string, to_string(&1)]
 
-    [tl(first), rest] |> iolist_to_binary
+    [tl(first), rest] |> iodata_to_binary
   end
 
   @spec group_by(t, (term -> term))              :: Data.Dict.t

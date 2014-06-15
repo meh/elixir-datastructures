@@ -7,7 +7,8 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Queue.Standard do
-  defrecordp :wrap, __MODULE__, queue: nil
+  require Record
+  Record.defrecordp :wrap, __MODULE__, queue: nil
 
   def new do
     wrap(queue: :queue.new)

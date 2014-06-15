@@ -31,6 +31,9 @@ defprotocol Data.Dictionary do
 end
 
 defimpl Data.Dictionary, for: List do
+  
+  require Record
+
   def get(self, key, default \\ nil) do
     case :lists.keyfind(key, 1, self) do
       { ^key, value } ->
@@ -60,10 +63,12 @@ defimpl Data.Dictionary, for: List do
   end
 
   def keys(self) do
-    lc { key, _ } inlist self, do: key
+    for { key, _ } <- self, do: key
+    #lc { key, _ } inlist self, do: key
   end
 
   def values(self) do
-    lc { _, value } inlist self, do: value
+    for { _, value } <- self, do: value
+    #lc { _, value } inlist self, do: value
   end
 end
