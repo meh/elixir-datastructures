@@ -1,4 +1,3 @@
-require Record
 #            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 #                    Version 2, December 2004
 #
@@ -6,6 +5,8 @@ require Record
 #   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
+
+require Record
 
 defmodule Data.Dictionary.Standard do
   Record.defrecordp :wrap, __MODULE__, dict: nil
@@ -52,6 +53,12 @@ defmodule Data.Dictionary.Standard do
     else
       wrap(dict: :dict.store(key, value, self))
     end
+  end
+
+  def get_and_update(me, key, fun) do
+    value = get(me, key)
+    {get, update} = fun.(value)
+    {get, put(me, key, update)}
   end
 
   def delete(wrap(dict: self), key) do
@@ -160,7 +167,8 @@ defimpl Enumerable, for: Data.Dictionary.Standard do
 end
 
 defimpl Access, for: Data.Dictionary.Standard do
-  defdelegate access(self, key), to: Data.Dictionary.Standard, as: :get
+  defdelegate get(self, key), to: Data.Dictionary.Standard
+  defdelegate get_and_update(self, key, fun), to: Data.Dictionary.Standard
 end
 
 defimpl Inspect, for: Data.Dictionary.Standard do

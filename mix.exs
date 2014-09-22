@@ -4,7 +4,7 @@ defmodule Datastructures.Mixfile do
   def project do
     [ app: :datastructures,
       version: "0.0.1",
-      elixir: "~> 0.13.3-dev or ~> 0.14.0",
+      elixir: "~> 1.0.0",
       deps: deps ]
   end
 

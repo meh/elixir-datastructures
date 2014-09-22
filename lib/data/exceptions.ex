@@ -7,23 +7,21 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Empty do
-  defexception [:message]
-  def exception(_) do
-    %Data.Empty{message: "the data is empty"}
-  end
+  defexception message: "the data is empty"
 end
 
-defexception Data.OutOfBounds, message: "out of bounds"
+defmodule Data.OutOfBounds do
+  defexception message: "out of bounds"
+end
 
 defmodule Data.Missing do
-  defexception [:message, :key, :what]
-  
-  def exception(opts) do
-    cond do
-      key = opts[:key] != nil ->
-        %Data.Missing{message: "key missing: #{inspect key}", key: key}
-      what = opts[:what] != nil ->
-        %Data.Missing{message: "#{inspect what} is missing", what: what}
-    end
+  defexception message: nil
+
+  def exception(key: key) when key != nil do
+    "key missing: #{inspect key}"
+  end
+
+  def exception(what: what) when what != nil do
+    "#{inspect what} is missing"
   end
 end
