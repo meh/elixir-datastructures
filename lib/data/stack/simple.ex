@@ -6,6 +6,8 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
+require Record
+
 defmodule Data.Stack.Simple do
   @moduledoc """
   A simple stack.
@@ -14,7 +16,7 @@ defmodule Data.Stack.Simple do
   @opaque t :: record
   @type   v :: any
 
-  defrecordp :stack, __MODULE__, list: []
+  Record.defrecordp :stack, __MODULE__, list: []
 
   @doc """
   Creates an empty stack.

@@ -6,8 +6,10 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
+require Record
+
 defmodule Data.Set.Standard do
-  defrecordp :wrap, __MODULE__, set: nil
+  Record.defrecordp :wrap, __MODULE__, set: nil
 
   def new do
     wrap(set: :sets.new)

@@ -6,6 +6,8 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
+require Record
+
 defmodule Data.Queue.Simple do
   @moduledoc """
   A simple and performant queue.
@@ -14,7 +16,7 @@ defmodule Data.Queue.Simple do
   @opaque t :: record
   @type   v :: any
 
-  defrecordp :queue, __MODULE__, enqueue: [], dequeue: []
+  Record.defrecordp :queue, __MODULE__, enqueue: [], dequeue: []
 
   @doc """
   Creates an empty queue.

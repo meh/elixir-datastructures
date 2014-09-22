@@ -6,8 +6,10 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
+require Record
+
 defmodule Data.Dictionary.BalancedTree do
-  defrecordp :wrap, __MODULE__, dict: nil
+  Record.defrecordp :wrap, __MODULE__, dict: nil
 
   def new do
     wrap(dict: :gb_trees.empty)
@@ -61,6 +63,12 @@ defmodule Data.Dictionary.BalancedTree do
     end
   end
 
+  def get_and_update(me, key, fun) do
+    value = get(me, key)
+    {get, update} = fun.(value)
+    {get, put(me, key, update)}
+  end
+
   def delete(wrap(dict: self), key) do
     wrap(dict: :gb_trees.delete_any(key, self))
   end
@@ -100,7 +108,7 @@ defmodule Data.Dictionary.BalancedTree do
   end
 
   defmodule Sequence do
-    defrecordp :seq, __MODULE__, iter: nil
+    Record.defrecordp :seq, __MODULE__, iter: nil
 
     def new(dict) do
       seq(iter: :gb_trees.iterator(dict))
@@ -178,7 +186,8 @@ defimpl Data.Sequenceable, for: Data.Dictionary.BalancedTree do
 end
 
 defimpl Access, for: Data.Dictionary.BalancedTree do
-  defdelegate access(self, key), to: Data.Dictionary.BalancedTree, as: :get
+  defdelegate get(self, key), to: Data.Dictionary.BalancedTree
+  defdelegate get_and_update(self, key, fun), to: Data.Dictionary.BalancedTree
 end
 
 defimpl Enumerable, for: Data.Dictionary.BalancedTree do
