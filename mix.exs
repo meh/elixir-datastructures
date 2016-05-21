@@ -4,7 +4,9 @@ defmodule Datastructures.Mixfile do
   def project do
     [ app: :datastructures,
       version: "0.1.0",
-      deps: deps ]
+      deps: deps,
+      package: package,
+      description: "Elixir protocols and implementations for various data structures." ]
   end
 
   # Configuration for the OTP application
@@ -16,5 +18,11 @@ defmodule Datastructures.Mixfile do
   # { :foobar, "0.1", git: "https://github.com/elixir-lang/foobar.git" }
   defp deps do
     []
+  end
+
+  defp package do
+    [ maintainers: ["meh"],
+      licenses: ["WTFPL"],
+      links: %{"GitHub" => "https://github.com/meh/elixir-datastructures"} ]
   end
 end
