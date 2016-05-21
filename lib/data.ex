@@ -10,6 +10,17 @@ defmodule Data do
   alias Data.Protocol, as: P
   alias Data.Error, as: E
 
+  defmacro __using__(_opts) do
+    quote location: :keep do
+      alias Data.Dict
+      alias Data.Set
+      alias Data.Queue
+      alias Data.Seq
+      alias Data.Set
+      alias Data.Stack
+    end
+  end
+
   @spec contains?(P.Contains.t | P.Sequence.t, any) :: any
   def contains?(self, what) do
     cond do
