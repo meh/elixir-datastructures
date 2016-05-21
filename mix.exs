@@ -3,7 +3,7 @@ defmodule Datastructures.Mixfile do
 
   def project do
     [ app: :datastructures,
-      version: "0.1.1",
+      version: "0.1.2",
       deps: deps,
       package: package,
       description: "Elixir protocols and implementations for various data structures." ]
