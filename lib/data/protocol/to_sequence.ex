@@ -6,11 +6,13 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Protocol.ToSequence do
+alias Data.Protocol.ToSequence, as: Protocol
+
+defprotocol Protocol do
   def to_sequence(self)
 end
 
-defimpl Data.Protocol.ToSequence, for: List do
+defimpl Protocol, for: List do
   def to_sequence(self) do
     self
   end

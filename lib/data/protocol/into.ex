@@ -6,27 +6,39 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-alias Data.Protocol.Count, as: Protocol
+alias Data.Protocol.Into, as: Protocol
 
 defprotocol Protocol do
-  @spec count(t) :: non_neg_integer
-  def count(self)
+  @spec into(t, any) :: t
+  def into(self, value)
 end
 
 defimpl Protocol, for: List do
-  def count(self) do
-    length(self)
+  def into(self, value) do
+    self ++ [value]
   end
 end
 
 defimpl Protocol, for: Map do
-  defdelegate count(self), to: Map, as: :size
+  def into(self, { key, value }) do
+    self |> Map.put(key, value)
+  end
 end
 
 defimpl Protocol, for: MapSet do
-  defdelegate count(self), to: MapSet, as: :size
+  def into(self, value) do
+    self |> MapSet.put(value)
+  end
+end
+
+defimpl Protocol, for: HashDict do
+  def into(self, { key, value }) do
+    self |> HashDict.put(key, value)
+  end
 end
 
 defimpl Protocol, for: HashSet do
-  defdelegate count(self), to: HashSet, as: :size
+  def into(self, value) do
+    self |> HashSet.put(value)
+  end
 end

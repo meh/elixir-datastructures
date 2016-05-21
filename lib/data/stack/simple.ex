@@ -8,6 +8,7 @@
 
 defmodule Data.Stack.Simple do
   alias Data.Protocol, as: P
+  alias __MODULE__, as: T
 
   @moduledoc """
   A simple stack.
@@ -23,7 +24,7 @@ defmodule Data.Stack.Simple do
   """
   @spec new :: t
   def new do
-    %__MODULE__{}
+    %T{}
   end
 
   @doc """
@@ -31,13 +32,13 @@ defmodule Data.Stack.Simple do
 
   ## Examples
 
-      iex> Data.Stack.Simple.new(1 .. 4)
+      iex> T.new(1 .. 4)
       #Stack<[1,2,3,4]>
 
   """
   @spec new(Enum.t) :: t
   def new(enum) do
-    %__MODULE__{list: Data.to_list(enum)}
+    %T{list: Data.to_list(enum)}
   end
 
   @doc """
@@ -45,13 +46,13 @@ defmodule Data.Stack.Simple do
 
   ## Examples
 
-      iex> Data.Stack.Simple.new |> Stack.push(42) |> Stack.push(23) |> Stack.push(1337)
+      iex> T.new |> Stack.push(42) |> Stack.push(23) |> Stack.push(1337)
       #Stack<[1337,23,42]>
 
   """
   @spec push(t, v) :: t
-  def push(%__MODULE__{list: list}, value) do
-    %__MODULE__{list: [value | list]}
+  def push(%T{list: list}, value) do
+    %T{list: [value | list]}
   end
 
   @doc """
@@ -59,19 +60,19 @@ defmodule Data.Stack.Simple do
 
   ## Examples
 
-      iex> Data.Stack.Simple.new |> Stack.push(42) |> Stack.push(23) |> Stack.pop
+      iex> T.new |> Stack.push(42) |> Stack.push(23) |> Stack.pop
       {23,#Stack<[42]>}
-      iex> Data.Stack.Simple.new |> Stack.pop(:empty)
+      iex> T.new |> Stack.pop(:empty)
       {:empty,#Stack<[]>}
 
   """
   @spec pop(t) :: { v, t }
-  def pop(%__MODULE__{list: []}) do
-    { :empty, %__MODULE__{} }
+  def pop(%T{list: []}) do
+    { :empty, %T{} }
   end
 
-  def pop(%__MODULE__{list: [head | rest]}) do
-    { { :value, head }, %__MODULE__{list: rest} }
+  def pop(%T{list: [head | rest]}) do
+    { { :value, head }, %T{list: rest} }
   end
 
   @doc """
@@ -79,18 +80,18 @@ defmodule Data.Stack.Simple do
 
   ## Examples
 
-      iex> Data.Stack.Simple.new |> Stack.push(42) |> Stack.peek
+      iex> T.new |> Stack.push(42) |> Stack.peek
       42
-      iex> Data.Stack.Simple.new |> Stack.peek(:empty)
+      iex> T.new |> Stack.peek(:empty)
       :empty
 
   """
   @spec peek(t) :: v
-  def peek(%__MODULE__{list: []}) do
+  def peek(%T{list: []}) do
     :empty
   end
 
-  def peek(%__MODULE__{list: [head | _]}) do
+  def peek(%T{list: [head | _]}) do
     { :value, head }
   end
 
@@ -99,40 +100,40 @@ defmodule Data.Stack.Simple do
 
   ## Examples
 
-      iex> Data.Stack.Simple.new(1 .. 4) |> Stack.reverse
+      iex> T.new(1 .. 4) |> Stack.reverse
       #Stack<[4,3,2,1]>
 
   """
   @spec reverse(t) :: t
-  def reverse(%__MODULE__{list: list}) do
-    %__MODULE__{list: Enum.reverse(list)}
+  def reverse(%T{list: list}) do
+    %T{list: Enum.reverse(list)}
   end
 
   @doc """
   Check if the stack is empty.
   """
   @spec empty?(t) :: boolean
-  def empty?(%__MODULE__{list: []}) do
+  def empty?(%T{list: []}) do
     true
   end
 
-  def empty?(%__MODULE__{}) do
+  def empty?(%T{}) do
     false
   end
 
   def clear(_) do
-    %__MODULE__{list: []}
+    %T{list: []}
   end
 
   @doc """
   Check if the value is present in the stack.
   """
   @spec member?(t, v) :: boolean
-  def member?(%__MODULE__{list: []}, _) do
+  def member?(%T{list: []}, _) do
     false
   end
 
-  def member?(%__MODULE__{list: list}, value) do
+  def member?(%T{list: list}, value) do
     Enum.member?(list, value)
   end
 
@@ -140,7 +141,7 @@ defmodule Data.Stack.Simple do
   Get the size of the stack.
   """
   @spec size(t) :: non_neg_integer
-  def size(%__MODULE__{list: list}) do
+  def size(%T{list: list}) do
     length(list)
   end
 
@@ -148,7 +149,7 @@ defmodule Data.Stack.Simple do
   Fold the stack from the left.
   """
   @spec foldl(t, any, ((v, any) -> any)) :: any
-  def foldl(%__MODULE__{list: list}, acc, fun) do
+  def foldl(%T{list: list}, acc, fun) do
     List.foldl(list, acc, fun)
   end
 
@@ -156,7 +157,7 @@ defmodule Data.Stack.Simple do
   Fold the stack from the right.
   """
   @spec foldr(t, any, ((v, any) -> any)) :: any
-  def foldr(%__MODULE__{list: list}, acc, fun) do
+  def foldr(%T{list: list}, acc, fun) do
     List.foldr(list, acc, fun)
   end
 
@@ -164,30 +165,30 @@ defmodule Data.Stack.Simple do
   Convert the stack to a list.
   """
   @spec to_list(t) :: [v]
-  def to_list(%__MODULE__{list: list}) do
+  def to_list(%T{list: list}) do
     list
   end
 
   defimpl P.Stack do
-    defdelegate push(self, value), to: Data.Stack.Simple
-    defdelegate pop(self), to: Data.Stack.Simple
+    defdelegate push(self, value), to: T
+    defdelegate pop(self), to: T
   end
 
   defimpl P.Peek do
-    defdelegate peek(self), to: Data.Stack.Simple
+    defdelegate peek(self), to: T
   end
 
   defimpl P.Reverse do
-    defdelegate reverse(self), to: Data.Stack.Simple
+    defdelegate reverse(self), to: T
   end
 
   defimpl P.Empty do
-    defdelegate empty?(self), to: Data.Stack.Simple
-    defdelegate clear(self), to: Data.Stack.Simple
+    defdelegate empty?(self), to: T
+    defdelegate clear(self), to: T
   end
 
   defimpl P.Reduce do
-    defdelegate reduce(self, acc, fun), to: Data.Stack.Simple, as: :foldl
+    defdelegate reduce(self, acc, fun), to: T, as: :foldl
   end
 
   defimpl P.Sequence do
@@ -196,8 +197,8 @@ defmodule Data.Stack.Simple do
     end
 
     def next(self) do
-      if Data.Stack.Simple.size(self) > 1 do
-        { _, next } = Data.Stack.Simple.pop(self)
+      if T.size(self) > 1 do
+        { _, next } = T.pop(self)
 
         next
       end
@@ -205,11 +206,17 @@ defmodule Data.Stack.Simple do
   end
 
   defimpl P.ToList do
-    defdelegate to_list(self), to: Data.Stack.Simple
+    defdelegate to_list(self), to: T
   end
 
   defimpl P.Contains do
-    defdelegate contains?(self, key), to: Data.Stack.Simple, as: :member?
+    defdelegate contains?(self, key), to: T, as: :member?
+  end
+
+  defimpl P.Into do
+    def into(self, value) do
+      self |> T.push(value)
+    end
   end
 
   defimpl Enumerable do
@@ -220,7 +227,7 @@ defmodule Data.Stack.Simple do
     import Inspect.Algebra
 
     def inspect(stack, opts) do
-      concat ["#Stack<", Kernel.inspect(Data.Stack.Simple.to_list(stack), opts), ">"]
+      concat ["#Stack<", to_doc(T.to_list(stack), opts), ">"]
     end
   end
 end

@@ -6,7 +6,9 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Protocol.Queue do
+alias Data.Protocol.Queue, as: Protocol
+
+defprotocol Protocol do
   @type v :: any
 
   @spec enq(t, v) :: t
@@ -16,7 +18,7 @@ defprotocol Data.Protocol.Queue do
   def deq(self)
 end
 
-defimpl Data.Protocol.Queue, for: List do
+defimpl Protocol, for: List do
   def new do
     []
   end

@@ -6,7 +6,9 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Protocol.Sequence do
+alias Data.Protocol.Sequence, as: Protocol
+
+defprotocol Protocol do
   @type v :: any
 
   @spec first(t) :: v
@@ -16,7 +18,7 @@ defprotocol Data.Protocol.Sequence do
   def next(self)
 end
 
-defimpl Data.Protocol.Sequence, for: Atom do
+defimpl Protocol, for: Atom do
   def first(nil) do
     nil
   end
@@ -26,7 +28,7 @@ defimpl Data.Protocol.Sequence, for: Atom do
   end
 end
 
-defimpl Data.Protocol.Sequence, for: List do
+defimpl Protocol, for: List do
   def first([]) do
     nil
   end
@@ -48,7 +50,7 @@ defimpl Data.Protocol.Sequence, for: List do
   end
 end
 
-defimpl Data.Protocol.Sequence, for: Range do
+defimpl Protocol, for: Range do
   def first(first .. last) when first <= last or first > last do
     first
   end
@@ -70,7 +72,7 @@ defimpl Data.Protocol.Sequence, for: Range do
   end
 end
 
-defimpl Data.Protocol.Sequence, for: BitString do
+defimpl Protocol, for: BitString do
   def first(string) do
     case String.next_grapheme(string) do
       :no_grapheme ->

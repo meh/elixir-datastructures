@@ -6,7 +6,9 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Protocol.Set do
+alias Data.Protocol.Set, as: Protocol
+
+defprotocol Protocol do
   @type v :: any
 
   @spec add(t, v) :: t
@@ -31,7 +33,7 @@ defprotocol Data.Protocol.Set do
   def disjoint?(self, other)
 end
 
-defimpl Data.Protocol.Set, for: List do
+defimpl Protocol, for: List do
   def new do
     []
   end
@@ -75,4 +77,24 @@ defimpl Data.Protocol.Set, for: List do
   def disjoint?(self, other) do
     :ordsets.is_disjoint(new(other), self)
   end
+end
+
+defimpl Protocol, for: MapSet do
+  defdelegate add(self, value), to: MapSet, as: :put
+  defdelegate delete(self, value), to: MapSet
+  defdelegate union(self, other), to: MapSet
+  defdelegate intersection(self, other), to: MapSet
+  defdelegate difference(self, other), to: MapSet
+  defdelegate subset?(self, other), to: MapSet
+  defdelegate disjoint?(self, other), to: MapSet
+end
+
+defimpl Protocol, for: HashSet do
+  defdelegate add(self, value), to: HashSet, as: :put
+  defdelegate delete(self, value), to: HashSet
+  defdelegate union(self, other), to: HashSet
+  defdelegate intersection(self, other), to: HashSet
+  defdelegate difference(self, other), to: HashSet
+  defdelegate subset?(self, other), to: HashSet
+  defdelegate disjoint?(self, other), to: HashSet
 end

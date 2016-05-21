@@ -6,11 +6,13 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Protocol.Contains do
+alias Data.Protocol.Contains, as: Protocol
+
+defprotocol Protocol do
   def contains?(self, what)
 end
 
-defimpl Data.Protocol.Contains, for: List do
+defimpl Protocol, for: List do
   def contains?([], _) do
     false
   end
@@ -28,6 +30,14 @@ defimpl Data.Protocol.Contains, for: List do
   end
 end
 
-defimpl Data.Protocol.Contains, for: Map do
+defimpl Protocol, for: Map do
   defdelegate contains?(self, key), to: Map, as: :has_key?
+end
+
+defimpl Protocol, for: MapSet do
+  defdelegate contains?(self, key), to: MapSet, as: :member?
+end
+
+defimpl Protocol, for: HashSet do
+  defdelegate contains?(self, key), to: HashSet, as: :member?
 end

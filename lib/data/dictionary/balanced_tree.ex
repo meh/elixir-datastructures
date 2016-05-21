@@ -8,30 +8,31 @@
 
 defmodule Data.Dictionary.BalancedTree do
   alias Data.Protocol, as: P
+  alias __MODULE__, as: T
 
   defstruct dict: nil
 
   def new do
-    %__MODULE__{dict: :gb_trees.empty}
+    %T{dict: :gb_trees.empty}
   end
 
   def new({ 0, nil } = self) do
-    %__MODULE__{dict: self}
+    %T{dict: self}
   end
 
   def new({ length, tree } = self) when is_integer(length) and is_tuple(tree) do
-    %__MODULE__{dict: self}
+    %T{dict: self}
   end
 
   def new(enum) do
-    %__MODULE__{dict: Data.to_list(enum) |> :orddict.from_list |> :gb_trees.from_orddict}
+    %T{dict: Data.to_list(enum) |> :orddict.from_list |> :gb_trees.from_orddict}
   end
 
-  def has_key?(%__MODULE__{dict: self}, key) do
+  def has_key?(%T{dict: self}, key) do
     :gb_trees.is_defined(key, self)
   end
 
-  def fetch(%__MODULE__{dict: self}, key) do
+  def fetch(%T{dict: self}, key) do
     case :gb_trees.lookup(key, self) do
       { :value, value } ->
         { :ok, value }
@@ -41,31 +42,31 @@ defmodule Data.Dictionary.BalancedTree do
     end
   end
 
-  def put(%__MODULE__{dict: self}, key, value) do
-    %__MODULE__{dict: :gb_trees.enter(key, value, self)}
+  def put(%T{dict: self}, key, value) do
+    %T{dict: :gb_trees.enter(key, value, self)}
   end
 
-  def put_new(%__MODULE__{dict: self}, key, value) do
+  def put_new(%T{dict: self}, key, value) do
     if :gb_trees.is_defined(key, self) do
-      %__MODULE__{dict: self}
+      %T{dict: self}
     else
-      %__MODULE__{dict: :gb_trees.insert(key, value, self)}
+      %T{dict: :gb_trees.insert(key, value, self)}
     end
   end
 
-  def delete(%__MODULE__{dict: self}, key) do
-    %__MODULE__{dict: :gb_trees.delete_any(key, self)}
+  def delete(%T{dict: self}, key) do
+    %T{dict: :gb_trees.delete_any(key, self)}
   end
 
-  def keys(%__MODULE__{dict: self}) do
+  def keys(%T{dict: self}) do
     :gb_trees.keys(self)
   end
 
-  def values(%__MODULE__{dict: self}) do
+  def values(%T{dict: self}) do
     :gb_trees.values(self)
   end
 
-  def size(%__MODULE__{dict: self}) do
+  def size(%T{dict: self}) do
     :gb_trees.size(self)
   end
 
@@ -73,11 +74,11 @@ defmodule Data.Dictionary.BalancedTree do
     :gb_trees.empty
   end
 
-  def to_list(%__MODULE__{dict: self}) do
+  def to_list(%T{dict: self}) do
     :gb_trees.to_list(self)
   end
 
-  def member?(%__MODULE__{dict: self}, { key, value }) do
+  def member?(%T{dict: self}, { key, value }) do
     case :gb_trees.lookup(key, self) do
       { :value, ^value } ->
         true
@@ -87,7 +88,7 @@ defmodule Data.Dictionary.BalancedTree do
     end
   end
 
-  def member?(%__MODULE__{dict: self}, key) do
+  def member?(%T{dict: self}, key) do
     :gb_trees.is_defined(key, self)
   end
 
@@ -124,28 +125,28 @@ defmodule Data.Dictionary.BalancedTree do
     end
   end
 
-  def to_sequence(%__MODULE__{dict: self}) do
+  def to_sequence(%T{dict: self}) do
     Sequence.new(self)
   end
 
   defimpl P.Dictionary do
-    defdelegate fetch(self, key), to: Data.Dictionary.BalancedTree
-    defdelegate put(self, key, value), to: Data.Dictionary.BalancedTree
-    defdelegate delete(self, key), to: Data.Dictionary.BalancedTree
-    defdelegate keys(self), to: Data.Dictionary.BalancedTree
-    defdelegate values(self), to: Data.Dictionary.BalancedTree
+    defdelegate fetch(self, key), to: T
+    defdelegate put(self, key, value), to: T
+    defdelegate delete(self, key), to: T
+    defdelegate keys(self), to: T
+    defdelegate values(self), to: T
   end
 
   defimpl P.Count do
-    defdelegate count(self), to: Data.Dictionary.BalancedTree, as: :size
+    defdelegate count(self), to: T, as: :size
   end
 
   defimpl P.Empty do
     def empty?(self) do
-      Data.Dictionary.BalancedTree.size(self) == 0
+      T.size(self) == 0
     end
 
-    defdelegate clear(self), to: Data.Dictionary.BalancedTree, as: :empty
+    defdelegate clear(self), to: T, as: :empty
   end
 
   defimpl P.Reduce do
@@ -155,15 +156,21 @@ defmodule Data.Dictionary.BalancedTree do
   end
 
   defimpl P.ToList do
-    defdelegate to_list(self), to: Data.Dictionary.BalancedTree
+    defdelegate to_list(self), to: T
   end
 
   defimpl P.Contains do
-    defdelegate contains?(self, key), to: Data.Dictionary.BalancedTree, as: :member?
+    defdelegate contains?(self, key), to: T, as: :member?
   end
 
   defimpl P.ToSequence do
-    defdelegate to_sequence(self), to: Data.Dictionary.BalancedTree
+    defdelegate to_sequence(self), to: T
+  end
+
+  defimpl P.Into do
+    def into(self, { key, value }) do
+      self |> T.put(key, value)
+    end
   end
 
   defimpl Enumerable do
@@ -174,7 +181,7 @@ defmodule Data.Dictionary.BalancedTree do
     import Inspect.Algebra
 
     def inspect(self, opts) do
-      concat ["#Dictionary<", Kernel.inspect(Data.Dictionary.BalancedTree.to_list(self), opts), ">"]
+      concat ["#Dictionary<", to_doc(T.to_list(self), opts), ">"]
     end
   end
 end

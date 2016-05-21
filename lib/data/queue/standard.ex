@@ -8,62 +8,63 @@
 
 defmodule Data.Queue.Standard do
   alias Data.Protocol, as: P
+  alias __MODULE__, as: T
 
   defstruct [:queue]
 
   def new do
-    %__MODULE__{queue: :queue.new}
+    %T{queue: :queue.new}
   end
 
   def new(enum_or_queue) do
     if :queue.is_queue(enum_or_queue) do
-      %__MODULE__{queue: enum_or_queue}
+      %T{queue: enum_or_queue}
     else
-      %__MODULE__{queue: Data.to_list(enum_or_queue) |> :queue.from_list}
+      %T{queue: Data.to_list(enum_or_queue) |> :queue.from_list}
     end
   end
 
-  def enq(%__MODULE__{queue: queue}, value) do
-    %__MODULE__{queue: :queue.in(value, queue)}
+  def enq(%T{queue: queue}, value) do
+    %T{queue: :queue.in(value, queue)}
   end
 
-  def reverse_enq(%__MODULE__{queue: queue}, value) do
-    %__MODULE__{queue: :queue.in_r(value, queue)}
+  def reverse_enq(%T{queue: queue}, value) do
+    %T{queue: :queue.in_r(value, queue)}
   end
 
-  def deq(%__MODULE__{queue: queue}) do
+  def deq(%T{queue: queue}) do
     case :queue.out(queue) do
       { :empty, queue } ->
-        { :empty, %__MODULE__{queue: queue} }
+        { :empty, %T{queue: queue} }
 
       { value, queue } ->
-        { value, %__MODULE__{queue: queue} }
+        { value, %T{queue: queue} }
     end
   end
 
-  def reverse_deq(%__MODULE__{queue: queue}) do
+  def reverse_deq(%T{queue: queue}) do
     case :queue.out_r(queue) do
       { :empty, queue } ->
-        { :empty, %__MODULE__{queue: queue} }
+        { :empty, %T{queue: queue} }
 
       { value, queue } ->
-        { value, %__MODULE__{queue: queue} }
+        { value, %T{queue: queue} }
     end
   end
 
-  def peek(%__MODULE__{queue: queue}) do
+  def peek(%T{queue: queue}) do
     :queue.peek(queue)
   end
 
-  def reverse_peek(%__MODULE__{queue: queue}) do
+  def reverse_peek(%T{queue: queue}) do
     :queue.peek_r(queue)
   end
 
-  def reverse(%__MODULE__{queue: queue}) do
-    %__MODULE__{queue: :queue.reverse(queue)}
+  def reverse(%T{queue: queue}) do
+    %T{queue: :queue.reverse(queue)}
   end
 
-  def empty?(%__MODULE__{queue: queue}) do
+  def empty?(%T{queue: queue}) do
     :queue.is_empty(queue)
   end
 
@@ -71,37 +72,37 @@ defmodule Data.Queue.Standard do
     new
   end
 
-  def member?(%__MODULE__{queue: queue}, value) do
+  def member?(%T{queue: queue}, value) do
     :queue.member(value, queue)
   end
 
-  def size(%__MODULE__{queue: queue}) do
+  def size(%T{queue: queue}) do
     :queue.len(queue)
   end
 
-  def foldl(%__MODULE__{queue: queue}, acc, fun) do
+  def foldl(%T{queue: queue}, acc, fun) do
     List.foldl(:queue.to_list(queue), acc, fun)
   end
 
-  def foldr(%__MODULE__{queue: queue}, acc, fun) do
+  def foldr(%T{queue: queue}, acc, fun) do
     List.foldr(:queue.to_list(queue), acc, fun)
   end
 
-  def to_list(%__MODULE__{queue: queue}) do
+  def to_list(%T{queue: queue}) do
     :queue.to_list(queue)
   end
 
   defimpl P.Queue do
-    defdelegate enq(self, value), to: Data.Queue.Standard
-    defdelegate deq(self), to: Data.Queue.Standard
+    defdelegate enq(self, value), to: T
+    defdelegate deq(self), to: T
   end
 
   defimpl P.Count do
-    defdelegate count(self), to: Data.Queue.Standard, as: :size
+    defdelegate count(self), to: T, as: :size
   end
 
   defimpl P.Peek do
-    defdelegate peek(self), to: Data.Queue.Standard
+    defdelegate peek(self), to: T
   end
 
   defimpl P.Sequence do
@@ -110,8 +111,8 @@ defmodule Data.Queue.Standard do
     end
 
     def next(self) do
-      if Data.Queue.Standard.size(self) > 1 do
-        { _, next } = Data.Queue.Standard.deq(self)
+      if T.size(self) > 1 do
+        { _, next } = T.deq(self)
 
         next
       end
@@ -119,29 +120,35 @@ defmodule Data.Queue.Standard do
   end
 
   defimpl P.Reverse do
-    defdelegate reverse(self), to: Data.Queue.Standard
+    defdelegate reverse(self), to: T
   end
 
   defimpl P.Empty do
-    defdelegate empty?(self), to: Data.Queue.Standard
-    defdelegate clear(self), to: Data.Queue.Standard
+    defdelegate empty?(self), to: T
+    defdelegate clear(self), to: T
   end
 
   defimpl P.Reduce do
-    defdelegate reduce(self, acc, fun), to: Data.Queue.Standard, as: :foldl
+    defdelegate reduce(self, acc, fun), to: T, as: :foldl
   end
 
   defimpl P.ToList do
-    defdelegate to_list(self), to: Data.Queue.Standard
+    defdelegate to_list(self), to: T
   end
 
   defimpl P.Stack do
-    defdelegate push(self, value), to: Data.Queue.Standard, as: :reverse_enq
-    defdelegate pop(self), to: Data.Queue.Standard, as: :reverse_deq
+    defdelegate push(self, value), to: T, as: :reverse_enq
+    defdelegate pop(self), to: T, as: :reverse_deq
   end
 
   defimpl P.Contains do
-    defdelegate contains?(self, key), to: Data.Queue.Standard, as: :member?
+    defdelegate contains?(self, key), to: T, as: :member?
+  end
+
+  defimpl P.Into do
+    def into(self, value) do
+      self |> T.enq(value)
+    end
   end
 
   defimpl Enumerable do
@@ -152,7 +159,7 @@ defmodule Data.Queue.Standard do
     import Inspect.Algebra
 
     def inspect(queue, opts) do
-      concat ["#Queue<", Kernel.inspect(Data.Queue.Standard.to_list(queue), opts), ">"]
+      concat ["#Queue<", to_doc(T.to_list(queue), opts), ">"]
     end
   end
 end

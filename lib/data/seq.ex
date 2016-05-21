@@ -573,4 +573,9 @@ defmodule Data.Seq do
   def split(_seq, count) when count < 0 do
     { [], [] }
   end
+
+  @spec into(t, P.Into.t) :: P.Into.t
+  def into(seq, out) do
+    reduce Data.seq(seq), out, &P.Into.into(&2, &1)
+  end
 end

@@ -6,15 +6,25 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
+alias Data.Protocol.Reduce, as: Protocol
+
 defprotocol Data.Protocol.Reduce do
   @spec reduce(t, any, (any, any -> any)) :: any
   def reduce(self, acc, fun)
 end
 
-defimpl Data.Protocol.Reduce, for: List do
+defimpl Protocol, for: List do
   defdelegate reduce(list, acc, fun), to: List, as: :foldl
 end
 
-defimpl Data.Protocol.Reduce, for: Map do
+defimpl Protocol, for: Map do
   defdelegate reduce(self, acc, fun), to: Map
+end
+
+defimpl Protocol, for: MapSet do
+  defdelegate reduce(self, acc, fun), to: MapSet
+end
+
+defimpl Protocol, for: HashSet do
+  defdelegate reduce(self, acc, fun), to: HashSet
 end

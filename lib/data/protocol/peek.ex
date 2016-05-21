@@ -6,12 +6,14 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Protocol.Peek do
+alias Data.Protocol.Peek, as: Protocol
+
+defprotocol Protocol do
   @spec peek(t) :: { :value, any } | :empty
   def peek(self)
 end
 
-defimpl Data.Protocol.Peek, for: List do
+defimpl Protocol, for: List do
   def peek([]) do
     :empty
   end

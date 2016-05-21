@@ -20,3 +20,11 @@ end
 defimpl Data.Protocol.ToList, for: Map do
   defdelegate to_list(self), to: Map
 end
+
+defimpl Data.Protocol.ToList, for: MapSet do
+  defdelegate to_list(self), to: MapSet
+end
+
+defimpl Data.Protocol.ToList, for: HashSet do
+  defdelegate to_list(self), to: HashSet
+end

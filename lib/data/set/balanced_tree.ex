@@ -7,138 +7,139 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Set.BalancedTree do
+  alias Data.Protocol, as: P
+  alias __MODULE__, as: T
+
   defstruct [:set]
 
   def new do
-    %__MODULE__{set: :gb_sets.new}
+    %T{set: :gb_sets.new}
   end
 
   def new(enum_or_set) do
     if :gb_sets.is_set(enum_or_set) do
-      %__MODULE__{set: enum_or_set}
+      %T{set: enum_or_set}
     else
-      %__MODULE__{set: Data.to_list(enum_or_set) |> :gb_sets.from_list}
+      %T{set: Data.to_list(enum_or_set) |> :gb_sets.from_list}
     end
   end
 
-  def member?(%__MODULE__{set: self}, element) do
+  def member?(%T{set: self}, element) do
     :gb_sets.is_element(element, self)
   end
 
-  def empty?(%__MODULE__{set: self}) do
+  def empty?(%T{set: self}) do
     :gb_sets.is_empty(self)
   end
 
   def clear(_) do
-    %__MODULE__{set: :gb_sets.new}
+    %T{set: :gb_sets.new}
   end
 
-  def add(%__MODULE__{set: self}, element) do
-    %__MODULE__{set: :gb_sets.add_element(element, self)}
+  def add(%T{set: self}, element) do
+    %T{set: :gb_sets.add_element(element, self)}
   end
 
-  def delete(%__MODULE__{set: self}, element) do
-    %__MODULE__{set: :gb_sets.del_element(element, self)}
+  def delete(%T{set: self}, element) do
+    %T{set: :gb_sets.del_element(element, self)}
   end
 
-  def union(%__MODULE__{set: self}, %__MODULE__{set: other}) do
-    %__MODULE__{set: :gb_sets.union(self, other)}
+  def union(%T{set: self}, %T{set: other}) do
+    %T{set: :gb_sets.union(self, other)}
   end
 
-  def union(%__MODULE__{set: self}, other) do
-    %__MODULE__{set: :gb_sets.union(self, Data.to_list(other) |> :gb_sets.from_list)}
+  def union(%T{set: self}, other) do
+    %T{set: :gb_sets.union(self, Data.to_list(other) |> :gb_sets.from_list)}
   end
 
-  def intersection(%__MODULE__{set: self}, %__MODULE__{set: other}) do
-    %__MODULE__{set: :gb_sets.intersection(self, other)}
+  def intersection(%T{set: self}, %T{set: other}) do
+    %T{set: :gb_sets.intersection(self, other)}
   end
 
-  def intersection(%__MODULE__{set: self}, other) do
-    %__MODULE__{set: :gb_sets.intersection(self, Data.to_list(other) |> :gb_sets.from_list)}
+  def intersection(%T{set: self}, other) do
+    %T{set: :gb_sets.intersection(self, Data.to_list(other) |> :gb_sets.from_list)}
   end
 
-  def difference(%__MODULE__{set: self}, %__MODULE__{set: other}) do
-    %__MODULE__{set: :gb_sets.subtract(self, other)}
+  def difference(%T{set: self}, %T{set: other}) do
+    %T{set: :gb_sets.subtract(self, other)}
   end
 
-  def difference(%__MODULE__{set: self}, other) do
-    %__MODULE__{set: :gb_sets.subtract(self, Data.to_list(other) |> :gb_sets.from_list)}
+  def difference(%T{set: self}, other) do
+    %T{set: :gb_sets.subtract(self, Data.to_list(other) |> :gb_sets.from_list)}
   end
 
-  def subset?(%__MODULE__{set: self}, %__MODULE__{set: other}) do
+  def subset?(%T{set: self}, %T{set: other}) do
     :gb_sets.is_subset(other, self)
   end
 
-  def subset?(%__MODULE__{set: self}, other) do
+  def subset?(%T{set: self}, other) do
     :gb_sets.is_subset(Data.to_list(other) |> :gb_sets.from_list, self)
   end
 
-  def disjoint?(%__MODULE__{set: self}, %__MODULE__{set: other}) do
+  def disjoint?(%T{set: self}, %T{set: other}) do
     :gb_sets.is_disjoint(other, self)
   end
 
-  def disjoint?(%__MODULE__{set: self}, other) do
+  def disjoint?(%T{set: self}, other) do
     :gb_sets.is_disjoint(Data.to_list(other) |> :gb_sets.from_list, self)
   end
 
-  def size(%__MODULE__{set: self}) do
+  def size(%T{set: self}) do
     :gb_sets.size(self)
   end
 
-  def reduce(%__MODULE__{set: self}, acc, fun) do
+  def reduce(%T{set: self}, acc, fun) do
     :gb_sets.fold(fun, acc, self)
   end
 
-  def to_list(%__MODULE__{set: self}) do
+  def to_list(%T{set: self}) do
     Data.Set.List.new(:gb_sets.to_list(self))
   end
 
   ## Specific functions
 
-  def balance(%__MODULE__{set: self}) do
-    %__MODULE__{set: :gb_sets.balance(self)}
+  def balance(%T{set: self}) do
+    %T{set: :gb_sets.balance(self)}
   end
 
-  def filter(%__MODULE__{set: self}, pred) do
+  def filter(%T{set: self}, pred) do
     :gb_sets.filter(pred, self)
   end
 
-  alias Data.Protocol, as: P
-
   defimpl P.Set do
-    defdelegate add(self, value), to: Data.Set.BalancedTree
-    defdelegate delete(self, value), to: Data.Set.BalancedTree
-    defdelegate union(self, other), to: Data.Set.BalancedTree
-    defdelegate intersection(self, other), to: Data.Set.BalancedTree
-    defdelegate difference(self, other), to: Data.Set.BalancedTree
-    defdelegate subset?(self, other), to: Data.Set.BalancedTree
-    defdelegate disjoint?(self, other), to: Data.Set.BalancedTree
+    defdelegate add(self, value), to: T
+    defdelegate delete(self, value), to: T
+    defdelegate union(self, other), to: T
+    defdelegate intersection(self, other), to: T
+    defdelegate difference(self, other), to: T
+    defdelegate subset?(self, other), to: T
+    defdelegate disjoint?(self, other), to: T
   end
 
   defimpl P.Count do
-    defdelegate count(self), to: Data.Set.BalancedTree
+    defdelegate count(self), to: T
   end
 
   defimpl P.Reduce do
-    defdelegate reduce(self, acc, fun), to: Data.Set.BalancedTree
+    defdelegate reduce(self, acc, fun), to: T
   end
 
   defimpl P.ToList do
-    defdelegate to_list(self), to: Data.Set.BalancedTree
+    defdelegate to_list(self), to: T
   end
 
   defimpl P.Empty do
-    defdelegate empty?(self), to: Data.Set.BalancedTree
-    defdelegate clear(self), to: Data.Set.BalancedTree
+    defdelegate empty?(self), to: T
+    defdelegate clear(self), to: T
   end
 
   defimpl P.Contains do
-    defdelegate contains?(self, value), to: Data.Set.BalancedTree, as: :member?
+    defdelegate contains?(self, value), to: T, as: :member?
   end
 
   defimpl P.Sequence do
     def first(self) do
-      Data.Set.BalancedTree.reduce(self, nil, fn(x, _) -> throw { :first, x } end)
+      T.reduce(self, nil, fn(x, _) -> throw { :first, x } end)
 
       nil
     catch
@@ -147,7 +148,7 @@ defmodule Data.Set.BalancedTree do
     end
 
     def next(self) do
-      case Data.Set.BalancedTree.to_list(self) do
+      case T.to_list(self) do
         [] ->
           nil
 
@@ -160,6 +161,12 @@ defmodule Data.Set.BalancedTree do
     end
   end
 
+  defimpl P.Into do
+    def into(self, value) do
+      self |> T.add(value)
+    end
+  end
+
   defimpl Enumerable do
     use Data.Enumerable
   end
@@ -168,7 +175,7 @@ defmodule Data.Set.BalancedTree do
     import Inspect.Algebra
 
     def inspect(set, opts) do
-      concat ["#Set<", Kernel.inspect(Data.Set.BalancedTree.to_list(set), opts), ">"]
+      concat ["#Set<", to_doc(T.to_list(set), opts), ">"]
     end
   end
 end
