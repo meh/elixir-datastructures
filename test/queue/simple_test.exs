@@ -2,8 +2,10 @@ Code.require_file "../test_helper.exs", __DIR__
 
 defmodule Test.Queue.Simple do
   use ExUnit.Case, async: true
+
   alias Data.Queue
   alias Data.Queue.Simple
+  alias Data.Error, as: E
 
   test :enq do
     assert Simple.new |> Queue.enq(42) |> Data.to_list == [42]
@@ -18,7 +20,7 @@ defmodule Test.Queue.Simple do
   test :deq! do
     assert { 23, _ } = Simple.new |> Queue.enq(23) |> Queue.deq!
 
-    assert_raise Data.Error.Empty, fn ->
+    assert_raise E.Empty, fn ->
       Simple.new |> Queue.deq!
     end
   end
@@ -31,7 +33,7 @@ defmodule Test.Queue.Simple do
   test :peek! do
     assert Simple.new |> Queue.enq(23) |> Data.peek! == 23
 
-    assert_raise Data.Error.Empty, fn ->
+    assert_raise E.Empty, fn ->
       Simple.new |> Data.peek!
     end
   end

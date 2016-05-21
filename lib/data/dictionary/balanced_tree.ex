@@ -7,6 +7,8 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Dictionary.BalancedTree do
+  alias Data.Protocol, as: P
+
   defstruct dict: nil
 
   def new do
@@ -116,7 +118,7 @@ defmodule Data.Dictionary.BalancedTree do
       end
     end
 
-    defimpl Data.Sequence, for: Sequence do
+    defimpl P.Sequence do
       defdelegate first(self), to: Sequence
       defdelegate next(self), to: Sequence
     end
@@ -125,54 +127,54 @@ defmodule Data.Dictionary.BalancedTree do
   def to_sequence(%__MODULE__{dict: self}) do
     Sequence.new(self)
   end
-end
 
-defimpl Data.Dictionary, for: Data.Dictionary.BalancedTree do
-  defdelegate fetch(self, key), to: Data.Dictionary.BalancedTree
-  defdelegate put(self, key, value), to: Data.Dictionary.BalancedTree
-  defdelegate delete(self, key), to: Data.Dictionary.BalancedTree
-  defdelegate keys(self), to: Data.Dictionary.BalancedTree
-  defdelegate values(self), to: Data.Dictionary.BalancedTree
-end
-
-defimpl Data.Counted, for: Data.Dictionary.BalancedTree do
-  defdelegate count(self), to: Data.Dictionary.BalancedTree, as: :size
-end
-
-defimpl Data.Emptyable, for: Data.Dictionary.BalancedTree do
-  def empty?(self) do
-    Data.Dictionary.BalancedTree.size(self) == 0
+  defimpl P.Dictionary do
+    defdelegate fetch(self, key), to: Data.Dictionary.BalancedTree
+    defdelegate put(self, key, value), to: Data.Dictionary.BalancedTree
+    defdelegate delete(self, key), to: Data.Dictionary.BalancedTree
+    defdelegate keys(self), to: Data.Dictionary.BalancedTree
+    defdelegate values(self), to: Data.Dictionary.BalancedTree
   end
 
-  defdelegate clear(self), to: Data.Dictionary.BalancedTree, as: :empty
-end
-
-defimpl Data.Reducible, for: Data.Dictionary.BalancedTree do
-  def reduce(self, acc, fun) do
-    Data.Seq.reduce(self, acc, fun)
+  defimpl P.Count do
+    defdelegate count(self), to: Data.Dictionary.BalancedTree, as: :size
   end
-end
 
-defimpl Data.Listable, for: Data.Dictionary.BalancedTree do
-  defdelegate to_list(self), to: Data.Dictionary.BalancedTree
-end
+  defimpl P.Empty do
+    def empty?(self) do
+      Data.Dictionary.BalancedTree.size(self) == 0
+    end
 
-defimpl Data.Contains, for: Data.Dictionary.BalancedTree do
-  defdelegate contains?(self, key), to: Data.Dictionary.BalancedTree, as: :member?
-end
+    defdelegate clear(self), to: Data.Dictionary.BalancedTree, as: :empty
+  end
 
-defimpl Data.Sequenceable, for: Data.Dictionary.BalancedTree do
-  defdelegate to_sequence(self), to: Data.Dictionary.BalancedTree
-end
+  defimpl P.Reduce do
+    def reduce(self, acc, fun) do
+      Data.Seq.reduce(self, acc, fun)
+    end
+  end
 
-defimpl Enumerable, for: Data.Dictionary.BalancedTree do
-  use Data.Enumerable
-end
+  defimpl P.ToList do
+    defdelegate to_list(self), to: Data.Dictionary.BalancedTree
+  end
 
-defimpl Inspect, for: Data.Dictionary.BalancedTree do
-  import Inspect.Algebra
+  defimpl P.Contains do
+    defdelegate contains?(self, key), to: Data.Dictionary.BalancedTree, as: :member?
+  end
 
-  def inspect(self, opts) do
-    concat ["#Dictionary<", Kernel.inspect(Data.Dictionary.BalancedTree.to_list(self), opts), ">"]
+  defimpl P.ToSequence do
+    defdelegate to_sequence(self), to: Data.Dictionary.BalancedTree
+  end
+
+  defimpl Enumerable do
+    use Data.Enumerable
+  end
+
+  defimpl Inspect do
+    import Inspect.Algebra
+
+    def inspect(self, opts) do
+      concat ["#Dictionary<", Kernel.inspect(Data.Dictionary.BalancedTree.to_list(self), opts), ">"]
+    end
   end
 end

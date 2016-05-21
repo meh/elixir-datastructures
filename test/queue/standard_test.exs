@@ -2,6 +2,7 @@ Code.require_file "../test_helper.exs", __DIR__
 
 defmodule Test.Queue.Standard do
   use ExUnit.Case, async: true
+
   alias Data.Queue
   alias Data.Queue.Standard
 

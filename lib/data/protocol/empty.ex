@@ -6,7 +6,7 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Emptyable do
+defprotocol Data.Protocol.Empty do
   @spec empty?(t) :: boolean
   def empty?(self)
 
@@ -14,7 +14,7 @@ defprotocol Data.Emptyable do
   def clear(self)
 end
 
-defimpl Data.Emptyable, for: List do
+defimpl Data.Protocol.Empty, for: List do
   def empty?([]) do
     true
   end
@@ -26,4 +26,12 @@ defimpl Data.Emptyable, for: List do
   def clear(_) do
     []
   end
+end
+
+defimpl Data.Protocol.Empty, for: Map do
+  def empty?(self) do
+    Map.size(self) == 0
+  end
+
+  defdelegate clear(self), to: Map, as: :empty
 end

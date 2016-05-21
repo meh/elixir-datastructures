@@ -6,13 +6,17 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Counted do
+defprotocol Data.Protocol.Count do
   @spec count(t) :: non_neg_integer
   def count(self)
 end
 
-defimpl Data.Counted, for: List do
+defimpl Data.Protocol.Count, for: List do
   def count(self) do
     length(self)
   end
+end
+
+defimpl Data.Protocol.Count, for: Map do
+  defdelegate count(self), to: Map, as: :size
 end

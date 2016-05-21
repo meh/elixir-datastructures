@@ -6,48 +6,29 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Stack do
-  @type v :: any
+defmodule Data.Stack do
+  alias Data.Error, as: E
+  alias Data.Protocol.Stack, as: S
 
-  @spec push(t, v) :: t
-  def push(self, value)
+  defdelegate push(self, value), to: S
 
-  @spec pop(t)    :: { v, t }
-  @spec pop(t, v) :: { v, t }
-  def pop(self, default \\ nil)
+  def pop(self, default \\ nil) do
+    case S.pop(self) do
+      { :empty, queue } ->
+        { default, queue }
 
-  @spec pop!(t) :: { v, t } | no_return
-  def pop!(self)
-end
-
-defimpl Data.Stack, for: List do
-  def new do
-    []
-  end
-
-  def new(enum) do
-    Data.to_list(enum)
-  end
-
-  def push(list, value) do
-    [value | list]
-  end
-
-  def pop(self, default \\ nil)
-
-  def pop([], default) do
-    { default, [] }
-  end
-
-  def pop([head | rest], _) do
-    { head, rest }
-  end
-
-  def pop!([]) do
-    raise Data.Error.Empty
+      { { :value, value }, queue } ->
+        { value, queue }
+    end
   end
 
   def pop!(self) do
-    pop(self)
+    case S.pop(self) do
+      { :empty, _ } ->
+        raise E.Empty
+
+      { { :value, value }, queue } ->
+        { value, queue }
+    end
   end
 end

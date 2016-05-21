@@ -6,12 +6,17 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Sequenceable do
-  def to_sequence(self)
+defprotocol Data.Protocol.Peek do
+  @spec peek(t) :: { :value, any } | :empty
+  def peek(self)
 end
 
-defimpl Data.Sequenceable, for: List do
-  def to_sequence(self) do
-    self
+defimpl Data.Protocol.Peek, for: List do
+  def peek([]) do
+    :empty
+  end
+
+  def peek([head | _]) do
+    { :value, head }
   end
 end

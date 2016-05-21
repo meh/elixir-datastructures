@@ -6,13 +6,17 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Reversible do
-  @spec reverse(t) :: t
-  def reverse(self)
+defprotocol Data.Protocol.ToList do
+  @spec to_list(t) :: list
+  def to_list(self)
 end
 
-defimpl Data.Reversible, for: List do
-  def reverse(list) do
-    Enum.reverse(list)
+defimpl Data.Protocol.ToList, for: List do
+  def to_list(list) do
+    list
   end
+end
+
+defimpl Data.Protocol.ToList, for: Map do
+  defdelegate to_list(self), to: Map
 end

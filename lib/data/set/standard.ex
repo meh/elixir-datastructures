@@ -98,71 +98,73 @@ defmodule Data.Set.Standard do
   def filter(%__MODULE__{set: self}, pred) do
     %__MODULE__{set: :sets.filter(pred, self)}
   end
-end
 
-defimpl Data.Set, for: Data.Set.Standard do
-  defdelegate add(self, value), to: Data.Set.Standard
-  defdelegate delete(self, value), to: Data.Set.Standard
-  defdelegate union(self, other), to: Data.Set.Standard
-  defdelegate intersection(self, other), to: Data.Set.Standard
-  defdelegate difference(self, other), to: Data.Set.Standard
-  defdelegate subset?(self, other), to: Data.Set.Standard
-  defdelegate disjoint?(self, other), to: Data.Set.Standard
-end
+  alias Data.Protocol, as: P
 
-defimpl Data.Counted, for: Data.Set.Standard do
-  defdelegate count(self), to: Data.Set.Standard
-end
-
-defimpl Data.Reducible, for: Data.Set.Standard do
-  defdelegate reduce(self, acc, fun), to: Data.Set.Standard
-end
-
-defimpl Data.Listable, for: Data.Set.Standard do
-  defdelegate to_list(self), to: Data.Set.Standard
-end
-
-defimpl Data.Emptyable, for: Data.Set.Standard do
-  defdelegate empty?(self), to: Data.Set.Standard
-  defdelegate clear(self), to: Data.Set.Standard
-end
-
-defimpl Data.Contains, for: Data.Set.Standard do
-  defdelegate contains?(self, key), to: Data.Set.Standard, as: :member?
-end
-
-defimpl Data.Sequence, for: Data.Set.Standard do
-  def first(self) do
-    Data.Set.Standard.reduce(self, nil, fn(x, _) -> throw { :first, x } end)
-
-    nil
-  catch
-    { :first, x } ->
-      x
+  defimpl P.Set do
+    defdelegate add(self, value), to: Data.Set.Standard
+    defdelegate delete(self, value), to: Data.Set.Standard
+    defdelegate union(self, other), to: Data.Set.Standard
+    defdelegate intersection(self, other), to: Data.Set.Standard
+    defdelegate difference(self, other), to: Data.Set.Standard
+    defdelegate subset?(self, other), to: Data.Set.Standard
+    defdelegate disjoint?(self, other), to: Data.Set.Standard
   end
 
-  def next(self) do
-    case Data.Set.Standard.to_list(self) do
-      [] ->
-        nil
+  defimpl P.Count do
+    defdelegate count(self), to: Data.Set.Standard
+  end
 
-      [_] ->
-        nil
+  defimpl P.Reduce do
+    defdelegate reduce(self, acc, fun), to: Data.Set.Standard
+  end
 
-      [_ | tail] ->
-        tail
+  defimpl P.ToList do
+    defdelegate to_list(self), to: Data.Set.Standard
+  end
+
+  defimpl P.Empty do
+    defdelegate empty?(self), to: Data.Set.Standard
+    defdelegate clear(self), to: Data.Set.Standard
+  end
+
+  defimpl P.Contains do
+    defdelegate contains?(self, key), to: Data.Set.Standard, as: :member?
+  end
+
+  defimpl P.Sequence do
+    def first(self) do
+      Data.Set.Standard.reduce(self, nil, fn(x, _) -> throw { :first, x } end)
+
+      nil
+    catch
+      { :first, x } ->
+        x
+    end
+
+    def next(self) do
+      case Data.Set.Standard.to_list(self) do
+        [] ->
+          nil
+
+        [_] ->
+          nil
+
+        [_ | tail] ->
+          tail
+      end
     end
   end
-end
 
-defimpl Enumerable, for: Data.Set.Standard do
-  use Data.Enumerable
-end
+  defimpl Enumerable do
+    use Data.Enumerable
+  end
 
-defimpl Inspect, for: Data.Set.Standard do
-  import Inspect.Algebra
+  defimpl Inspect do
+    import Inspect.Algebra
 
-  def inspect(set, opts) do
-    concat ["#Set<", Kernel.inspect(Data.Set.Standard.to_list(set), opts), ">"]
+    def inspect(set, opts) do
+      concat ["#Set<", Kernel.inspect(Data.Set.Standard.to_list(set), opts), ">"]
+    end
   end
 end

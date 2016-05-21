@@ -102,71 +102,73 @@ defmodule Data.Set.BalancedTree do
   def filter(%__MODULE__{set: self}, pred) do
     :gb_sets.filter(pred, self)
   end
-end
 
-defimpl Data.Set, for: Data.Set.BalancedTree do
-  defdelegate add(self, value), to: Data.Set.BalancedTree
-  defdelegate delete(self, value), to: Data.Set.BalancedTree
-  defdelegate union(self, other), to: Data.Set.BalancedTree
-  defdelegate intersection(self, other), to: Data.Set.BalancedTree
-  defdelegate difference(self, other), to: Data.Set.BalancedTree
-  defdelegate subset?(self, other), to: Data.Set.BalancedTree
-  defdelegate disjoint?(self, other), to: Data.Set.BalancedTree
-end
+  alias Data.Protocol, as: P
 
-defimpl Data.Counted, for: Data.Set.BalancedTree do
-  defdelegate count(self), to: Data.Set.BalancedTree
-end
-
-defimpl Data.Reducible, for: Data.Set.BalancedTree do
-  defdelegate reduce(self, acc, fun), to: Data.Set.BalancedTree
-end
-
-defimpl Data.Listable, for: Data.Set.BalancedTree do
-  defdelegate to_list(self), to: Data.Set.BalancedTree
-end
-
-defimpl Data.Emptyable, for: Data.Set.BalancedTree do
-  defdelegate empty?(self), to: Data.Set.BalancedTree
-  defdelegate clear(self), to: Data.Set.BalancedTree
-end
-
-defimpl Data.Contains, for: Data.Set.BalancedTree do
-  defdelegate contains?(self, value), to: Data.Set.BalancedTree, as: :member?
-end
-
-defimpl Data.Sequence, for: Data.Set.BalancedTree do
-  def first(self) do
-    Data.Set.BalancedTree.reduce(self, nil, fn(x, _) -> throw { :first, x } end)
-
-    nil
-  catch
-    { :first, x } ->
-      x
+  defimpl P.Set do
+    defdelegate add(self, value), to: Data.Set.BalancedTree
+    defdelegate delete(self, value), to: Data.Set.BalancedTree
+    defdelegate union(self, other), to: Data.Set.BalancedTree
+    defdelegate intersection(self, other), to: Data.Set.BalancedTree
+    defdelegate difference(self, other), to: Data.Set.BalancedTree
+    defdelegate subset?(self, other), to: Data.Set.BalancedTree
+    defdelegate disjoint?(self, other), to: Data.Set.BalancedTree
   end
 
-  def next(self) do
-    case Data.Set.BalancedTree.to_list(self) do
-      [] ->
-        nil
+  defimpl P.Count do
+    defdelegate count(self), to: Data.Set.BalancedTree
+  end
 
-      [_] ->
-        nil
+  defimpl P.Reduce do
+    defdelegate reduce(self, acc, fun), to: Data.Set.BalancedTree
+  end
 
-      [_ | tail] ->
-        tail
+  defimpl P.ToList do
+    defdelegate to_list(self), to: Data.Set.BalancedTree
+  end
+
+  defimpl P.Empty do
+    defdelegate empty?(self), to: Data.Set.BalancedTree
+    defdelegate clear(self), to: Data.Set.BalancedTree
+  end
+
+  defimpl P.Contains do
+    defdelegate contains?(self, value), to: Data.Set.BalancedTree, as: :member?
+  end
+
+  defimpl P.Sequence do
+    def first(self) do
+      Data.Set.BalancedTree.reduce(self, nil, fn(x, _) -> throw { :first, x } end)
+
+      nil
+    catch
+      { :first, x } ->
+        x
+    end
+
+    def next(self) do
+      case Data.Set.BalancedTree.to_list(self) do
+        [] ->
+          nil
+
+        [_] ->
+          nil
+
+        [_ | tail] ->
+          tail
+      end
     end
   end
-end
 
-defimpl Enumerable, for: Data.Set.BalancedTree do
-  use Data.Enumerable
-end
+  defimpl Enumerable do
+    use Data.Enumerable
+  end
 
-defimpl Inspect, for: Data.Set.BalancedTree do
-  import Inspect.Algebra
+  defimpl Inspect do
+    import Inspect.Algebra
 
-  def inspect(set, opts) do
-    concat ["#Set<", Kernel.inspect(Data.Set.BalancedTree.to_list(set), opts), ">"]
+    def inspect(set, opts) do
+      concat ["#Set<", Kernel.inspect(Data.Set.BalancedTree.to_list(set), opts), ">"]
+    end
   end
 end

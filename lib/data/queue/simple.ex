@@ -11,6 +11,8 @@ defmodule Data.Queue.Simple do
   A simple and performant queue.
   """
 
+  alias Data.Protocol, as: P
+
   defstruct enqueue: [], dequeue: []
 
   @opaque t :: __MODULE__.t
@@ -72,48 +74,25 @@ defmodule Data.Queue.Simple do
       {:empty,#Queue<[]>}
 
   """
-  @spec deq(t)    :: { v, t }
-  @spec deq(t, v) :: { v, t }
-  def deq(queue, default \\ nil)
-
-  def deq(%__MODULE__{enqueue: [], dequeue: []}, default) do
-    { default, %__MODULE__{} }
+  @spec deq(t) :: { :empty | { :value, v }, t }
+  def deq(%__MODULE__{enqueue: [], dequeue: []}) do
+    { :empty, %__MODULE__{} }
   end
 
-  def deq(%__MODULE__{enqueue: [], dequeue: [deq]}, _) do
-    { deq, %__MODULE__{} }
+  def deq(%__MODULE__{enqueue: [], dequeue: [deq]}) do
+    { { :value, deq }, %__MODULE__{} }
   end
 
-  def deq(%__MODULE__{enqueue: [enq], dequeue: [deq]}, _) do
-    { deq, %__MODULE__{dequeue: [enq]} }
+  def deq(%__MODULE__{enqueue: [enq], dequeue: [deq]}) do
+    { { :value, deq }, %__MODULE__{dequeue: [enq]} }
   end
 
-  def deq(%__MODULE__{enqueue: enq, dequeue: [value]}, _) do
-    { value, %__MODULE__{dequeue: Enum.reverse(enq)} }
+  def deq(%__MODULE__{enqueue: enq, dequeue: [value]}) do
+    { { :value, value }, %__MODULE__{dequeue: Enum.reverse(enq)} }
   end
 
-  def deq(%__MODULE__{enqueue: enq, dequeue: [head | rest]}, _) do
-    { head, %__MODULE__{enqueue: enq, dequeue: rest} }
-  end
-
-  @doc """
-  Dequeue a value from the queue, raising if it's empty.
-
-  ## Examples
-
-      iex> Data.Queue.Simple.new |> Data.Queue.enq(42) |> Data.Queue.deq!
-      {42,#Queue<[]>}
-      iex> Data.Queue.Simple.new |> Data.Queue.deq!
-      ** (Data.Error.Empty) the queue is empty
-
-  """
-  @spec deq!(t) :: { v, t } | no_return
-  def deq!(%__MODULE__{enqueue: [], dequeue: []}) do
-    raise Data.Error.Empty
-  end
-
-  def deq!(queue) do
-    deq(queue)
+  def deq(%__MODULE__{enqueue: enq, dequeue: [head | rest]}) do
+    { { :value, head }, %__MODULE__{enqueue: enq, dequeue: rest} }
   end
 
   @doc """
@@ -127,36 +106,13 @@ defmodule Data.Queue.Simple do
       :empty
 
   """
-  @spec peek(t)    :: v
-  @spec peek(t, v) :: v
-  def peek(queue, default \\ nil)
-
-  def peek(%__MODULE__{enqueue: [], dequeue: []}, default) do
-    default
+  @spec peek(t) :: { :ok, any } | :error
+  def peek(%__MODULE__{enqueue: [], dequeue: []}) do
+    :empty
   end
 
-  def peek(%__MODULE__{dequeue: [value | _]}, _) do
-    value
-  end
-
-  @doc """
-  Peek the element that should be dequeued, raising if it's empty.
-
-  ## Examples
-
-      iex> Data.Queue.Simple.new |> Data.Queue.enq(42) |> Data.Queue.enq(23) |> Data.Queue.peek!
-      42
-      iex> Data.Queue.Simple.new |> Data.Queue.peek!
-      ** (Data.Error.Empty) the queue is empty
-
-  """
-  @spec peek!(t) :: v | no_return
-  def peek!(%__MODULE__{enqueue: [], dequeue: []}) do
-    raise Data.Error.Empty
-  end
-
-  def peek!(queue) do
-    peek(queue)
+  def peek(%__MODULE__{dequeue: [value | _]}) do
+    { :value, value }
   end
 
   @doc """
@@ -233,64 +189,62 @@ defmodule Data.Queue.Simple do
   def to_list(%__MODULE__{enqueue: enq, dequeue: deq}) do
     deq ++ Enum.reverse(enq)
   end
-end
 
-defimpl Data.Queue, for: Data.Queue.Simple do
-  defdelegate enq(self, value), to: Data.Queue.Simple
-  defdelegate deq(self), to: Data.Queue.Simple
-  defdelegate deq(self, default), to: Data.Queue.Simple
-  defdelegate deq!(self), to: Data.Queue.Simple
-end
-
-defimpl Data.Peekable, for: Data.Queue.Simple do
-  defdelegate peek(self), to: Data.Queue.Simple
-  defdelegate peek(self, default), to: Data.Queue.Simple
-  defdelegate peek!(self), to: Data.Queue.Simple
-end
-
-defimpl Data.Sequence, for: Data.Queue.Simple do
-  def first(self) do
-    Data.Queue.Simple.peek(self)
+  defimpl P.Queue do
+    defdelegate enq(self, value), to: Data.Queue.Simple
+    defdelegate deq(self), to: Data.Queue.Simple
+    defdelegate deq(self, default), to: Data.Queue.Simple
+    defdelegate deq!(self), to: Data.Queue.Simple
   end
 
-  def next(self) do
-    if Data.Queue.Simple.size(self) > 1 do
-      { _, next } = Data.Queue.Simple.deq(self)
+  defimpl P.Peek do
+    defdelegate peek(self), to: Data.Queue.Simple
+  end
 
-      next
+  defimpl P.Sequence do
+    def first(self) do
+      Data.peek(self)
+    end
+
+    def next(self) do
+      if Data.Queue.Simple.size(self) > 1 do
+        { _, next } = Data.Queue.Simple.deq(self)
+
+        next
+      end
     end
   end
-end
 
-defimpl Data.Reversible, for: Data.Queue.Simple do
-  defdelegate reverse(self), to: Data.Queue.Simple
-end
+  defimpl P.Reverse do
+    defdelegate reverse(self), to: Data.Queue.Simple
+  end
 
-defimpl Data.Emptyable, for: Data.Queue.Simple do
-  defdelegate empty?(self), to: Data.Queue.Simple
-  defdelegate clear(self), to: Data.Queue.Simple
-end
+  defimpl P.Empty do
+    defdelegate empty?(self), to: Data.Queue.Simple
+    defdelegate clear(self), to: Data.Queue.Simple
+  end
 
-defimpl Data.Reducible, for: Data.Queue.Simple do
-  defdelegate reduce(self, acc, fun), to: Data.Queue.Simple, as: :foldl
-end
+  defimpl P.Reduce do
+    defdelegate reduce(self, acc, fun), to: Data.Queue.Simple, as: :foldl
+  end
 
-defimpl Data.Listable, for: Data.Queue.Simple do
-  defdelegate to_list(self), to: Data.Queue.Simple
-end
+  defimpl P.ToList do
+    defdelegate to_list(self), to: Data.Queue.Simple
+  end
 
-defimpl Data.Contains, for: Data.Queue.Simple do
-  defdelegate contains?(self, value), to: Data.Queue.Simple, as: :member?
-end
+  defimpl P.Contains do
+    defdelegate contains?(self, value), to: Data.Queue.Simple, as: :member?
+  end
 
-defimpl Enumerable, for: Data.Queue.Simple do
-  use Data.Enumerable
-end
+  defimpl Enumerable do
+    use Data.Enumerable
+  end
 
-defimpl Inspect, for: Data.Queue.Simple do
-  import Inspect.Algebra
+  defimpl Inspect do
+    import Inspect.Algebra
 
-  def inspect(queue, opts) do
-    concat ["#Queue<", Kernel.inspect(Data.Queue.Simple.to_list(queue), opts), ">"]
+    def inspect(queue, opts) do
+      concat ["#Queue<", Kernel.inspect(Data.Queue.Simple.to_list(queue), opts), ">"]
+    end
   end
 end

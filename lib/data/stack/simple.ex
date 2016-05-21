@@ -7,6 +7,8 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Stack.Simple do
+  alias Data.Protocol, as: P
+
   @moduledoc """
   A simple stack.
   """
@@ -63,36 +65,13 @@ defmodule Data.Stack.Simple do
       {:empty,#Stack<[]>}
 
   """
-  @spec pop(t)    :: { v, t }
-  @spec pop(t, v) :: { v, t }
-  def pop(stack, default \\ nil)
-
-  def pop(%__MODULE__{list: []}, default) do
-    { default, %__MODULE__{} }
+  @spec pop(t) :: { v, t }
+  def pop(%__MODULE__{list: []}) do
+    { :empty, %__MODULE__{} }
   end
 
-  def pop(%__MODULE__{list: [head | rest]}, _) do
-    { head, %__MODULE__{list: rest} }
-  end
-
-  @doc """
-  Pop a value from the stack, raising if it's empty.
-
-  ## Examples
-
-      iex> Data.Stack.Simple.new |> Stack.push(42) |> Stack.pop
-      {42,#Stack<[]>}
-      iex> Data.Stack.Simple.new |> Stack.pop!
-      ** (Data.Error.Empty) the queue is empty
-
-  """
-  @spec pop!(t) :: { v, t } | no_return
-  def pop!(%__MODULE__{list: []}) do
-    raise Data.Error.Empty
-  end
-
-  def pop!(%__MODULE__{} = self) do
-    pop(self)
+  def pop(%__MODULE__{list: [head | rest]}) do
+    { { :value, head }, %__MODULE__{list: rest} }
   end
 
   @doc """
@@ -106,36 +85,13 @@ defmodule Data.Stack.Simple do
       :empty
 
   """
-  @spec peek(t)    :: v
-  @spec peek(t, v) :: v
-  def peek(stack, default \\ nil)
-
-  def peek(%__MODULE__{list: []}, default) do
-    default
+  @spec peek(t) :: v
+  def peek(%__MODULE__{list: []}) do
+    :empty
   end
 
-  def peek(%__MODULE__{list: [head | _]}, _) do
-    head
-  end
-
-  @doc """
-  Peek the element that should be popped, raising if it's empty.
-
-  ## Examples
-
-      iex> Data.Stack.Simple.new |> Stack.push(42) |> Stack.push(23) |> Stack.peek!
-      23
-      iex> Data.Stack.Simple.new |> Stack.peek!
-      ** (Data.Error.Empty) the stack is empty
-
-  """
-  @spec peek!(t) :: v | no_return
-  def peek!(%__MODULE__{list: []}) do
-    raise Data.Error.Empty
-  end
-
-  def peek!(stack) do
-    peek(stack)
+  def peek(%__MODULE__{list: [head | _]}) do
+    { :value, head }
   end
 
   @doc """
@@ -211,64 +167,60 @@ defmodule Data.Stack.Simple do
   def to_list(%__MODULE__{list: list}) do
     list
   end
-end
 
-defimpl Data.Stack, for: Data.Stack.Simple do
-  defdelegate push(self, value), to: Data.Stack.Simple
-  defdelegate pop(self), to: Data.Stack.Simple
-  defdelegate pop(self, default), to: Data.Stack.Simple
-  defdelegate pop!(self), to: Data.Stack.Simple
-end
-
-defimpl Data.Peekable, for: Data.Stack.Simple do
-  defdelegate peek(self), to: Data.Stack.Simple
-  defdelegate peek(self, default), to: Data.Stack.Simple
-  defdelegate peek!(self), to: Data.Stack.Simple
-end
-
-defimpl Data.Reversible, for: Data.Stack.Simple do
-  defdelegate reverse(self), to: Data.Stack.Simple
-end
-
-defimpl Data.Emptyable, for: Data.Stack.Simple do
-  defdelegate empty?(self), to: Data.Stack.Simple
-  defdelegate clear(self), to: Data.Stack.Simple
-end
-
-defimpl Data.Reducible, for: Data.Stack.Simple do
-  defdelegate reduce(self, acc, fun), to: Data.Stack.Simple, as: :foldl
-end
-
-defimpl Data.Sequence, for: Data.Stack.Simple do
-  def first(self) do
-    Data.Stack.Simple.peek(self)
+  defimpl P.Stack do
+    defdelegate push(self, value), to: Data.Stack.Simple
+    defdelegate pop(self), to: Data.Stack.Simple
   end
 
-  def next(self) do
-    if Data.Stack.Simple.size(self) > 1 do
-      { _, next } = Data.Stack.Simple.pop(self)
+  defimpl P.Peek do
+    defdelegate peek(self), to: Data.Stack.Simple
+  end
 
-      next
+  defimpl P.Reverse do
+    defdelegate reverse(self), to: Data.Stack.Simple
+  end
+
+  defimpl P.Empty do
+    defdelegate empty?(self), to: Data.Stack.Simple
+    defdelegate clear(self), to: Data.Stack.Simple
+  end
+
+  defimpl P.Reduce do
+    defdelegate reduce(self, acc, fun), to: Data.Stack.Simple, as: :foldl
+  end
+
+  defimpl P.Sequence do
+    def first(self) do
+      Data.peek(self)
+    end
+
+    def next(self) do
+      if Data.Stack.Simple.size(self) > 1 do
+        { _, next } = Data.Stack.Simple.pop(self)
+
+        next
+      end
     end
   end
-end
 
-defimpl Data.Listable, for: Data.Stack.Simple do
-  defdelegate to_list(self), to: Data.Stack.Simple
-end
+  defimpl P.ToList do
+    defdelegate to_list(self), to: Data.Stack.Simple
+  end
 
-defimpl Data.Contains, for: Data.Stack.Simple do
-  defdelegate contains?(self, key), to: Data.Stack.Simple, as: :member?
-end
+  defimpl P.Contains do
+    defdelegate contains?(self, key), to: Data.Stack.Simple, as: :member?
+  end
 
-defimpl Enumerable, for: Data.Stack.Simple do
-  use Data.Enumerable
-end
+  defimpl Enumerable do
+    use Data.Enumerable
+  end
 
-defimpl Inspect, for: Data.Stack.Simple do
-  import Inspect.Algebra
+  defimpl Inspect do
+    import Inspect.Algebra
 
-  def inspect(stack, opts) do
-    concat ["#Stack<", Kernel.inspect(Data.Stack.Simple.to_list(stack), opts), ">"]
+    def inspect(stack, opts) do
+      concat ["#Stack<", Kernel.inspect(Data.Stack.Simple.to_list(stack), opts), ">"]
+    end
   end
 end

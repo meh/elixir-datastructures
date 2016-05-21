@@ -6,7 +6,7 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Dictionary do
+defprotocol Data.Protocol.Dictionary do
   @type k :: any
   @type v :: any
 
@@ -26,7 +26,7 @@ defprotocol Data.Dictionary do
   def values(self)
 end
 
-defimpl Data.Dictionary, for: List do
+defimpl Data.Protocol.Dictionary, for: List do
   def fetch(self, key) do
     case :lists.keyfind(key, 1, self) do
       { ^key, value } ->
@@ -52,4 +52,12 @@ defimpl Data.Dictionary, for: List do
   def values(self) do
     for { _, value } <- self, do: value
   end
+end
+
+defimpl Data.Protocol.Dictionary, for: Map do
+  defdelegate fetch(self, key), to: Map
+  defdelegate put(self, key, value), to: Map
+  defdelegate delete(self, key), to: Map
+  defdelegate keys(self), to: Map
+  defdelegate values(self), to: Map
 end

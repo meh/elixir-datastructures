@@ -6,13 +6,12 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Listable do
-  @spec to_list(t) :: list
-  def to_list(self)
+defprotocol Data.Protocol.ToSequence do
+  def to_sequence(self)
 end
 
-defimpl Data.Listable, for: List do
-  def to_list(list) do
-    list
+defimpl Data.Protocol.ToSequence, for: List do
+  def to_sequence(self) do
+    self
   end
 end

@@ -6,48 +6,29 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Queue do
-  @type v :: any
+defmodule Data.Queue do
+  alias Data.Error, as: E
+  alias Data.Protocol.Queue, as: Q
 
-  @spec enq(t, v) :: t
-  def enq(self, value)
+  defdelegate enq(self, value), to: Q
 
-  @spec deq(t)    :: { v, t }
-  @spec deq(t, v) :: { v, t }
-  def deq(self, default \\ nil)
+  def deq(self, default \\ nil) do
+    case Q.deq(self) do
+      { :empty, queue } ->
+        { default, queue }
 
-  @spec deq!(t) :: { v, t } | no_return
-  def deq!(self)
-end
-
-defimpl Data.Queue, for: List do
-  def new do
-    []
-  end
-
-  def new(enum) do
-    Data.to_list(enum)
-  end
-
-  def enq(list, value) do
-    list ++ [value]
-  end
-
-  def deq(self, default \\ nil)
-
-  def deq([], default) do
-    { default, [] }
-  end
-
-  def deq([head | rest], _) do
-    { head, rest }
-  end
-
-  def deq!([]) do
-    raise Data.Error.Empty
+      { { :value, value }, queue } ->
+        { value, queue }
+    end
   end
 
   def deq!(self) do
-    deq(self)
+    case Q.deq(self) do
+      { :empty, _ } ->
+        raise E.Empty
+
+      { { :value, value }, queue } ->
+        { value, queue }
+    end
   end
 end

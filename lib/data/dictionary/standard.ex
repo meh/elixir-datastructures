@@ -7,6 +7,8 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Dictionary.Standard do
+  alias Data.Protocol, as: P
+
   defstruct [:dict]
 
   def new do
@@ -78,72 +80,72 @@ defmodule Data.Dictionary.Standard do
   def member?(%__MODULE__{dict: self}, key) do
     :dict.is_key(key, self)
   end
-end
 
-defimpl Data.Dictionary, for: Data.Dictionary.Standard do
-  defdelegate fetch(self, key), to: Data.Dictionary.Standard
-  defdelegate put(self, key, value), to: Data.Dictionary.Standard
-  defdelegate delete(self, key), to: Data.Dictionary.Standard
-  defdelegate keys(self), to: Data.Dictionary.Standard
-  defdelegate values(self), to: Data.Dictionary.Standard
-end
-
-defimpl Data.Counted, for: Data.Dictionary.Standard do
-  defdelegate count(self), to: Data.Dictionary.Standard, as: :size
-end
-
-defimpl Data.Emptyable, for: Data.Dictionary.Standard do
-  def empty?(self) do
-    Data.Dictionary.Standard.size(self) == 0
+  defimpl P.Dictionary do
+    defdelegate fetch(self, key), to: Data.Dictionary.Standard
+    defdelegate put(self, key, value), to: Data.Dictionary.Standard
+    defdelegate delete(self, key), to: Data.Dictionary.Standard
+    defdelegate keys(self), to: Data.Dictionary.Standard
+    defdelegate values(self), to: Data.Dictionary.Standard
   end
 
-  defdelegate clear(self), to: Data.Dictionary.Standard, as: :empty
-end
-
-defimpl Data.Reducible, for: Data.Dictionary.Standard do
-  defdelegate reduce(self, acc, fun), to: Data.Dictionary.Standard
-end
-
-defimpl Data.Listable, for: Data.Dictionary.Standard do
-  defdelegate to_list(self), to: Data.Dictionary.Standard
-end
-
-defimpl Data.Contains, for: Data.Dictionary.Standard do
-  defdelegate contains?(self, key), to: Data.Dictionary.Standard, as: :member?
-end
-
-defimpl Data.Sequence, for: Data.Dictionary.Standard do
-  def first(self) do
-    Data.Dictionary.Standard.reduce(self, nil, fn(x, _) -> throw { :first, x } end)
-
-    nil
-  catch
-    { :first, x } ->
-      x
+  defimpl P.Count do
+    defdelegate count(self), to: Data.Dictionary.Standard, as: :size
   end
 
-  def next(self) do
-    case Data.Dictionary.Standard.to_list(self) do
-      [] ->
-        nil
+  defimpl P.Empty do
+    def empty?(self) do
+      Data.Dictionary.Standard.size(self) == 0
+    end
 
-      [_] ->
-        nil
+    defdelegate clear(self), to: Data.Dictionary.Standard, as: :empty
+  end
 
-      [_ | tail] ->
-        tail
+  defimpl P.Reduce do
+    defdelegate reduce(self, acc, fun), to: Data.Dictionary.Standard
+  end
+
+  defimpl P.ToList do
+    defdelegate to_list(self), to: Data.Dictionary.Standard
+  end
+
+  defimpl P.Contains do
+    defdelegate contains?(self, key), to: Data.Dictionary.Standard, as: :member?
+  end
+
+  defimpl P.Sequence do
+    def first(self) do
+      Data.Dictionary.Standard.reduce(self, nil, fn(x, _) -> throw { :first, x } end)
+
+      nil
+    catch
+      { :first, x } ->
+        x
+    end
+
+    def next(self) do
+      case Data.Dictionary.Standard.to_list(self) do
+        [] ->
+          nil
+
+        [_] ->
+          nil
+
+        [_ | tail] ->
+          tail
+      end
     end
   end
-end
 
-defimpl Enumerable, for: Data.Dictionary.Standard do
-  use Data.Enumerable
-end
+  defimpl Enumerable do
+    use Data.Enumerable
+  end
 
-defimpl Inspect, for: Data.Dictionary.Standard do
-  import Inspect.Algebra
+  defimpl Inspect do
+    import Inspect.Algebra
 
-  def inspect(self, opts) do
-    concat ["#Dictionary<", Kernel.inspect(Data.Dictionary.Standard.to_list(self), opts), ">"]
+    def inspect(self, opts) do
+      concat ["#Dictionary<", Kernel.inspect(Data.Dictionary.Standard.to_list(self), opts), ">"]
+    end
   end
 end

@@ -7,6 +7,8 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Queue.Standard do
+  alias Data.Protocol, as: P
+
   defstruct [:queue]
 
   def new do
@@ -29,84 +31,32 @@ defmodule Data.Queue.Standard do
     %__MODULE__{queue: :queue.in_r(value, queue)}
   end
 
-  def deq(%__MODULE__{queue: queue}, default \\ nil) do
+  def deq(%__MODULE__{queue: queue}) do
     case :queue.out(queue) do
       { :empty, queue } ->
-        { default, %__MODULE__{queue: queue} }
+        { :empty, %__MODULE__{queue: queue} }
 
-      { { :value, value }, queue } ->
+      { value, queue } ->
         { value, %__MODULE__{queue: queue} }
     end
   end
 
-  def deq!(%__MODULE__{queue: queue}) do
-    case :queue.out(queue) do
-      { :empty, _ } ->
-        raise Data.Error.Empty
-
-      { { :value, value }, queue } ->
-        { value, %__MODULE__{queue: queue} }
-    end
-  end
-
-  def reverse_deq(%__MODULE__{queue: queue}, default \\ nil) do
+  def reverse_deq(%__MODULE__{queue: queue}) do
     case :queue.out_r(queue) do
       { :empty, queue } ->
-        { default, %__MODULE__{queue: queue} }
+        { :empty, %__MODULE__{queue: queue} }
 
-      { { :value, value }, queue } ->
+      { value, queue } ->
         { value, %__MODULE__{queue: queue} }
     end
   end
 
-  def reverse_deq!(%__MODULE__{queue: queue}) do
-    case :queue.out_r(queue) do
-      { :empty, _ } ->
-        raise Data.Error.Empty
-
-      { { :value, value }, queue } ->
-        { value, %__MODULE__{queue: queue} }
-    end
+  def peek(%__MODULE__{queue: queue}) do
+    :queue.peek(queue)
   end
 
-  def peek(%__MODULE__{queue: queue}, default \\ nil) do
-    case :queue.peek(queue) do
-      :empty ->
-        default
-
-      { :value, value } ->
-        value
-    end
-  end
-
-  def peek!(%__MODULE__{queue: queue}) do
-    case :queue.peek(queue) do
-      :empty ->
-        raise Data.Error.Empty
-
-      { :value, value } ->
-        value
-    end
-  end
-
-  def reverse_peek(%__MODULE__{queue: queue}, default \\ nil) do
-    case :queue.peek_r(queue) do
-      :empty ->
-        default
-
-      { :value, value } ->
-        value
-    end
-  end
-
-  def reverse_peek!(%__MODULE__{queue: queue}) do
-    case :queue.peek_r(queue) do
-      :empty ->
-        raise Data.Error.Empty
-
-      { :value, value } ->
-        value
-    end
+  def reverse_peek(%__MODULE__{queue: queue}) do
+    :queue.peek_r(queue)
   end
 
   def reverse(%__MODULE__{queue: queue}) do
@@ -140,75 +90,69 @@ defmodule Data.Queue.Standard do
   def to_list(%__MODULE__{queue: queue}) do
     :queue.to_list(queue)
   end
-end
 
-defimpl Data.Queue, for: Data.Queue.Standard do
-  defdelegate enq(self, value), to: Data.Queue.Standard
-  defdelegate deq(self), to: Data.Queue.Standard
-  defdelegate deq(self, default), to: Data.Queue.Standard
-  defdelegate deq!(self), to: Data.Queue.Standard
-end
-
-defimpl Data.Counted, for: Data.Queue.Standard do
-  defdelegate count(self), to: Data.Queue.Standard, as: :size
-end
-
-defimpl Data.Peekable, for: Data.Queue.Standard do
-  defdelegate peek(self), to: Data.Queue.Standard
-  defdelegate peek(self, default), to: Data.Queue.Standard
-  defdelegate peek!(self), to: Data.Queue.Standard
-end
-
-defimpl Data.Sequence, for: Data.Queue.Standard do
-  def first(self) do
-    Data.Queue.Standard.peek(self)
+  defimpl P.Queue do
+    defdelegate enq(self, value), to: Data.Queue.Standard
+    defdelegate deq(self), to: Data.Queue.Standard
   end
 
-  def next(self) do
-    if Data.Queue.Standard.size(self) > 1 do
-      { _, next } = Data.Queue.Standard.deq(self)
+  defimpl P.Count do
+    defdelegate count(self), to: Data.Queue.Standard, as: :size
+  end
 
-      next
+  defimpl P.Peek do
+    defdelegate peek(self), to: Data.Queue.Standard
+  end
+
+  defimpl P.Sequence do
+    def first(self) do
+      Data.peek(self)
+    end
+
+    def next(self) do
+      if Data.Queue.Standard.size(self) > 1 do
+        { _, next } = Data.Queue.Standard.deq(self)
+
+        next
+      end
     end
   end
-end
 
-defimpl Data.Reversible, for: Data.Queue.Standard do
-  defdelegate reverse(self), to: Data.Queue.Standard
-end
+  defimpl P.Reverse do
+    defdelegate reverse(self), to: Data.Queue.Standard
+  end
 
-defimpl Data.Emptyable, for: Data.Queue.Standard do
-  defdelegate empty?(self), to: Data.Queue.Standard
-  defdelegate clear(self), to: Data.Queue.Standard
-end
+  defimpl P.Empty do
+    defdelegate empty?(self), to: Data.Queue.Standard
+    defdelegate clear(self), to: Data.Queue.Standard
+  end
 
-defimpl Data.Reducible, for: Data.Queue.Standard do
-  defdelegate reduce(self, acc, fun), to: Data.Queue.Standard, as: :foldl
-end
+  defimpl P.Reduce do
+    defdelegate reduce(self, acc, fun), to: Data.Queue.Standard, as: :foldl
+  end
 
-defimpl Data.Listable, for: Data.Queue.Standard do
-  defdelegate to_list(self), to: Data.Queue.Standard
-end
+  defimpl P.ToList do
+    defdelegate to_list(self), to: Data.Queue.Standard
+  end
 
-defimpl Data.Stack, for: Data.Queue.Standard do
-  defdelegate push(self, value), to: Data.Queue.Standard, as: :reverse_enq
-  defdelegate pop(self), to: Data.Queue.Standard, as: :reverse_deq
-  defdelegate pop(self, default), to: Data.Queue.Standard, as: :reverse_deq
-  defdelegate pop!(self), to: Data.Queue.Standard, as: :reverse_deq!
-end
+  defimpl P.Stack do
+    defdelegate push(self, value), to: Data.Queue.Standard, as: :reverse_enq
+    defdelegate pop(self), to: Data.Queue.Standard, as: :reverse_deq
+  end
 
-defimpl Data.Contains, for: Data.Queue.Standard do
-  defdelegate contains?(self, key), to: Data.Queue.Standard, as: :member?
-end
+  defimpl P.Contains do
+    defdelegate contains?(self, key), to: Data.Queue.Standard, as: :member?
+  end
 
-defimpl Enumerable, for: Data.Queue.Standard do
-  use Data.Enumerable
-end
+  defimpl Enumerable do
+    use Data.Enumerable
+  end
 
-defimpl Inspect, for: Data.Queue.Standard do
-  import Inspect.Algebra
+  defimpl Inspect do
+    import Inspect.Algebra
 
-  def inspect(queue, opts) do
-    concat ["#Queue<", Kernel.inspect(Data.Queue.Standard.to_list(queue), opts), ">"]
+    def inspect(queue, opts) do
+      concat ["#Queue<", Kernel.inspect(Data.Queue.Standard.to_list(queue), opts), ">"]
+    end
   end
 end

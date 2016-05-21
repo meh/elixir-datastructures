@@ -6,11 +6,15 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Reducible do
+defprotocol Data.Protocol.Reduce do
   @spec reduce(t, any, (any, any -> any)) :: any
   def reduce(self, acc, fun)
 end
 
-defimpl Data.Reducible, for: List do
+defimpl Data.Protocol.Reduce, for: List do
   defdelegate reduce(list, acc, fun), to: List, as: :foldl
+end
+
+defimpl Data.Protocol.Reduce, for: Map do
+  defdelegate reduce(self, acc, fun), to: Map
 end

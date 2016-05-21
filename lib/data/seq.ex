@@ -7,9 +7,11 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Seq do
-  @type t :: Data.Sequence.t | Data.Sequenceable.t | Data.Listable.t
+  alias Data.Protocol, as: P
+  alias Data.Protocol.Sequence, as: S
+  alias Data.Error, as: E
 
-  alias Data.Sequence, as: S
+  @type t :: P.Sequence.t | P.ToSequence.t | P.ToList.t
 
   def first(sequence) do
     Data.seq(sequence) |> S.first
@@ -21,8 +23,6 @@ defmodule Data.Seq do
 
   defmodule WithIndex do
     defstruct index: 0, seq: nil
-
-    alias Data.Sequence, as: S
 
     def new(seq) do
       case Data.seq(seq) do
@@ -48,7 +48,7 @@ defmodule Data.Seq do
       end
     end
 
-    defimpl Data.Sequence, for: __MODULE__ do
+    defimpl P.Sequence do
       defdelegate first(self), to: WithIndex
       defdelegate next(self),  to: WithIndex
     end
@@ -398,7 +398,7 @@ defmodule Data.Seq do
   end
 
   defp do_count(acc, seq) do
-    do_count(acc + 1, Data.Sequence.next(seq))
+    do_count(acc + 1, S.next(seq))
   end
 
   @spec zip(t, t) :: t
@@ -425,7 +425,7 @@ defmodule Data.Seq do
 
   def max(sequence) do
     if Data.empty?(sequence) do
-      raise Data.Error.Empty
+      raise E.Empty
     else
       reduce Data.seq(sequence), S.first(sequence), fn current, max ->
         if current > max, do: current, else: max
@@ -451,7 +451,7 @@ defmodule Data.Seq do
 
   def min(sequence) do
     if Data.empty?(sequence) do
-      raise Data.Error.Empty
+      raise E.Empty
     else
       reduce Data.seq(sequence), S.first(sequence), fn current, min ->
         if current < min, do: current, else: min
@@ -540,8 +540,8 @@ defmodule Data.Seq do
     [tl(first), rest] |> IO.iodata_to_binary
   end
 
-  @spec group_by(t, (term -> term))              :: Data.Dict.t
-  @spec group_by(t, Data.Dict.t, (term -> term)) :: Data.Dict.t
+  @spec group_by(t, (term -> term))              :: P.Dictionary.t
+  @spec group_by(t, P.Dictionary.t, (term -> term)) :: P.Dictionary.t
   def group_by(seq, into \\ [], fun) do
     do_group_by(into, Data.seq(seq), fun)
   end
@@ -551,11 +551,9 @@ defmodule Data.Seq do
   end
 
   defp do_group_by(into, seq, fun) do
-    alias Data.Dict
-
     value = first(seq)
 
-    Dict.update(into, fun.(value), [], &(&1 ++ [value]))
+    Data.Dict.update(into, fun.(value), [], &(&1 ++ [value]))
       |> do_group_by(next(seq), fun)
   end
 

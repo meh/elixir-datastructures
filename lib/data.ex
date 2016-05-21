@@ -7,10 +7,13 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data do
-  @spec contains?(Data.Contains.t | Data.Sequence.t, any) :: any
+  alias Data.Protocol, as: P
+  alias Data.Error, as: E
+
+  @spec contains?(P.Contains.t | P.Sequence.t, any) :: any
   def contains?(self, what) do
     cond do
-      mod = Data.Contains.impl_for(self) ->
+      mod = P.Contains.impl_for(self) ->
         mod.contains?(self, what)
 
       Enumerable.impl_for(self) ->
@@ -21,7 +24,7 @@ defmodule Data do
     end
   end
 
-  @spec seq(Data.Sequence.t | Data.Sequenceable.t | Data.Listable.t) :: Data.Sequence.t
+  @spec seq(P.Sequence.t | P.ToSequence.t | P.ToList.t) :: P.Sequence.t
   def seq([]) do
     nil
   end
@@ -43,10 +46,10 @@ defmodule Data do
       empty?(self) ->
         nil
 
-      Data.Sequence.impl_for(self) ->
+      P.Sequence.impl_for(self) ->
         self
 
-      mod = Data.Sequenceable.impl_for(self) ->
+      mod = P.ToSequence.impl_for(self) ->
         mod.to_sequence(self)
 
       true ->
@@ -54,28 +57,35 @@ defmodule Data do
     end
   end
 
-  @spec peek(Data.Peekable.t)      :: any
-  @spec peek(Data.Peekable.t, any) :: any
+  @spec peek(P.Peek.t)      :: any
+  @spec peek(P.Peek.t, any) :: any
   def peek(self, default \\ nil) do
-    Data.Peekable.peek(self, default)
+    case P.Peek.peek(self) do
+      { :value, value } ->
+        value
+
+      :empty ->
+        default
+    end
   end
 
-  @spec peek!(Data.Peekable.t) :: any | no_return
+  @spec peek!(P.Peek.t) :: any | no_return
   def peek!(self) do
-    Data.Peekable.peek!(self)
+    case P.Peek.peek(self) do
+      { :value, value } ->
+        value
+
+      :empty ->
+        raise E.Empty
+    end
   end
 
-  @spec reduce(Data.Reducible.t, any, ((any, any) -> any)) :: any
+  @spec reduce(P.Reduce.t, any, ((any, any) -> any)) :: any
   def reduce(self, acc, fun) do
-    Data.Reducible.reduce(self, acc, fun)
+    P.Reduce.reduce(self, acc, fun)
   end
 
-  @spec foldr(Data.Foldable.t, any, ((any, any) -> any)) :: any
-  def foldr(self, acc, fun) do
-    Data.Foldable.foldr(self, acc, fun)
-  end
-
-  @spec empty?(Data.Empytable.t | Data.Sequence.t) :: Data.Emptyable.t
+  @spec empty?(P.Empty.t | P.Sequence.t) :: P.t
   def empty?(nil) do
     true
   end
@@ -90,13 +100,13 @@ defmodule Data do
 
   def empty?(self) do
     cond do
-      mod = Data.Emptyable.impl_for(self) ->
+      mod = P.Empty.impl_for(self) ->
         mod.empty?(self)
 
-      mod = Data.Sequenceable.impl_for(self) ->
+      mod = P.ToSequence.impl_for(self) ->
         mod.to_sequence(self) == nil
 
-      mod = Data.Listable.impl_for(self) ->
+      mod = P.ToList.impl_for(self) ->
         mod.to_list(self) == []
 
       true ->
@@ -104,48 +114,48 @@ defmodule Data do
     end
   end
 
-  @spec clear(Data.Emptyable.t) :: Data.Emptyable.t
+  @spec clear(P.Empty.t) :: P.Empty.t
   def clear(self) do
-    Data.Emptyable.clear(self)
+    P.Empty.clear(self)
   end
 
-  @spec count(Data.Counted.t | Data.Sequence.t | Enumerable.t) :: Data.Counted.t | Enumerable.t
+  @spec count(P.Count.t | P.Sequence.t | Enumerable.t) :: P.Count.t | Enumerable.t
   def count(self) do
     cond do
-      mod = Data.Counted.impl_for(self) ->
+      mod = P.Count.impl_for(self) ->
         mod.count(self)
 
-      Data.Sequence.impl_for(self) ->
-        Data.Seq.count(self)
+      P.Sequence.impl_for(self) ->
+        Seq.count(self)
 
-      Data.Sequenceable.impl_for(self) ->
-        Data.Seq.count(self)
+      P.ToSequence.impl_for(self) ->
+        Seq.count(self)
 
       Enumerable.impl_for(self) ->
         Enum.count(self)
     end
   end
 
-  @spec count(Data.Sequence.t | Enumerable.t, (any -> boolean)) :: Data.Counted.t | Enumerable.t
+  @spec count(P.Sequence.t | Enumerable.t, (any -> boolean)) :: P.Count.t | Enumerable.t
   def count(self, pred) do
     cond do
-      Data.Sequence.impl_for(self) ->
-        Data.Seq.count(self, pred)
+      P.Sequence.impl_for(self) ->
+        Seq.count(self, pred)
 
-      Data.Sequenceable.impl_for(self) ->
-        Data.Seq.count(self, pred)
+      P.ToSequence.impl_for(self) ->
+        Seq.count(self, pred)
 
       Enumerable.impl_for(self) ->
         Enum.count(self, pred)
     end
   end
 
-  @spec reverse(Data.Reversible.t) :: Data.Reversible.t
+  @spec reverse(P.Reverse.t) :: P.Reverse.t
   def reverse(self) do
-    Data.Reversible.reverse(self)
+    P.Reverse.reverse(self)
   end
 
-  @spec to_list(list | Data.Listable.t | Data.Sequence.t | Enumerable.t) :: list
+  @spec to_list(list | P.ToList.t | P.Sequence.t | Enumerable.t) :: list
   def to_list(self) when is_list(self) do
     self
   end
@@ -156,14 +166,14 @@ defmodule Data do
 
   def to_list(self) do
     cond do
-      mod = Data.Listable.impl_for(self) ->
+      mod = P.ToList.impl_for(self) ->
         mod.to_list(self)
 
-      mod = Data.Sequence.impl_for(self) ->
+      mod = P.Sequence.impl_for(self) ->
         mod.to_list(self)
 
-      Data.Sequenceable.impl_for(self) ->
-        Data.Seq.to_list(self)
+      P.ToSequence.impl_for(self) ->
+        Seq.to_list(self)
 
       Enumerable.impl_for(self) ->
         Enum.to_list(self)
