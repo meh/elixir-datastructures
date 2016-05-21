@@ -18,7 +18,7 @@ defmodule Test.Queue.Standard do
   test :deq! do
     assert { 23, _ } = Standard.new |> Queue.enq(23) |> Queue.deq!
 
-    assert_raise Data.Empty, fn ->
+    assert_raise Data.Error.Empty, fn ->
       Standard.new |> Queue.deq!
     end
   end
@@ -31,7 +31,7 @@ defmodule Test.Queue.Standard do
   test :peek! do
     assert Standard.new |> Queue.enq(23) |> Data.peek! == 23
 
-    assert_raise Data.Empty, fn ->
+    assert_raise Data.Error.Empty, fn ->
       Standard.new |> Data.peek!
     end
   end

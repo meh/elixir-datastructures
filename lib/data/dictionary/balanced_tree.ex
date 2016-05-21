@@ -29,23 +29,13 @@ defmodule Data.Dictionary.BalancedTree do
     :gb_trees.is_defined(key, self)
   end
 
-  def get(%__MODULE__{dict: self}, key, default \\ nil) do
+  def fetch(%__MODULE__{dict: self}, key) do
     case :gb_trees.lookup(key, self) do
       { :value, value } ->
-        value
+        { :ok, value }
 
       :none ->
-        default
-    end
-  end
-
-  def get!(%__MODULE__{dict: self}, key) do
-    case :gb_trees.lookup(key, self) do
-      { :value, value } ->
-        value
-
-      :none ->
-        raise Data.Missing, key: key
+        :error
     end
   end
 
@@ -138,9 +128,7 @@ defmodule Data.Dictionary.BalancedTree do
 end
 
 defimpl Data.Dictionary, for: Data.Dictionary.BalancedTree do
-  defdelegate get(self, key), to: Data.Dictionary.BalancedTree
-  defdelegate get(self, key, default), to: Data.Dictionary.BalancedTree
-  defdelegate get!(self, key), to: Data.Dictionary.BalancedTree
+  defdelegate fetch(self, key), to: Data.Dictionary.BalancedTree
   defdelegate put(self, key, value), to: Data.Dictionary.BalancedTree
   defdelegate delete(self, key), to: Data.Dictionary.BalancedTree
   defdelegate keys(self), to: Data.Dictionary.BalancedTree

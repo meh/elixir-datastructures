@@ -21,24 +21,8 @@ defmodule Data.Dictionary.Standard do
     :dict.is_key(key, self)
   end
 
-  def get(%__MODULE__{dict: self}, key, default \\ nil) do
-    case :dict.find(key, self) do
-      { :ok, value } ->
-        value
-
-      :error ->
-        default
-    end
-  end
-
-  def get!(%__MODULE__{dict: self}, key) do
-    case :dict.find(key, self) do
-      { :ok, value } ->
-        value
-
-      :error ->
-        raise Data.Missing, key: key
-    end
+  def fetch(%__MODULE__{dict: self}, key) do
+    :dict.find(key, self)
   end
 
   def put(%__MODULE__{dict: self}, key, value) do
@@ -97,9 +81,7 @@ defmodule Data.Dictionary.Standard do
 end
 
 defimpl Data.Dictionary, for: Data.Dictionary.Standard do
-  defdelegate get(self, key), to: Data.Dictionary.Standard
-  defdelegate get(self, key, default), to: Data.Dictionary.Standard
-  defdelegate get!(self, key), to: Data.Dictionary.Standard
+  defdelegate fetch(self, key), to: Data.Dictionary.Standard
   defdelegate put(self, key, value), to: Data.Dictionary.Standard
   defdelegate delete(self, key), to: Data.Dictionary.Standard
   defdelegate keys(self), to: Data.Dictionary.Standard

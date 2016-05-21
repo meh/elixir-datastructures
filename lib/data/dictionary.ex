@@ -10,12 +10,8 @@ defprotocol Data.Dictionary do
   @type k :: any
   @type v :: any
 
-  @spec get(t, k)    :: v
-  @spec get(t, k, v) :: v
-  def get(self, key, default \\ nil)
-
-  @spec get!(t, k) :: v | no_return
-  def get!(self, key)
+  @spec fetch(t, k) :: { :ok, v } | :error
+  def fetch(self, key)
 
   @spec put(t, k, v) :: t
   def put(self, key, value)
@@ -31,23 +27,13 @@ defprotocol Data.Dictionary do
 end
 
 defimpl Data.Dictionary, for: List do
-  def get(self, key, default \\ nil) do
+  def fetch(self, key, default \\ nil) do
     case :lists.keyfind(key, 1, self) do
       { ^key, value } ->
-        value
+        { :ok, value }
 
       false ->
-        default
-    end
-  end
-
-  def get!(self, key) do
-    case :lists.keyfind(key, 1, self) do
-      { ^key, value } ->
-        value
-
-      false ->
-        raise Data.Missing, key: key
+        :error
     end
   end
 

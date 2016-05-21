@@ -18,7 +18,7 @@ defmodule StackSimpleTest do
   test :pop! do
     assert { 23, _ } = Simple.new |> Stack.push(23) |> Stack.pop!
 
-    assert_raise Data.Empty, fn ->
+    assert_raise Data.Error.Empty, fn ->
       Simple.new |> Stack.pop!
     end
   end
@@ -31,7 +31,7 @@ defmodule StackSimpleTest do
   test :peek! do
     assert Simple.new |> Stack.push(23) |> Data.peek! == 23
 
-    assert_raise Data.Empty, fn ->
+    assert_raise Data.Error.Empty, fn ->
       Simple.new |> Data.peek!
     end
   end

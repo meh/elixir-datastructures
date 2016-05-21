@@ -7,20 +7,11 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defimpl Data.Dictionary, for: Map do
-  defdelegate get(self, key), to: Map
-  defdelegate get(self, key, default), to: Map
+  defdelegate fetch(self, key), to: Map
   defdelegate put(self, key, value), to: Map
   defdelegate delete(self, key), to: Map
   defdelegate keys(self), to: Map
   defdelegate values(self), to: Map
-
-  def get!(self, key) do
-    if Map.has_key?(self, key) do
-      Map.get(self, key)
-    else
-      raise Data.Missing, key: key
-    end
-  end
 end
 
 defimpl Data.Emptyable, for: Map do

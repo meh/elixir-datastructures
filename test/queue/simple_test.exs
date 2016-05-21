@@ -18,7 +18,7 @@ defmodule Test.Queue.Simple do
   test :deq! do
     assert { 23, _ } = Simple.new |> Queue.enq(23) |> Queue.deq!
 
-    assert_raise Data.Empty, fn ->
+    assert_raise Data.Error.Empty, fn ->
       Simple.new |> Queue.deq!
     end
   end
@@ -31,7 +31,7 @@ defmodule Test.Queue.Simple do
   test :peek! do
     assert Simple.new |> Queue.enq(23) |> Data.peek! == 23
 
-    assert_raise Data.Empty, fn ->
+    assert_raise Data.Error.Empty, fn ->
       Simple.new |> Data.peek!
     end
   end

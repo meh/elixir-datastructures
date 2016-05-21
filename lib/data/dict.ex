@@ -13,13 +13,31 @@ defmodule Data.Dict do
   alias Data.Contains, as: C
   alias Data.Seq, as: S
 
-  defdelegate get(self, key), to: D
-  defdelegate get(self, key, default), to: D
-  defdelegate get!(self, key), to: D
+  defdelegate fetch(self, key), to: D
   defdelegate put(self, key, value), to: D
   defdelegate delete(self, key), to: D
   defdelegate keys(self), to: D
   defdelegate values(self), to: D
+
+  def get(self, key, default \\ nil) do
+    case D.fetch(self, key) do
+      { :ok, value } ->
+        value
+
+      :error ->
+        default
+    end
+  end
+
+  def get!(self, key) do
+    case D.fetch(self, key) do
+      { :ok, value } ->
+        value
+
+      :error ->
+        raise Data.Error.Missing, key: key
+    end
+  end
 
   def has_key?(self, key) do
     C.contains?(self, key)

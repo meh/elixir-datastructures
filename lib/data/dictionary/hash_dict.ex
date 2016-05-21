@@ -7,20 +7,11 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defimpl Data.Dictionary, for: HashDict do
-  defdelegate get(self, key), to: HashDict
-  defdelegate get(self, key, default), to: HashDict
+  defdelegate fetch(self, key), to: HashDict
   defdelegate put(self, key, value), to: HashDict
   defdelegate delete(self, key), to: HashDict
   defdelegate keys(self), to: HashDict
   defdelegate values(self), to: HashDict
-
-  def get!(self, key) do
-    if HashDict.has_key?(self, key) do
-      HashDict.get(self, key)
-    else
-      raise Data.Missing, key: key
-    end
-  end
 end
 
 defimpl Data.Emptyable, for: HashDict do
