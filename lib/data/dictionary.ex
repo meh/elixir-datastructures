@@ -27,7 +27,7 @@ defprotocol Data.Dictionary do
 end
 
 defimpl Data.Dictionary, for: List do
-  def fetch(self, key, default \\ nil) do
+  def fetch(self, key) do
     case :lists.keyfind(key, 1, self) do
       { ^key, value } ->
         { :ok, value }
