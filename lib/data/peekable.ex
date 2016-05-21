@@ -25,7 +25,7 @@ defimpl Data.Peekable, for: List do
   end
 
   def peek!([]) do
-    raise Data.Empty
+    raise Data.Error.Empty
   end
 
   def peek!([head | _]) do

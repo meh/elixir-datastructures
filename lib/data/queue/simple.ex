@@ -104,12 +104,12 @@ defmodule Data.Queue.Simple do
       iex> Data.Queue.Simple.new |> Data.Queue.enq(42) |> Data.Queue.deq!
       {42,#Queue<[]>}
       iex> Data.Queue.Simple.new |> Data.Queue.deq!
-      ** (Data.Empty) the queue is empty
+      ** (Data.Error.Empty) the queue is empty
 
   """
   @spec deq!(t) :: { v, t } | no_return
   def deq!(%__MODULE__{enqueue: [], dequeue: []}) do
-    raise Data.Empty
+    raise Data.Error.Empty
   end
 
   def deq!(queue) do
@@ -147,12 +147,12 @@ defmodule Data.Queue.Simple do
       iex> Data.Queue.Simple.new |> Data.Queue.enq(42) |> Data.Queue.enq(23) |> Data.Queue.peek!
       42
       iex> Data.Queue.Simple.new |> Data.Queue.peek!
-      ** (Data.Empty) the queue is empty
+      ** (Data.Error.Empty) the queue is empty
 
   """
   @spec peek!(t) :: v | no_return
   def peek!(%__MODULE__{enqueue: [], dequeue: []}) do
-    raise Data.Empty
+    raise Data.Error.Empty
   end
 
   def peek!(queue) do

@@ -44,7 +44,7 @@ defimpl Data.Stack, for: List do
   end
 
   def pop!([]) do
-    raise Data.Empty
+    raise Data.Error.Empty
   end
 
   def pop!(self) do

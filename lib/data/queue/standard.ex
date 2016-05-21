@@ -42,7 +42,7 @@ defmodule Data.Queue.Standard do
   def deq!(%__MODULE__{queue: queue}) do
     case :queue.out(queue) do
       { :empty, _ } ->
-        raise Data.Empty
+        raise Data.Error.Empty
 
       { { :value, value }, queue } ->
         { value, %__MODULE__{queue: queue} }
@@ -62,7 +62,7 @@ defmodule Data.Queue.Standard do
   def reverse_deq!(%__MODULE__{queue: queue}) do
     case :queue.out_r(queue) do
       { :empty, _ } ->
-        raise Data.Empty
+        raise Data.Error.Empty
 
       { { :value, value }, queue } ->
         { value, %__MODULE__{queue: queue} }
@@ -82,7 +82,7 @@ defmodule Data.Queue.Standard do
   def peek!(%__MODULE__{queue: queue}) do
     case :queue.peek(queue) do
       :empty ->
-        raise Data.Empty
+        raise Data.Error.Empty
 
       { :value, value } ->
         value
@@ -102,7 +102,7 @@ defmodule Data.Queue.Standard do
   def reverse_peek!(%__MODULE__{queue: queue}) do
     case :queue.peek_r(queue) do
       :empty ->
-        raise Data.Empty
+        raise Data.Error.Empty
 
       { :value, value } ->
         value

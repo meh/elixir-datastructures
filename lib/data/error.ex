@@ -6,22 +6,22 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defmodule Data.Empty do
+defmodule Data.Error.Empty do
   defexception message: "the data is empty"
 end
 
-defmodule Data.OutOfBounds do
+defmodule Data.Error.OutOfBounds do
   defexception message: "out of bounds"
 end
 
-defmodule Data.Missing do
+defmodule Data.Error.Missing do
   defexception key: nil, what: nil
 
-  def message(%Data.Missing{key: key}) when key != nil do
+  def message(%__MODULE__{key: key}) when key != nil do
     "key missing: #{inspect key}"
   end
 
-  def message(%Data.Missing{what: what}) when what != nil do
+  def message(%__MODULE__{what: what}) when what != nil do
     "#{inspect what} is missing"
   end
 end

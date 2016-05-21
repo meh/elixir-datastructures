@@ -425,7 +425,7 @@ defmodule Data.Seq do
 
   def max(sequence) do
     if Data.empty?(sequence) do
-      raise Data.Empty
+      raise Data.Error.Empty
     else
       reduce Data.seq(sequence), S.first(sequence), fn current, max ->
         if current > max, do: current, else: max
@@ -451,7 +451,7 @@ defmodule Data.Seq do
 
   def min(sequence) do
     if Data.empty?(sequence) do
-      raise Data.Empty
+      raise Data.Error.Empty
     else
       reduce Data.seq(sequence), S.first(sequence), fn current, min ->
         if current < min, do: current, else: min

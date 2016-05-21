@@ -44,7 +44,7 @@ defimpl Data.Queue, for: List do
   end
 
   def deq!([]) do
-    raise Data.Empty
+    raise Data.Error.Empty
   end
 
   def deq!(self) do
