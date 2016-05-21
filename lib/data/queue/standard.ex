@@ -7,69 +7,69 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Queue.Standard do
-  defrecordp :wrap, __MODULE__, queue: nil
+  defstruct [:queue]
 
   def new do
-    wrap(queue: :queue.new)
+    %__MODULE__{queue: :queue.new}
   end
 
   def new(enum_or_queue) do
     if :queue.is_queue(enum_or_queue) do
-      wrap(queue: enum_or_queue)
+      %__MODULE__{queue: enum_or_queue}
     else
-      wrap(queue: Data.to_list(enum_or_queue) |> :queue.from_list)
+      %__MODULE__{queue: Data.to_list(enum_or_queue) |> :queue.from_list}
     end
   end
 
-  def enq(wrap(queue: queue), value) do
-    wrap(queue: :queue.in(value, queue))
+  def enq(%__MODULE__{queue: queue}, value) do
+    %__MODULE__{queue: :queue.in(value, queue)}
   end
 
-  def reverse_enq(wrap(queue: queue), value) do
-    wrap(queue: :queue.in_r(value, queue))
+  def reverse_enq(%__MODULE__{queue: queue}, value) do
+    %__MODULE__{queue: :queue.in_r(value, queue)}
   end
 
-  def deq(wrap(queue: queue), default \\ nil) do
+  def deq(%__MODULE__{queue: queue}, default \\ nil) do
     case :queue.out(queue) do
       { :empty, queue } ->
-        { default, wrap(queue: queue) }
+        { default, %__MODULE__{queue: queue} }
 
       { { :value, value }, queue } ->
-        { value, wrap(queue: queue) }
+        { value, %__MODULE__{queue: queue} }
     end
   end
 
-  def deq!(wrap(queue: queue)) do
+  def deq!(%__MODULE__{queue: queue}) do
     case :queue.out(queue) do
       { :empty, _ } ->
         raise Data.Empty
 
       { { :value, value }, queue } ->
-        { value, wrap(queue: queue) }
+        { value, %__MODULE__{queue: queue} }
     end
   end
 
-  def reverse_deq(wrap(queue: queue), default \\ nil) do
+  def reverse_deq(%__MODULE__{queue: queue}, default \\ nil) do
     case :queue.out_r(queue) do
       { :empty, queue } ->
-        { default, wrap(queue: queue) }
+        { default, %__MODULE__{queue: queue} }
 
       { { :value, value }, queue } ->
-        { value, wrap(queue: queue) }
+        { value, %__MODULE__{queue: queue} }
     end
   end
 
-  def reverse_deq!(wrap(queue: queue)) do
+  def reverse_deq!(%__MODULE__{queue: queue}) do
     case :queue.out_r(queue) do
       { :empty, _ } ->
         raise Data.Empty
 
       { { :value, value }, queue } ->
-        { value, wrap(queue: queue) }
+        { value, %__MODULE__{queue: queue} }
     end
   end
 
-  def peek(wrap(queue: queue), default \\ nil) do
+  def peek(%__MODULE__{queue: queue}, default \\ nil) do
     case :queue.peek(queue) do
       :empty ->
         default
@@ -79,7 +79,7 @@ defmodule Data.Queue.Standard do
     end
   end
 
-  def peek!(wrap(queue: queue)) do
+  def peek!(%__MODULE__{queue: queue}) do
     case :queue.peek(queue) do
       :empty ->
         raise Data.Empty
@@ -89,7 +89,7 @@ defmodule Data.Queue.Standard do
     end
   end
 
-  def reverse_peek(wrap(queue: queue), default \\ nil) do
+  def reverse_peek(%__MODULE__{queue: queue}, default \\ nil) do
     case :queue.peek_r(queue) do
       :empty ->
         default
@@ -99,7 +99,7 @@ defmodule Data.Queue.Standard do
     end
   end
 
-  def reverse_peek!(wrap(queue: queue)) do
+  def reverse_peek!(%__MODULE__{queue: queue}) do
     case :queue.peek_r(queue) do
       :empty ->
         raise Data.Empty
@@ -109,11 +109,11 @@ defmodule Data.Queue.Standard do
     end
   end
 
-  def reverse(wrap(queue: queue)) do
-    wrap(queue: :queue.reverse(queue))
+  def reverse(%__MODULE__{queue: queue}) do
+    %__MODULE__{queue: :queue.reverse(queue)}
   end
 
-  def empty?(wrap(queue: queue)) do
+  def empty?(%__MODULE__{queue: queue}) do
     :queue.is_empty(queue)
   end
 
@@ -121,23 +121,23 @@ defmodule Data.Queue.Standard do
     new
   end
 
-  def member?(wrap(queue: queue), value) do
+  def member?(%__MODULE__{queue: queue}, value) do
     :queue.member(value, queue)
   end
 
-  def size(wrap(queue: queue)) do
+  def size(%__MODULE__{queue: queue}) do
     :queue.len(queue)
   end
 
-  def foldl(wrap(queue: queue), acc, fun) do
+  def foldl(%__MODULE__{queue: queue}, acc, fun) do
     List.foldl(:queue.to_list(queue), acc, fun)
   end
 
-  def foldr(wrap(queue: queue), acc, fun) do
+  def foldr(%__MODULE__{queue: queue}, acc, fun) do
     List.foldr(:queue.to_list(queue), acc, fun)
   end
 
-  def to_list(wrap(queue: queue)) do
+  def to_list(%__MODULE__{queue: queue}) do
     :queue.to_list(queue)
   end
 end

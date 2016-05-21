@@ -7,21 +7,21 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Dictionary.Standard do
-  defrecordp :wrap, __MODULE__, dict: nil
+  defstruct [:dict]
 
   def new do
-    wrap(dict: :dict.new)
+    %__MODULE__{dict: :dict.new}
   end
 
   def new(enum_or_dict) do
-    wrap(dict: Data.to_list(enum_or_dict) |> :dict.from_list)
+    %__MODULE__{dict: Data.to_list(enum_or_dict) |> :dict.from_list}
   end
 
-  def has_key?(wrap(dict: self), key) do
+  def has_key?(%__MODULE__{dict: self}, key) do
     :dict.is_key(key, self)
   end
 
-  def get(wrap(dict: self), key, default \\ nil) do
+  def get(%__MODULE__{dict: self}, key, default \\ nil) do
     case :dict.find(key, self) do
       { :ok, value } ->
         value
@@ -31,7 +31,7 @@ defmodule Data.Dictionary.Standard do
     end
   end
 
-  def get!(wrap(dict: self), key) do
+  def get!(%__MODULE__{dict: self}, key) do
     case :dict.find(key, self) do
       { :ok, value } ->
         value
@@ -41,35 +41,35 @@ defmodule Data.Dictionary.Standard do
     end
   end
 
-  def put(wrap(dict: self), key, value) do
-    wrap(dict: :dict.store(key, value, self))
+  def put(%__MODULE__{dict: self}, key, value) do
+    %__MODULE__{dict: :dict.store(key, value, self)}
   end
 
-  def put_new(wrap(dict: self), key, value) do
+  def put_new(%__MODULE__{dict: self}, key, value) do
     if :dict.is_key(key, self) do
-      wrap(dict: self)
+      %__MODULE__{dict: self}
     else
-      wrap(dict: :dict.store(key, value, self))
+      %__MODULE__{dict: :dict.store(key, value, self)}
     end
   end
 
-  def delete(wrap(dict: self), key) do
-    wrap(dict: :dict.erase(key, self))
+  def delete(%__MODULE__{dict: self}, key) do
+    %__MODULE__{dict: :dict.erase(key, self)}
   end
 
-  def keys(wrap(dict: self)) do
+  def keys(%__MODULE__{dict: self}) do
     :dict.fetch_keys(self)
   end
 
-  def values(wrap(dict: self)) do
+  def values(%__MODULE__{dict: self}) do
     :dict.fold(fn(_, value, acc) -> [value | acc] end, [], self)
   end
 
-  def reduce(wrap(dict: self), acc, fun) do
+  def reduce(%__MODULE__{dict: self}, acc, fun) do
     :dict.fold(fn(key, value, acc) -> fun.({ key, value }, acc) end, acc, self)
   end
 
-  def size(wrap(dict: self)) do
+  def size(%__MODULE__{dict: self}) do
     :dict.size(self)
   end
 
@@ -77,11 +77,11 @@ defmodule Data.Dictionary.Standard do
     new
   end
 
-  def to_list(wrap(dict: self)) do
+  def to_list(%__MODULE__{dict: self}) do
     :dict.to_list(self)
   end
 
-  def member?(wrap(dict: self), { key, value }) do
+  def member?(%__MODULE__{dict: self}, { key, value }) do
     case :dict.find(key, self) do
       { :ok, ^value } ->
         true
@@ -91,7 +91,7 @@ defmodule Data.Dictionary.Standard do
     end
   end
 
-  def member?(wrap(dict: self), key) do
+  def member?(%__MODULE__{dict: self}, key) do
     :dict.is_key(key, self)
   end
 end
@@ -156,10 +156,6 @@ end
 
 defimpl Enumerable, for: Data.Dictionary.Standard do
   use Data.Enumerable
-end
-
-defimpl Access, for: Data.Dictionary.Standard do
-  defdelegate access(self, key), to: Data.Dictionary.Standard, as: :get
 end
 
 defimpl Inspect, for: Data.Dictionary.Standard do

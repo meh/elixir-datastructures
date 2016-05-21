@@ -7,102 +7,99 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Set.BalancedTree do
-  @opaque t :: record
-  @type   v :: any
-
-  defrecordp :wrap, __MODULE__, set: nil
+  defstruct [:set]
 
   def new do
-    wrap(set: :gb_sets.new)
+    %__MODULE__{set: :gb_sets.new}
   end
 
   def new(enum_or_set) do
     if :gb_sets.is_set(enum_or_set) do
-      wrap(set: enum_or_set)
+      %__MODULE__{set: enum_or_set}
     else
-      wrap(set: Data.to_list(enum_or_set) |> :gb_sets.from_list)
+      %__MODULE__{set: Data.to_list(enum_or_set) |> :gb_sets.from_list}
     end
   end
 
-  def member?(wrap(set: self), element) do
+  def member?(%__MODULE__{set: self}, element) do
     :gb_sets.is_element(element, self)
   end
 
-  def empty?(wrap(set: self)) do
+  def empty?(%__MODULE__{set: self}) do
     :gb_sets.is_empty(self)
   end
 
   def clear(_) do
-    wrap(set: :gb_sets.new)
+    %__MODULE__{set: :gb_sets.new}
   end
 
-  def add(wrap(set: self), element) do
-    wrap(set: :gb_sets.add_element(element, self))
+  def add(%__MODULE__{set: self}, element) do
+    %__MODULE__{set: :gb_sets.add_element(element, self)}
   end
 
-  def delete(wrap(set: self), element) do
-    wrap(set: :gb_sets.del_element(element, self))
+  def delete(%__MODULE__{set: self}, element) do
+    %__MODULE__{set: :gb_sets.del_element(element, self)}
   end
 
-  def union(wrap(set: self), wrap(set: other)) do
-    wrap(set: :gb_sets.union(self, other))
+  def union(%__MODULE__{set: self}, %__MODULE__{set: other}) do
+    %__MODULE__{set: :gb_sets.union(self, other)}
   end
 
-  def union(wrap(set: self), other) do
-    wrap(set: :gb_sets.union(self, Data.to_list(other) |> :gb_sets.from_list))
+  def union(%__MODULE__{set: self}, other) do
+    %__MODULE__{set: :gb_sets.union(self, Data.to_list(other) |> :gb_sets.from_list)}
   end
 
-  def intersection(wrap(set: self), wrap(set: other)) do
-    wrap(set: :gb_sets.intersection(self, other))
+  def intersection(%__MODULE__{set: self}, %__MODULE__{set: other}) do
+    %__MODULE__{set: :gb_sets.intersection(self, other)}
   end
 
-  def intersection(wrap(set: self), other) do
-    wrap(set: :gb_sets.intersection(self, Data.to_list(other) |> :gb_sets.from_list))
+  def intersection(%__MODULE__{set: self}, other) do
+    %__MODULE__{set: :gb_sets.intersection(self, Data.to_list(other) |> :gb_sets.from_list)}
   end
 
-  def difference(wrap(set: self), wrap(set: other)) do
-    wrap(set: :gb_sets.subtract(self, other))
+  def difference(%__MODULE__{set: self}, %__MODULE__{set: other}) do
+    %__MODULE__{set: :gb_sets.subtract(self, other)}
   end
 
-  def difference(wrap(set: self), other) do
-    wrap(set: :gb_sets.subtract(self, Data.to_list(other) |> :gb_sets.from_list))
+  def difference(%__MODULE__{set: self}, other) do
+    %__MODULE__{set: :gb_sets.subtract(self, Data.to_list(other) |> :gb_sets.from_list)}
   end
 
-  def subset?(wrap(set: self), wrap(set: other)) do
+  def subset?(%__MODULE__{set: self}, %__MODULE__{set: other}) do
     :gb_sets.is_subset(other, self)
   end
 
-  def subset?(wrap(set: self), other) do
+  def subset?(%__MODULE__{set: self}, other) do
     :gb_sets.is_subset(Data.to_list(other) |> :gb_sets.from_list, self)
   end
 
-  def disjoint?(wrap(set: self), wrap(set: other)) do
+  def disjoint?(%__MODULE__{set: self}, %__MODULE__{set: other}) do
     :gb_sets.is_disjoint(other, self)
   end
 
-  def disjoint?(wrap(set: self), other) do
+  def disjoint?(%__MODULE__{set: self}, other) do
     :gb_sets.is_disjoint(Data.to_list(other) |> :gb_sets.from_list, self)
   end
 
-  def size(wrap(set: self)) do
+  def size(%__MODULE__{set: self}) do
     :gb_sets.size(self)
   end
 
-  def reduce(wrap(set: self), acc, fun) do
+  def reduce(%__MODULE__{set: self}, acc, fun) do
     :gb_sets.fold(fun, acc, self)
   end
 
-  def to_list(wrap(set: self)) do
+  def to_list(%__MODULE__{set: self}) do
     Data.Set.List.new(:gb_sets.to_list(self))
   end
 
   ## Specific functions
 
-  def balance(wrap(set: self)) do
-    wrap(set: :gb_sets.balance(self))
+  def balance(%__MODULE__{set: self}) do
+    %__MODULE__{set: :gb_sets.balance(self)}
   end
 
-  def filter(wrap(set: self), pred) do
+  def filter(%__MODULE__{set: self}, pred) do
     :gb_sets.filter(pred, self)
   end
 end

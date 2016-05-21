@@ -11,17 +11,17 @@ defmodule Data.Queue.Simple do
   A simple and performant queue.
   """
 
-  @opaque t :: record
-  @type   v :: any
+  defstruct enqueue: [], dequeue: []
 
-  defrecordp :queue, __MODULE__, enqueue: [], dequeue: []
+  @opaque t :: __MODULE__.t
+  @type   v :: any
 
   @doc """
   Creates an empty queue.
   """
   @spec new :: t
   def new do
-    queue()
+    %__MODULE__{}
   end
 
   @doc """
@@ -35,7 +35,7 @@ defmodule Data.Queue.Simple do
   """
   @spec new(Enum.t) :: t
   def new(enum) do
-    queue(dequeue: Data.to_list(enum))
+    %__MODULE__{dequeue: Data.to_list(enum)}
   end
 
   @doc """
@@ -48,17 +48,17 @@ defmodule Data.Queue.Simple do
 
   """
   @spec enq(t, v) :: t
-  def enq(queue(enqueue: [], dequeue: []), value) do
-    queue(dequeue: [value])
+  def enq(%__MODULE__{enqueue: [], dequeue: []}, value) do
+    %__MODULE__{dequeue: [value]}
   end
 
   # minor amortization in case of two enqs
-  def enq(queue(enqueue: enq, dequeue: [deq]), value) do
-    queue(enqueue: enq, dequeue: [deq, value])
+  def enq(%__MODULE__{enqueue: enq, dequeue: [deq]}, value) do
+    %__MODULE__{enqueue: enq, dequeue: [deq, value]}
   end
 
-  def enq(queue(enqueue: enq, dequeue: deq), value) do
-    queue(enqueue: [value | enq], dequeue: deq)
+  def enq(%__MODULE__{enqueue: enq, dequeue: deq}, value) do
+    %__MODULE__{enqueue: [value | enq], dequeue: deq}
   end
 
   @doc """
@@ -76,24 +76,24 @@ defmodule Data.Queue.Simple do
   @spec deq(t, v) :: { v, t }
   def deq(queue, default \\ nil)
 
-  def deq(queue(enqueue: [], dequeue: []), default) do
-    { default, queue() }
+  def deq(%__MODULE__{enqueue: [], dequeue: []}, default) do
+    { default, %__MODULE__{} }
   end
 
-  def deq(queue(enqueue: [], dequeue: [deq]), _) do
-    { deq, queue() }
+  def deq(%__MODULE__{enqueue: [], dequeue: [deq]}, _) do
+    { deq, %__MODULE__{} }
   end
 
-  def deq(queue(enqueue: [enq], dequeue: [deq]), _) do
-    { deq, queue(dequeue: [enq]) }
+  def deq(%__MODULE__{enqueue: [enq], dequeue: [deq]}, _) do
+    { deq, %__MODULE__{dequeue: [enq]} }
   end
 
-  def deq(queue(enqueue: enq, dequeue: [value]), _) do
-    { value, queue(dequeue: Enum.reverse(enq)) }
+  def deq(%__MODULE__{enqueue: enq, dequeue: [value]}, _) do
+    { value, %__MODULE__{dequeue: Enum.reverse(enq)} }
   end
 
-  def deq(queue(enqueue: enq, dequeue: [head | rest]), _) do
-    { head, queue(enqueue: enq, dequeue: rest) }
+  def deq(%__MODULE__{enqueue: enq, dequeue: [head | rest]}, _) do
+    { head, %__MODULE__{enqueue: enq, dequeue: rest} }
   end
 
   @doc """
@@ -108,7 +108,7 @@ defmodule Data.Queue.Simple do
 
   """
   @spec deq!(t) :: { v, t } | no_return
-  def deq!(queue(enqueue: [], dequeue: [])) do
+  def deq!(%__MODULE__{enqueue: [], dequeue: []}) do
     raise Data.Empty
   end
 
@@ -131,11 +131,11 @@ defmodule Data.Queue.Simple do
   @spec peek(t, v) :: v
   def peek(queue, default \\ nil)
 
-  def peek(queue(enqueue: [], dequeue: []), default) do
+  def peek(%__MODULE__{enqueue: [], dequeue: []}, default) do
     default
   end
 
-  def peek(queue(dequeue: [value | _]), _) do
+  def peek(%__MODULE__{dequeue: [value | _]}, _) do
     value
   end
 
@@ -151,7 +151,7 @@ defmodule Data.Queue.Simple do
 
   """
   @spec peek!(t) :: v | no_return
-  def peek!(queue(enqueue: [], dequeue: [])) do
+  def peek!(%__MODULE__{enqueue: [], dequeue: []}) do
     raise Data.Empty
   end
 
@@ -169,36 +169,36 @@ defmodule Data.Queue.Simple do
 
   """
   @spec reverse(t) :: t
-  def reverse(queue(enqueue: enq, dequeue: deq)) do
-    queue(enqueue: deq, dequeue: enq)
+  def reverse(%__MODULE__{enqueue: enq, dequeue: deq}) do
+    %__MODULE__{enqueue: deq, dequeue: enq}
   end
 
   @doc """
   Check if the queue is empty.
   """
   @spec empty?(t) :: boolean
-  def empty?(queue(enqueue: [], dequeue: [])) do
+  def empty?(%__MODULE__{enqueue: [], dequeue: []}) do
     true
   end
 
-  def empty?(queue()) do
+  def empty?(%__MODULE__{}) do
     false
   end
 
   @spec clear(t) :: t
   def clear(_) do
-    queue()
+    %__MODULE__{}
   end
 
   @doc """
   Check if the the value is present in the queue.
   """
   @spec member?(t, v) :: boolean
-  def member?(queue(enqueue: [], dequeue: [])) do
+  def member?(%__MODULE__{enqueue: [], dequeue: []}) do
     false
   end
 
-  def member?(queue(enqueue: enq, dequeue: deq), value) do
+  def member?(%__MODULE__{enqueue: enq, dequeue: deq}, value) do
     Enum.member?(enq, value) or Enum.member?(deq, value)
   end
 
@@ -206,7 +206,7 @@ defmodule Data.Queue.Simple do
   Get the size of the queue.
   """
   @spec size(t) :: non_neg_integer
-  def size(queue(enqueue: enq, dequeue: deq)) do
+  def size(%__MODULE__{enqueue: enq, dequeue: deq}) do
     length(enq) + length(deq)
   end
 
@@ -214,7 +214,7 @@ defmodule Data.Queue.Simple do
   Fold the queue from the left.
   """
   @spec foldl(t, any, ((v, any) -> any)) :: any
-  def foldl(queue(enqueue: enq, dequeue: deq), acc, fun) do
+  def foldl(%__MODULE__{enqueue: enq, dequeue: deq}, acc, fun) do
     List.foldr(enq, List.foldl(deq, acc, fun), fun)
   end
 
@@ -222,7 +222,7 @@ defmodule Data.Queue.Simple do
   Fold the queue from the right.
   """
   @spec foldr(t, any, ((v, any) -> any)) :: any
-  def foldr(queue(enqueue: enq, dequeue: deq), acc, fun) do
+  def foldr(%__MODULE__{enqueue: enq, dequeue: deq}, acc, fun) do
     List.foldr(deq, List.foldl(enq, acc, fun), fun)
   end
 
@@ -230,7 +230,7 @@ defmodule Data.Queue.Simple do
   Convert the queue to a list.
   """
   @spec to_list(t) :: [v]
-  def to_list(queue(enqueue: enq, dequeue: deq)) do
+  def to_list(%__MODULE__{enqueue: enq, dequeue: deq}) do
     deq ++ Enum.reverse(enq)
   end
 end

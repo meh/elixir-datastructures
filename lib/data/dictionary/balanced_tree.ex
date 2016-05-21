@@ -7,29 +7,29 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 defmodule Data.Dictionary.BalancedTree do
-  defrecordp :wrap, __MODULE__, dict: nil
+  defstruct dict: nil
 
   def new do
-    wrap(dict: :gb_trees.empty)
+    %__MODULE__{dict: :gb_trees.empty}
   end
 
   def new({ 0, nil } = self) do
-    wrap(dict: self)
+    %__MODULE__{dict: self}
   end
 
   def new({ length, tree } = self) when is_integer(length) and is_tuple(tree) do
-    wrap(dict: self)
+    %__MODULE__{dict: self}
   end
 
   def new(enum) do
-    wrap(dict: Data.to_list(enum) |> :orddict.from_list |> :gb_trees.from_orddict)
+    %__MODULE__{dict: Data.to_list(enum) |> :orddict.from_list |> :gb_trees.from_orddict}
   end
 
-  def has_key?(wrap(dict: self), key) do
+  def has_key?(%__MODULE__{dict: self}, key) do
     :gb_trees.is_defined(key, self)
   end
 
-  def get(wrap(dict: self), key, default \\ nil) do
+  def get(%__MODULE__{dict: self}, key, default \\ nil) do
     case :gb_trees.lookup(key, self) do
       { :value, value } ->
         value
@@ -39,7 +39,7 @@ defmodule Data.Dictionary.BalancedTree do
     end
   end
 
-  def get!(wrap(dict: self), key) do
+  def get!(%__MODULE__{dict: self}, key) do
     case :gb_trees.lookup(key, self) do
       { :value, value } ->
         value
@@ -49,31 +49,31 @@ defmodule Data.Dictionary.BalancedTree do
     end
   end
 
-  def put(wrap(dict: self), key, value) do
-    wrap(dict: :gb_trees.enter(key, value, self))
+  def put(%__MODULE__{dict: self}, key, value) do
+    %__MODULE__{dict: :gb_trees.enter(key, value, self)}
   end
 
-  def put_new(wrap(dict: self), key, value) do
+  def put_new(%__MODULE__{dict: self}, key, value) do
     if :gb_trees.is_defined(key, self) do
-      wrap(dict: self)
+      %__MODULE__{dict: self}
     else
-      wrap(dict: :gb_trees.insert(key, value, self))
+      %__MODULE__{dict: :gb_trees.insert(key, value, self)}
     end
   end
 
-  def delete(wrap(dict: self), key) do
-    wrap(dict: :gb_trees.delete_any(key, self))
+  def delete(%__MODULE__{dict: self}, key) do
+    %__MODULE__{dict: :gb_trees.delete_any(key, self)}
   end
 
-  def keys(wrap(dict: self)) do
+  def keys(%__MODULE__{dict: self}) do
     :gb_trees.keys(self)
   end
 
-  def values(wrap(dict: self)) do
+  def values(%__MODULE__{dict: self}) do
     :gb_trees.values(self)
   end
 
-  def size(wrap(dict: self)) do
+  def size(%__MODULE__{dict: self}) do
     :gb_trees.size(self)
   end
 
@@ -81,11 +81,11 @@ defmodule Data.Dictionary.BalancedTree do
     :gb_trees.empty
   end
 
-  def to_list(wrap(dict: self)) do
+  def to_list(%__MODULE__{dict: self}) do
     :gb_trees.to_list(self)
   end
 
-  def member?(wrap(dict: self), { key, value }) do
+  def member?(%__MODULE__{dict: self}, { key, value }) do
     case :gb_trees.lookup(key, self) do
       { :value, ^value } ->
         true
@@ -95,18 +95,18 @@ defmodule Data.Dictionary.BalancedTree do
     end
   end
 
-  def member?(wrap(dict: self), key) do
+  def member?(%__MODULE__{dict: self}, key) do
     :gb_trees.is_defined(key, self)
   end
 
   defmodule Sequence do
-    defrecordp :seq, __MODULE__, iter: nil
+    defstruct [:iter]
 
     def new(dict) do
-      seq(iter: :gb_trees.iterator(dict))
+      %__MODULE__{iter: :gb_trees.iterator(dict)}
     end
 
-    def first(seq(iter: iter)) do
+    def first(%__MODULE__{iter: iter}) do
       case :gb_trees.next(iter) do
         :none ->
           nil
@@ -116,13 +116,13 @@ defmodule Data.Dictionary.BalancedTree do
       end
     end
 
-    def next(seq(iter: iter)) do
+    def next(%__MODULE__{iter: iter}) do
       case :gb_trees.next(iter) do
         :none ->
           nil
 
         { _key, _value, next } ->
-          seq(iter: next)
+          %__MODULE__{iter: next}
       end
     end
 
@@ -132,7 +132,7 @@ defmodule Data.Dictionary.BalancedTree do
     end
   end
 
-  def to_sequence(wrap(dict: self)) do
+  def to_sequence(%__MODULE__{dict: self}) do
     Sequence.new(self)
   end
 end
@@ -175,10 +175,6 @@ end
 
 defimpl Data.Sequenceable, for: Data.Dictionary.BalancedTree do
   defdelegate to_sequence(self), to: Data.Dictionary.BalancedTree
-end
-
-defimpl Access, for: Data.Dictionary.BalancedTree do
-  defdelegate access(self, key), to: Data.Dictionary.BalancedTree, as: :get
 end
 
 defimpl Enumerable, for: Data.Dictionary.BalancedTree do

@@ -11,17 +11,17 @@ defmodule Data.Stack.Simple do
   A simple stack.
   """
 
-  @opaque t :: record
-  @type   v :: any
+  defstruct list: []
 
-  defrecordp :stack, __MODULE__, list: []
+  @opaque t :: __MODULE__.t
+  @type   v :: any
 
   @doc """
   Creates an empty stack.
   """
   @spec new :: t
   def new do
-    stack()
+    %__MODULE__{}
   end
 
   @doc """
@@ -35,7 +35,7 @@ defmodule Data.Stack.Simple do
   """
   @spec new(Enum.t) :: t
   def new(enum) do
-    stack(list: Data.to_list(enum))
+    %__MODULE__{list: Data.to_list(enum)}
   end
 
   @doc """
@@ -48,8 +48,8 @@ defmodule Data.Stack.Simple do
 
   """
   @spec push(t, v) :: t
-  def push(stack(list: list), value) do
-    stack(list: [value | list])
+  def push(%__MODULE__{list: list}, value) do
+    %__MODULE__{list: [value | list]}
   end
 
   @doc """
@@ -67,12 +67,12 @@ defmodule Data.Stack.Simple do
   @spec pop(t, v) :: { v, t }
   def pop(stack, default \\ nil)
 
-  def pop(stack(list: []), default) do
-    { default, stack() }
+  def pop(%__MODULE__{list: []}, default) do
+    { default, %__MODULE__{} }
   end
 
-  def pop(stack(list: [head | rest]), _) do
-    { head, stack(list: rest) }
+  def pop(%__MODULE__{list: [head | rest]}, _) do
+    { head, %__MODULE__{list: rest} }
   end
 
   @doc """
@@ -87,11 +87,11 @@ defmodule Data.Stack.Simple do
 
   """
   @spec pop!(t) :: { v, t } | no_return
-  def pop!(stack(list: [])) do
+  def pop!(%__MODULE__{list: []}) do
     raise Data.Empty
   end
 
-  def pop!(stack() = self) do
+  def pop!(%__MODULE__{} = self) do
     pop(self)
   end
 
@@ -110,11 +110,11 @@ defmodule Data.Stack.Simple do
   @spec peek(t, v) :: v
   def peek(stack, default \\ nil)
 
-  def peek(stack(list: []), default) do
+  def peek(%__MODULE__{list: []}, default) do
     default
   end
 
-  def peek(stack(list: [head | _]), _) do
+  def peek(%__MODULE__{list: [head | _]}, _) do
     head
   end
 
@@ -130,7 +130,7 @@ defmodule Data.Stack.Simple do
 
   """
   @spec peek!(t) :: v | no_return
-  def peek!(stack(list: [])) do
+  def peek!(%__MODULE__{list: []}) do
     raise Data.Empty
   end
 
@@ -148,35 +148,35 @@ defmodule Data.Stack.Simple do
 
   """
   @spec reverse(t) :: t
-  def reverse(stack(list: list)) do
-    stack(list: Enum.reverse(list))
+  def reverse(%__MODULE__{list: list}) do
+    %__MODULE__{list: Enum.reverse(list)}
   end
 
   @doc """
   Check if the stack is empty.
   """
   @spec empty?(t) :: boolean
-  def empty?(stack(list: [])) do
+  def empty?(%__MODULE__{list: []}) do
     true
   end
 
-  def empty?(stack()) do
+  def empty?(%__MODULE__{}) do
     false
   end
 
   def clear(_) do
-    stack(list: [])
+    %__MODULE__{list: []}
   end
 
   @doc """
   Check if the value is present in the stack.
   """
   @spec member?(t, v) :: boolean
-  def member?(stack(list: []), _) do
+  def member?(%__MODULE__{list: []}, _) do
     false
   end
 
-  def member?(stack(list: list), value) do
+  def member?(%__MODULE__{list: list}, value) do
     Enum.member?(list, value)
   end
 
@@ -184,7 +184,7 @@ defmodule Data.Stack.Simple do
   Get the size of the stack.
   """
   @spec size(t) :: non_neg_integer
-  def size(stack(list: list)) do
+  def size(%__MODULE__{list: list}) do
     length(list)
   end
 
@@ -192,7 +192,7 @@ defmodule Data.Stack.Simple do
   Fold the stack from the left.
   """
   @spec foldl(t, any, ((v, any) -> any)) :: any
-  def foldl(stack(list: list), acc, fun) do
+  def foldl(%__MODULE__{list: list}, acc, fun) do
     List.foldl(list, acc, fun)
   end
 
@@ -200,7 +200,7 @@ defmodule Data.Stack.Simple do
   Fold the stack from the right.
   """
   @spec foldr(t, any, ((v, any) -> any)) :: any
-  def foldr(stack(list: list), acc, fun) do
+  def foldr(%__MODULE__{list: list}, acc, fun) do
     List.foldr(list, acc, fun)
   end
 
@@ -208,7 +208,7 @@ defmodule Data.Stack.Simple do
   Convert the stack to a list.
   """
   @spec to_list(t) :: [v]
-  def to_list(stack(list: list)) do
+  def to_list(%__MODULE__{list: list}) do
     list
   end
 end
