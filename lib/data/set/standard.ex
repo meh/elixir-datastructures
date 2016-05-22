@@ -20,7 +20,7 @@ defmodule Data.Set.Standard do
     if :sets.is_set(enum_or_set) do
       %T{set: enum_or_set}
     else
-      %T{set: Data.to_list(enum_or_set) |> :sets.from_list}
+      %T{set: Data.list(enum_or_set) |> :sets.from_list}
     end
   end
 
@@ -49,7 +49,7 @@ defmodule Data.Set.Standard do
   end
 
   def union(%T{set: self}, other) do
-    %T{set: :sets.union(self, Data.to_list(other) |> :sets.from_list)}
+    %T{set: :sets.union(self, Data.list(other) |> :sets.from_list)}
   end
 
   def intersection(%T{set: self}, %T{set: other}) do
@@ -57,7 +57,7 @@ defmodule Data.Set.Standard do
   end
 
   def intersection(%T{set: self}, other) do
-    %T{set: :sets.intersection(self, Data.to_list(other) |> :sets.from_list)}
+    %T{set: :sets.intersection(self, Data.list(other) |> :sets.from_list)}
   end
 
   def difference(%T{set: self}, %T{set: other}) do
@@ -65,7 +65,7 @@ defmodule Data.Set.Standard do
   end
 
   def difference(%T{set: self}, other) do
-    %T{set: :sets.subtract(self, Data.to_list(other) |> :sets.from_list)}
+    %T{set: :sets.subtract(self, Data.list(other) |> :sets.from_list)}
   end
 
   def subset?(%T{set: self}, %T{set: other}) do
@@ -73,7 +73,7 @@ defmodule Data.Set.Standard do
   end
 
   def subset?(%T{set: self}, other) do
-    :sets.is_subset(Data.to_list(other) |> :sets.from_list, self)
+    :sets.is_subset(Data.list(other) |> :sets.from_list, self)
   end
 
   def disjoint?(%T{set: self}, %T{set: other}) do
@@ -81,7 +81,7 @@ defmodule Data.Set.Standard do
   end
 
   def disjoint?(%T{set: self}, other) do
-    :sets.is_disjoint(Data.to_list(other) |> :sets.from_list, self)
+    :sets.is_disjoint(Data.list(other) |> :sets.from_list, self)
   end
 
   def size(%T{set: self}) do

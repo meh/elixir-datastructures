@@ -38,7 +38,7 @@ defmodule Data.Stack.Simple do
   """
   @spec new(Enum.t) :: t
   def new(enum) do
-    %T{list: Data.to_list(enum)}
+    %T{list: Data.list(enum)}
   end
 
   @doc """

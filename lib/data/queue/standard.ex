@@ -20,7 +20,7 @@ defmodule Data.Queue.Standard do
     if :queue.is_queue(enum_or_queue) do
       %T{queue: enum_or_queue}
     else
-      %T{queue: Data.to_list(enum_or_queue) |> :queue.from_list}
+      %T{queue: Data.list(enum_or_queue) |> :queue.from_list}
     end
   end
 

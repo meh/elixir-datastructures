@@ -24,7 +24,7 @@ defimpl Protocol, for: List do
   end
 
   def new(enum) do
-    Data.to_list(enum)
+    Data.list(enum)
   end
 
   def push(list, value) do

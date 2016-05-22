@@ -330,7 +330,7 @@ defmodule Data.Seq do
   end
 
   defp do_flat_map(acc, sequence, fun) do
-    do_flat_map(Data.to_list(fun.(S.first(sequence))) ++ acc, S.next(sequence), fun)
+    do_flat_map(Data.list(fun.(S.first(sequence))) ++ acc, S.next(sequence), fun)
   end
 
   @spec reverse(t) :: t

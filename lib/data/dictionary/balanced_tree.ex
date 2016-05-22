@@ -25,7 +25,7 @@ defmodule Data.Dictionary.BalancedTree do
   end
 
   def new(enum) do
-    %T{dict: Data.to_list(enum) |> :orddict.from_list |> :gb_trees.from_orddict}
+    %T{dict: Data.list(enum) |> :orddict.from_list |> :gb_trees.from_orddict}
   end
 
   def has_key?(%T{dict: self}, key) do

@@ -17,7 +17,7 @@ defmodule Data.Dictionary.Standard do
   end
 
   def new(enum_or_dict) do
-    %T{dict: Data.to_list(enum_or_dict) |> :dict.from_list}
+    %T{dict: Data.list(enum_or_dict) |> :dict.from_list}
   end
 
   def has_key?(%T{dict: self}, key) do
