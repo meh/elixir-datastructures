@@ -21,6 +21,8 @@ defmodule Data do
     end
   end
 
+  alias Data.Seq
+
   @spec contains?(P.Contains.t | P.Sequence.t, any) :: any
   def contains?(self, what) do
     cond do
@@ -56,7 +58,35 @@ defmodule Data do
         mod.to_sequence(self)
 
       true ->
-        to_list(self)
+        list(self)
+    end
+  end
+
+  @spec list(list | P.ToList.t | P.Sequence.t | Enumerable.t) :: list
+  def list(value) when value |> is_list do
+    value
+  end
+
+  def list(nil) do
+    []
+  end
+
+  def list(value) do
+    cond do
+      mod = P.ToList.impl_for(value) ->
+        mod.to_list(value)
+
+      P.Sequence.impl_for(value) ->
+        Seq.to_list(value)
+
+      P.ToSequence.impl_for(value) ->
+        Seq.to_list(value)
+
+      Enumerable.impl_for(value) ->
+        Enum.to_list(value)
+
+      true ->
+        [value]
     end
   end
 
@@ -156,30 +186,5 @@ defmodule Data do
   @spec reverse(P.Reverse.t) :: P.Reverse.t
   def reverse(self) do
     P.Reverse.reverse(self)
-  end
-
-  @spec to_list(list | P.ToList.t | P.Sequence.t | Enumerable.t) :: list
-  def to_list(self) when is_list(self) do
-    self
-  end
-
-  def to_list(nil) do
-    []
-  end
-
-  def to_list(self) do
-    cond do
-      mod = P.ToList.impl_for(self) ->
-        mod.to_list(self)
-
-      mod = P.Sequence.impl_for(self) ->
-        mod.to_list(self)
-
-      P.ToSequence.impl_for(self) ->
-        Seq.to_list(self)
-
-      Enumerable.impl_for(self) ->
-        Enum.to_list(self)
-    end
   end
 end
