@@ -320,6 +320,19 @@ defmodule Data.Seq do
     [fun.(S.first(sequence)) | acc] |> do_map(S.next(sequence), fun)
   end
 
+  @spec flat_map(t, (any -> any)) :: t
+  def flat_map(sequence, fun) do
+    do_flat_map([], Data.seq(sequence), fun)
+  end
+
+  defp do_flat_map(acc, nil, _) do
+    acc |> :lists.reverse
+  end
+
+  defp do_flat_map(acc, sequence, fun) do
+    do_flat_map(Data.to_list(fun.(S.first(sequence))) ++ acc, S.next(sequence), fun)
+  end
+
   @spec reverse(t) :: t
   def reverse(sequence) when sequence |> is_list do
     :lists.reverse(sequence)
