@@ -19,11 +19,11 @@ defprotocol Protocol do
 end
 
 defimpl Protocol, for: Atom do
-  def first(nil) do
-    nil
+  def first(self) do
+    self
   end
 
-  def next(nil) do
+  def next(_) do
     nil
   end
 end

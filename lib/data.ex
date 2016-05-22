@@ -40,16 +40,8 @@ defmodule Data do
     nil
   end
 
-  def seq(nil) do
-    nil
-  end
-
-  def seq(self) when is_list(self) do
-    self
-  end
-
-  def seq(self) when is_binary(self) do
-    self
+  def seq(value) when value |> is_atom or value |> is_list or value |> is_binary do
+    value
   end
 
   def seq(self) do
