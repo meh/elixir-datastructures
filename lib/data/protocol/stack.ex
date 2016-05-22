@@ -6,7 +6,9 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Protocol.Stack do
+alias Data.Protocol.Stack, as: Protocol
+
+defprotocol Protocol do
   @type v :: any
 
   @spec push(t, v) :: t
@@ -16,7 +18,7 @@ defprotocol Data.Protocol.Stack do
   def pop(self)
 end
 
-defimpl Data.Protocol.Stack, for: List do
+defimpl Protocol, for: List do
   def new do
     []
   end

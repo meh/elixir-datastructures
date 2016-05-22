@@ -6,25 +6,27 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-defprotocol Data.Protocol.ToList do
+use Data.Protocol.ToList, as: Protocol
+
+defprotocol Protocol do
   @spec to_list(t) :: list
   def to_list(self)
 end
 
-defimpl Data.Protocol.ToList, for: List do
+defimpl Protocol, for: List do
   def to_list(list) do
     list
   end
 end
 
-defimpl Data.Protocol.ToList, for: Map do
+defimpl Protocol, for: Map do
   defdelegate to_list(self), to: Map
 end
 
-defimpl Data.Protocol.ToList, for: MapSet do
+defimpl Protocol, for: MapSet do
   defdelegate to_list(self), to: MapSet
 end
 
-defimpl Data.Protocol.ToList, for: HashSet do
+defimpl Protocol, for: HashSet do
   defdelegate to_list(self), to: HashSet
 end
