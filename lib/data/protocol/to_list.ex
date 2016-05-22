@@ -6,7 +6,7 @@
 #
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-use Data.Protocol.ToList, as: Protocol
+alias Data.Protocol.ToList, as: Protocol
 
 defprotocol Protocol do
   @spec to_list(t) :: list
