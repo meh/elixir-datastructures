@@ -3,21 +3,18 @@ defmodule Datastructures.Mixfile do
 
   def project do
     [ app: :datastructures,
-      version: "0.2.5",
-      deps: deps,
-      package: package,
+      version: "0.2.6",
+      deps: deps(),
+      package: package(),
       description: "Elixir protocols and implementations for various data structures." ]
   end
 
-  # Configuration for the OTP application
   def application do
     []
   end
 
-  # Returns the list of dependencies in the format:
-  # { :foobar, "0.1", git: "https://github.com/elixir-lang/foobar.git" }
   defp deps do
-    [ { :ex_doc, "~> 0.11", only: [:dev] } ]
+    [ { :ex_doc, "~> 0.14", only: [:dev] } ]
   end
 
   defp package do
