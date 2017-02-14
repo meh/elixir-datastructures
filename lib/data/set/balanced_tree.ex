@@ -93,7 +93,7 @@ defmodule Data.Set.BalancedTree do
   end
 
   def to_list(%T{set: self}) do
-    Data.Set.List.new(:gb_sets.to_list(self))
+    :gb_sets.to_list(self)
   end
 
   ## Specific functions
@@ -117,7 +117,7 @@ defmodule Data.Set.BalancedTree do
   end
 
   defimpl P.Count do
-    defdelegate count(self), to: T
+    defdelegate count(self), to: T, as: :size
   end
 
   defimpl P.Reduce do

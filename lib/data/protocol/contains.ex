@@ -37,7 +37,3 @@ end
 defimpl Protocol, for: MapSet do
   defdelegate contains?(self, key), to: MapSet, as: :member?
 end
-
-defimpl Protocol, for: HashSet do
-  defdelegate contains?(self, key), to: HashSet, as: :member?
-end

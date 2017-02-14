@@ -61,7 +61,7 @@ defmodule Data.Dictionary.Standard do
   end
 
   def empty(_) do
-    new
+    new()
   end
 
   def to_list(%T{dict: self}) do

@@ -501,7 +501,7 @@ defmodule Data.Seq do
 
   @spec count(t, (any -> boolean)) :: non_neg_integer
   def count(sequence, predicate) do
-    do_count(0, Data.sequence(sequence), predicate)
+    do_count(0, Data.seq(sequence), predicate)
   end
 
   defp do_count(acc, nil, _) do

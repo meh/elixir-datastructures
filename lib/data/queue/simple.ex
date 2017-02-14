@@ -194,8 +194,6 @@ defmodule Data.Queue.Simple do
   defimpl P.Queue do
     defdelegate enq(self, value), to: T
     defdelegate deq(self), to: T
-    defdelegate deq(self, default), to: T
-    defdelegate deq!(self), to: T
   end
 
   defimpl P.Peek do

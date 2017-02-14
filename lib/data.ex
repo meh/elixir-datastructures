@@ -127,7 +127,7 @@ defmodule Data do
     true
   end
 
-  def empty?(list) when is_list(list) do
+  def empty?(list) when list |> is_list do
     false
   end
 

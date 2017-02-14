@@ -93,7 +93,7 @@ defmodule Data.Set.Standard do
   end
 
   def to_list(%T{set: self}) do
-    Data.Set.List.new(:sets.to_list(self))
+    :sets.to_list(self)
   end
 
   ## Specific functions
@@ -113,7 +113,7 @@ defmodule Data.Set.Standard do
   end
 
   defimpl P.Count do
-    defdelegate count(self), to: T
+    defdelegate count(self), to: T, as: :size
   end
 
   defimpl P.Reduce do

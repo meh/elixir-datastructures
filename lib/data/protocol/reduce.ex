@@ -8,7 +8,7 @@
 
 alias Data.Protocol.Reduce, as: Protocol
 
-defprotocol Data.Protocol.Reduce do
+defprotocol Protocol do
   @spec reduce(t, any, (any, any -> any)) :: any
   def reduce(self, acc, fun)
 end
@@ -18,13 +18,9 @@ defimpl Protocol, for: List do
 end
 
 defimpl Protocol, for: Map do
-  defdelegate reduce(self, acc, fun), to: Map
+  defdelegate reduce(self, acc, fun), to: Enum
 end
 
 defimpl Protocol, for: MapSet do
-  defdelegate reduce(self, acc, fun), to: MapSet
-end
-
-defimpl Protocol, for: HashSet do
-  defdelegate reduce(self, acc, fun), to: HashSet
+  defdelegate reduce(self, acc, fun), to: Enum
 end

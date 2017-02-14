@@ -35,7 +35,9 @@ defimpl Protocol, for: Map do
     Map.size(self) == 0
   end
 
-  defdelegate clear(self), to: Map, as: :empty
+  def clear(_) do
+    Map.new()
+  end
 end
 
 defimpl Protocol, for: MapSet do
@@ -43,13 +45,7 @@ defimpl Protocol, for: MapSet do
     MapSet.size(self) == 0
   end
 
-  defdelegate clear(self), to: MapSet, as: :empty
-end
-
-defimpl Protocol, for: HashSet do
-  def empty?(self) do
-    HashSet.size(self) == 0
+  def clear(_) do
+    MapSet.new()
   end
-
-  defdelegate clear(self), to: HashSet, as: :empty
 end

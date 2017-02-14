@@ -30,15 +30,3 @@ defimpl Protocol, for: MapSet do
     self |> MapSet.put(value)
   end
 end
-
-defimpl Protocol, for: HashDict do
-  def into(self, { key, value }) do
-    self |> HashDict.put(key, value)
-  end
-end
-
-defimpl Protocol, for: HashSet do
-  def into(self, value) do
-    self |> HashSet.put(value)
-  end
-end

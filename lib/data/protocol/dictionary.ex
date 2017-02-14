@@ -63,11 +63,3 @@ defimpl Protocol, for: Map do
   defdelegate keys(self), to: Map
   defdelegate values(self), to: Map
 end
-
-defimpl Protocol, for: HashDict do
-  defdelegate fetch(self, key), to: HashDict
-  defdelegate put(self, key, value), to: HashDict
-  defdelegate delete(self, key), to: HashDict
-  defdelegate keys(self), to: HashDict
-  defdelegate values(self), to: HashDict
-end

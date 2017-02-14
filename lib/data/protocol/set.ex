@@ -67,7 +67,7 @@ defimpl Protocol, for: List do
   end
 
   def difference(self, other) do
-    :ordsets.difference(self, new(other))
+    :ordsets.subtract(self, new(other))
   end
 
   def subset?(self, other) do
@@ -87,14 +87,4 @@ defimpl Protocol, for: MapSet do
   defdelegate difference(self, other), to: MapSet
   defdelegate subset?(self, other), to: MapSet
   defdelegate disjoint?(self, other), to: MapSet
-end
-
-defimpl Protocol, for: HashSet do
-  defdelegate add(self, value), to: HashSet, as: :put
-  defdelegate delete(self, value), to: HashSet
-  defdelegate union(self, other), to: HashSet
-  defdelegate intersection(self, other), to: HashSet
-  defdelegate difference(self, other), to: HashSet
-  defdelegate subset?(self, other), to: HashSet
-  defdelegate disjoint?(self, other), to: HashSet
 end

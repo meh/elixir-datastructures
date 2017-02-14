@@ -26,7 +26,3 @@ end
 defimpl Protocol, for: MapSet do
   defdelegate count(self), to: MapSet, as: :size
 end
-
-defimpl Protocol, for: HashSet do
-  defdelegate count(self), to: HashSet, as: :size
-end

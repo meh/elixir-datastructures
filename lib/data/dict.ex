@@ -50,11 +50,11 @@ defmodule Data.Dict do
   end
 
   def update(self, key, updater) do
-    D.put(self, key, updater.(D.get!(self, key)))
+    D.put(self, key, updater.(get!(self, key)))
   end
 
   def update(self, key, initial, updater) do
-    D.put(self, key, updater.(D.get(self, key, initial)))
+    D.put(self, key, updater.(get(self, key, initial)))
   end
 
   def merge(self, other) do

@@ -13,7 +13,7 @@ defmodule Data.Queue.Standard do
   defstruct [:queue]
 
   def new do
-    %T{queue: :queue.new}
+    %T{queue: :queue.new()}
   end
 
   def new(enum_or_queue) do
@@ -69,7 +69,7 @@ defmodule Data.Queue.Standard do
   end
 
   def clear(_) do
-    new
+    new()
   end
 
   def member?(%T{queue: queue}, value) do

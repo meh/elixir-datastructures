@@ -26,7 +26,3 @@ end
 defimpl Protocol, for: MapSet do
   defdelegate to_list(self), to: MapSet
 end
-
-defimpl Protocol, for: HashSet do
-  defdelegate to_list(self), to: HashSet
-end
