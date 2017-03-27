@@ -82,6 +82,9 @@ defmodule Data do
       P.ToSequence.impl_for(value) ->
         Seq.to_list(value)
 
+      P.Reduce.impl_for(value) ->
+        reduce(value, [], &[&1 | &2]) |> reverse
+
       Enumerable.impl_for(value) ->
         Enum.to_list(value)
 
@@ -158,28 +161,40 @@ defmodule Data do
       mod = P.Count.impl_for(self) ->
         mod.count(self)
 
+      Enumerable.impl_for(self) ->
+        Enum.count(self)
+
       P.Sequence.impl_for(self) ->
         Seq.count(self)
 
       P.ToSequence.impl_for(self) ->
         Seq.count(self)
 
-      Enumerable.impl_for(self) ->
-        Enum.count(self)
+      P.Reduce.impl_for(self) ->
+        P.Reduce.reduce(self, 0, &(&1 + 1))
     end
   end
 
   @spec count(P.Sequence.t | Enumerable.t, (any -> boolean)) :: P.Count.t | Enumerable.t
   def count(self, pred) do
     cond do
+      Enumerable.impl_for(self) ->
+        Enum.count(self, pred)
+
       P.Sequence.impl_for(self) ->
         Seq.count(self, pred)
 
       P.ToSequence.impl_for(self) ->
         Seq.count(self, pred)
 
-      Enumerable.impl_for(self) ->
-        Enum.count(self, pred)
+      P.Reduce.impl_for(self) ->
+        P.Reduce.reduce(self, 0, fn value, acc ->
+          if pred.(value) do
+            acc + 1
+          else
+            acc
+          end
+        end)
     end
   end
 
