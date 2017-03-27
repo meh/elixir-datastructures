@@ -83,7 +83,7 @@ defmodule Data do
         Seq.to_list(value)
 
       P.Reduce.impl_for(value) ->
-        reduce(value, [], &[&1 | &2]) |> reverse
+        P.Reduce.reduce(value, [], &[&1 | &2]) |> reverse
 
       Enumerable.impl_for(value) ->
         Enum.to_list(value)
@@ -201,5 +201,10 @@ defmodule Data do
   @spec reverse(P.Reverse.t) :: P.Reverse.t
   def reverse(self) do
     P.Reverse.reverse(self)
+  end
+
+  @spec into(P.Into.t, any) :: P.Into.t
+  def into(self, value) do
+    P.Into.into(self, value)
   end
 end

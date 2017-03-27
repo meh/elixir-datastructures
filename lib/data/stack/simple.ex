@@ -223,6 +223,10 @@ defmodule Data.Stack.Simple do
     use Data.Enumerable
   end
 
+  defimpl Collectable do
+    use Data.Collectable
+  end
+
   defimpl Inspect do
     import Inspect.Algebra
 
